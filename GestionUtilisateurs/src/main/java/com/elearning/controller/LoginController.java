@@ -35,23 +35,7 @@ public class LoginController {
 
     private final UserService userService = new UserService();
 
-    @FXML
-    public void initialize() {
-        fixSceneDimensions();
-    }
 
-    private void fixSceneDimensions() {
-        javafx.application.Platform.runLater(() -> {
-            if (emailField.getScene() != null && emailField.getScene().getWindow() != null) {
-                Stage stage = (Stage) emailField.getScene().getWindow();
-                stage.setMinWidth(900);
-                stage.setMinHeight(600);
-                stage.setWidth(900);
-                stage.setHeight(600);
-                stage.centerOnScreen();
-            }
-        });
-    }
 
     /**
      * Appelé au clic sur "Se connecter".
@@ -106,10 +90,11 @@ public class LoginController {
                     getClass().getResource("/com/elearning/css/style.css").toExternalForm());
 
             stage.setScene(scene);
-            stage.setResizable(true);
-            stage.setWidth(1100);
-            stage.setHeight(700);
-            stage.centerOnScreen();
+            
+            // ✅ FORCER LES DIMENSIONS
+            com.elearning.util.WindowHelper.fixDimensions(stage);
+            
+            stage.show();
 
         } catch (IOException e) {
             afficherErreur("Erreur lors du chargement de l'interface.");
@@ -147,12 +132,9 @@ public class LoginController {
 
             stage.setScene(scene);
             stage.setTitle("Eduverse — Inscription");
-            stage.setResizable(true);
-            stage.setMinWidth(900);
-            stage.setMinHeight(600);
-            stage.setWidth(900);
-            stage.setHeight(600);
-            stage.centerOnScreen();
+            
+            // ✅ FORCER LES DIMENSIONS
+            com.elearning.util.WindowHelper.fixDimensions(stage);
 
         } catch (IOException e) {
             afficherErreur("Erreur lors du chargement de l'interface.");

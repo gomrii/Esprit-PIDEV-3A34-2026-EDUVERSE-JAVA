@@ -84,7 +84,6 @@ public class AdminDashboardController implements Initializable {
     // -------------------------------------------------------
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        fixSceneDimensions();
         // 1. Configurer les colonnes de la TableView
         configurerColonnes();
 
@@ -111,18 +110,7 @@ public class AdminDashboardController implements Initializable {
         sortDirection.valueProperty().addListener((obs, oldVal, newVal) -> chargerUtilisateurs());
     }
 
-    private void fixSceneDimensions() {
-        javafx.application.Platform.runLater(() -> {
-            if (searchField != null && searchField.getScene() != null && searchField.getScene().getWindow() != null) {
-                Stage stage = (Stage) searchField.getScene().getWindow();
-                stage.setMinWidth(900);
-                stage.setMinHeight(600);
-                stage.setWidth(900);
-                stage.setHeight(600);
-                stage.centerOnScreen();
-            }
-        });
-    }
+
 
     // -------------------------------------------------------
     // Configuration des colonnes
@@ -392,12 +380,9 @@ public class AdminDashboardController implements Initializable {
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
-            stage.setResizable(true);
-            stage.setMinWidth(900);
-            stage.setMinHeight(600);
-            stage.setWidth(900);
-            stage.setHeight(600);
-            stage.centerOnScreen();
+            
+            // ✅ FORCER LES DIMENSIONS
+            com.elearning.util.WindowHelper.fixDimensions(stage);
         } catch (IOException e) {
             e.printStackTrace();
         }

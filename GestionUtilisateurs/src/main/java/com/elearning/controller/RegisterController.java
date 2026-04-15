@@ -38,7 +38,6 @@ public class RegisterController {
 
     @FXML
     public void initialize() {
-        fixSceneDimensions();
         // Créer le ToggleGroup programmatiquement
         roleGroup = new ToggleGroup();
         radioEtudiant.setToggleGroup(roleGroup);
@@ -52,18 +51,7 @@ public class RegisterController {
         successLabel.setManaged(false);
     }
 
-    private void fixSceneDimensions() {
-        javafx.application.Platform.runLater(() -> {
-            if (emailField != null && emailField.getScene() != null && emailField.getScene().getWindow() != null) {
-                Stage stage = (Stage) emailField.getScene().getWindow();
-                stage.setMinWidth(900);
-                stage.setMinHeight(600);
-                stage.setWidth(900);
-                stage.setHeight(600);
-                stage.centerOnScreen();
-            }
-        });
-    }
+
 
     @FXML
     private void handleRegister(ActionEvent event) {
@@ -127,12 +115,10 @@ public class RegisterController {
             scene.getStylesheets().add(getClass().getResource("/com/elearning/css/style.css").toExternalForm());
             stage.setScene(scene);
             stage.setTitle("Eduverse — Connexion");
-            stage.setResizable(true);
-            stage.setMinWidth(900);
-            stage.setMinHeight(600);
-            stage.setWidth(900);
-            stage.setHeight(600);
-            stage.centerOnScreen();
+            
+            // ✅ FORCER LES DIMENSIONS
+            com.elearning.util.WindowHelper.fixDimensions(stage);
+            
             stage.show();
         } catch (IOException e) {
             afficherErreur("Erreur lors du chargement de la page de connexion.");
