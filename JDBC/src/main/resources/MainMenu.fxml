@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="900.0" spacing="40.0" style="-fx-background-color: #F4F7FB;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainMenu">
+    <children>
+        <VBox alignment="CENTER" spacing="10.0">
+            <children>
+                <Label text="Bienvenue sur la Plateforme E-Learning" textFill="#2C3E50">
+                    <font><Font name="System Bold" size="32.0" /></font>
+                </Label>
+                <Label text="Veuillez choisir votre profil pour continuer" textFill="#7F8C8D">
+                    <font><Font size="16.0" /></font>
+                </Label>
+            </children>
+        </VBox>
+
+        <HBox alignment="CENTER" spacing="30.0">
+            <children>
+                <Button fx:id="btnAdmin" onAction="#handleAdmin" prefHeight="250.0" prefWidth="220.0"
+                        text="ADMIN" style="-fx-background-color: white; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 10); -fx-cursor: hand; -fx-text-fill: #E74C3C; -fx-font-weight: bold; -fx-font-size: 18px;"/>
+
+                <Button fx:id="btnEnseignant" onAction="#handleEnseignant" prefHeight="250.0" prefWidth="220.0"
+                        text="ENSEIGNANT" style="-fx-background-color: white; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 10); -fx-cursor: hand; -fx-text-fill: #2980B9; -fx-font-weight: bold; -fx-font-size: 18px;"/>
+
+                <Button fx:id="btnStudent" onAction="#handleStudent" prefHeight="250.0" prefWidth="220.0"
+                        text="ETUDIANT" style="-fx-background-color: white; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 10); -fx-cursor: hand; -fx-text-fill: #27AE60; -fx-font-weight: bold; -fx-font-size: 18px;"/>
+            </children>
+        </HBox>
+    </children>
+</VBox>
