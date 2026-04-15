@@ -19,9 +19,13 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -337,35 +341,27 @@ public class AdminDashboardController implements Initializable {
     // -------------------------------------------------------
 
     @FXML
-    private void handleExporterPDF() {
-        try {
-            // Demander où sauvegarder (uniquement s'il y a des données)
-            if (listeUsers.isEmpty()) {
-                afficherErreur("La liste est vide. Rien à exporter.");
-                return;
+    private void handleExportPdf(ActionEvent event) {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Exporter la liste des utilisateurs en PDF");
+        chooser.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
+        chooser.setInitialFileName("utilisateurs_"
+            + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + ".pdf");
+
+        File fichier = chooser.showSaveDialog(
+            ((Node) event.getSource()).getScene().getWindow());
+
+        if (fichier != null) {
+            try {
+                List<User> users = userService.rechercherUsers(
+                    searchField.getText(), "", "id", "ASC");
+                new com.elearning.service.PdfExportService()
+                    .exporterListeUtilisateurs(users, fichier.getAbsolutePath());
+                afficherSucces("✅ PDF exporté avec succès : " + fichier.getName());
+            } catch (Exception e) {
+                afficherErreur("❌ Erreur lors de l'export PDF : " + e.getMessage());
             }
-
-            // Générer le path de base (Répertoire courant)
-            java.io.File destFile = new java.io.File("Utilisateurs_Export.pdf");
-            
-            // Appel au PdfService
-            pdfService.exporterListeUtilisateurs(listeUsers, destFile.getAbsolutePath());
-
-            // Notification succès
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Export terminé");
-            alert.setHeaderText(null);
-            alert.setContentText("Le fichier a été généré : \n" + destFile.getAbsolutePath());
-            alert.showAndWait();
-
-            // Tenter d'ouvrir avec l'application par défaut
-            if (java.awt.Desktop.isDesktopSupported()) {
-                java.awt.Desktop.getDesktop().open(destFile);
-            }
-
-        } catch (Exception e) {
-            afficherErreur("Erreur lors de la génération du PDF : " + e.getMessage());
-            e.printStackTrace();
         }
     }
 

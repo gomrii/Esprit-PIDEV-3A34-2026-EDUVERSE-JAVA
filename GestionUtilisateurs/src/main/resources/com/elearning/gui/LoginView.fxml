@@ -2,71 +2,93 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.text.Text?>
 
-<!--
-  LoginView.fxml — Vue de connexion
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.elearning.controller.LoginController"
+           styleClass="login-root"
+           prefWidth="900" prefHeight="600">
 
-  Équivalent Symfony : templates/security/login.html.twig
-  Le fx:controller lie cette vue à LoginController.java
--->
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.elearning.controller.LoginController"
-      styleClass="login-container"
-      spacing="0"
-      alignment="CENTER"
-      prefWidth="500" prefHeight="400">
+    <!-- Carte blanche centrée -->
+    <HBox alignment="CENTER" spacing="0">
 
-    <!-- En-tête -->
-    <VBox styleClass="login-header" alignment="CENTER" spacing="8">
-        <padding><Insets top="30" bottom="20"/></padding>
-        <Label text="🎓 e-Learning" styleClass="login-logo"/>
-        <Label text="Gestion des Utilisateurs" styleClass="login-subtitle"/>
-    </VBox>
+        <!-- Panneau gauche : visuel décoratif -->
+        <VBox styleClass="login-left-panel" alignment="CENTER" spacing="20"
+              prefWidth="420" prefHeight="600"
+              style="-fx-background-color: linear-gradient(to bottom, #1e3a5f, #2980b9); -fx-padding: 50;">
 
-    <!-- Formulaire -->
-    <VBox styleClass="login-form" spacing="16" alignment="CENTER">
-        <padding><Insets top="20" right="60" bottom="10" left="60"/></padding>
+            <!-- Logo grand format -->
+            <Label text="🎓" style="-fx-font-size: 72px;"/>
+            <Label text="Eduverse" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Label text="Plateforme e-Learning"
+                   style="-fx-font-size: 16px; -fx-text-fill: rgba(255,255,255,0.75);"/>
 
-        <!-- Message d'erreur global -->
-        <Label fx:id="errorLabel" styleClass="error-global" wrapText="true"
-               visible="false" managed="false"/>
+            <!-- Séparateur décoratif -->
+            <Region prefHeight="1" prefWidth="80"
+                    style="-fx-background-color: rgba(255,255,255,0.3);"/>
 
-        <!-- Champ Email -->
-        <VBox spacing="4">
-            <Label text="Adresse e-mail" styleClass="field-label"/>
-            <TextField fx:id="emailField" promptText="votre@email.tn"
-                       styleClass="text-field"/>
+            <Label text="&quot;Apprendre sans jamais cesser&quot;"
+                   wrapText="true" textAlignment="CENTER"
+                   style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.6); -fx-font-style: italic;"/>
+
+            <!-- Badges statistiques -->
+            <HBox spacing="20" alignment="CENTER">
+                <VBox alignment="CENTER" spacing="4">
+                    <Label text="500+" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #f39c12;"/>
+                    <Label text="Étudiants" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.7);"/>
+                </VBox>
+                <VBox alignment="CENTER" spacing="4">
+                    <Label text="50+" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2ecc71;"/>
+                    <Label text="Cours" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.7);"/>
+                </VBox>
+                <VBox alignment="CENTER" spacing="4">
+                    <Label text="20+" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #e74c3c;"/>
+                    <Label text="Instructeurs" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.7);"/>
+                </VBox>
+            </HBox>
         </VBox>
 
-        <!-- Champ Mot de passe -->
-        <VBox spacing="4">
-            <Label text="Mot de passe" styleClass="field-label"/>
-            <PasswordField fx:id="passwordField" promptText="••••••••"
-                           styleClass="text-field"/>
+        <!-- Panneau droit : formulaire -->
+        <VBox styleClass="login-card" spacing="20" alignment="CENTER"
+              prefWidth="480">
+
+            <!-- En-tête du formulaire -->
+            <VBox spacing="6" alignment="CENTER_LEFT">
+                <Label text="Connexion" styleClass="login-app-name"/>
+                <Label text="Accédez à votre espace personnel" styleClass="login-subtitle"/>
+            </VBox>
+
+            <!-- Séparateur -->
+            <Region prefHeight="1" maxWidth="Infinity" styleClass="login-divider"/>
+
+            <!-- Message d'erreur -->
+            <Label fx:id="errorLabel" styleClass="login-error"
+                   wrapText="true" maxWidth="Infinity"
+                   visible="false" managed="false"/>
+
+            <!-- Champ email -->
+            <VBox spacing="6">
+                <Label text="ADRESSE E-MAIL" styleClass="login-field-label"/>
+                <TextField fx:id="emailField" promptText="votre@email.tn"
+                           styleClass="login-field" maxWidth="Infinity"/>
+            </VBox>
+
+            <!-- Champ mot de passe -->
+            <VBox spacing="6">
+                <Label text="MOT DE PASSE" styleClass="login-field-label"/>
+                <PasswordField fx:id="passwordField" promptText="••••••••"
+                               styleClass="login-field" maxWidth="Infinity"/>
+            </VBox>
+
+            <!-- Bouton connexion -->
+            <Button fx:id="loginButton" text="→  Se connecter"
+                    styleClass="login-btn" maxWidth="Infinity"
+                    onAction="#handleLogin"/>
+
+            <!-- Badge démo -->
+            <Label text="💡  Démo : admin@elearning.tn  /  Admin123!"
+                   styleClass="demo-badge" maxWidth="Infinity"
+                   alignment="CENTER" textAlignment="CENTER"/>
+
         </VBox>
-
-        <!-- Bouton connexion -->
-        <Button fx:id="loginButton" text="Se connecter →"
-                styleClass="btn-primary" maxWidth="Infinity"
-                onAction="#handleLogin"/>
-
-    </VBox>
-
-    <!-- Note de démonstration -->
-    <VBox alignment="CENTER" spacing="4">
-        <padding><Insets top="10" bottom="15"/></padding>
-        <Label text="Compte démo : admin@elearning.tn / Admin123!"
-               styleClass="demo-note"/>
-    </VBox>
-
-    <!-- Lien vers inscription -->
-    <VBox alignment="CENTER" spacing="4">
-        <padding><Insets bottom="20"/></padding>
-        <HBox alignment="CENTER" spacing="4">
-            <Text text="Pas de compte ?" style="-fx-fill: #666; -fx-font-size: 13;"/>
-            <Hyperlink text="S'inscrire" style="-fx-font-size: 13;" onAction="#allerVersInscription"/>
-        </HBox>
-    </VBox>
-
-</VBox>
+    </HBox>
+</StackPane>

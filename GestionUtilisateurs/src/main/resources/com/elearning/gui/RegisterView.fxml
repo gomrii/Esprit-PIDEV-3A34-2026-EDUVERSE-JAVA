@@ -18,75 +18,78 @@
       prefWidth="500" prefHeight="620">
 
     <!-- En-tête -->
-    <VBox styleClass="login-header" alignment="CENTER" spacing="8">
-        <padding><Insets top="20" bottom="15"/></padding>
-        <Label text="📝 Créer un compte" styleClass="login-logo"/>
-        <Label text="Rejoins l'espace e-Learning" styleClass="login-subtitle"/>
+    <VBox styleClass="login-header" alignment="CENTER" spacing="12">
+        <padding><Insets top="30" bottom="25"/></padding>
+        <Label text="✨" style="-fx-font-size: 40px;"/>
+        <Label text="Créer un Compte" styleClass="login-logo"/>
+        <Label text="Rejoins Eduverse dès maintenant" styleClass="login-subtitle"/>
     </VBox>
 
     <!-- Formulaire -->
     <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
-        <VBox styleClass="login-form" spacing="14" alignment="TOP_CENTER">
-            <padding><Insets top="15" right="50" bottom="10" left="50"/></padding>
+        <VBox styleClass="login-form" spacing="16" alignment="TOP_CENTER">
+            <padding><Insets top="20" right="40" bottom="15" left="40"/></padding>
 
             <!-- Message d'erreur global -->
             <Label fx:id="errorLabel" styleClass="error-global" wrapText="true"
                    visible="false" managed="false"/>
 
             <!-- Message de succès -->
-            <Label fx:id="successLabel" text="✅ Inscription réussie ! Redirection vers connexion..." 
+            <Label fx:id="successLabel" text="✅ Inscription réussie ! Redirection..." 
                    styleClass="success-message" wrapText="true"
                    visible="false" managed="false"/>
 
             <!-- Champ Nom complet -->
-            <VBox spacing="4">
-                <Label text="Nom complet *" styleClass="field-label"/>
+            <VBox spacing="5">
+                <Label text="👤  Nom complet" styleClass="field-label"/>
                 <TextField fx:id="fullNameField" promptText="Ahmed Ben Ali"
                            styleClass="text-field"/>
             </VBox>
 
             <!-- Champ Email -->
-            <VBox spacing="4">
-                <Label text="Adresse e-mail *" styleClass="field-label"/>
+            <VBox spacing="5">
+                <Label text="📧  Adresse e-mail" styleClass="field-label"/>
                 <TextField fx:id="emailField" promptText="votre@email.tn"
                            styleClass="text-field"/>
             </VBox>
 
             <!-- Sélection du rôle -->
-            <VBox spacing="6">
-                <Label text="Qui es-tu ? *" styleClass="field-label"/>
-                <HBox spacing="20" fx:id="roleHBox">
-                    <RadioButton fx:id="radioEtudiant" text="🎓 Étudiant"
+            <VBox spacing="8">
+                <Label text="👨‍🎓  Qui es-tu ?" styleClass="field-label"/>
+                <HBox spacing="24" style="-fx-padding: 8;">
+                    <RadioButton fx:id="radioEtudiant" text="Étudiant"
                                  userData="ETUDIANT"
-                                 selected="true"/>
-                    <RadioButton fx:id="radioEnseignant" text="👨‍🏫 Enseignant"
-                                 userData="ENSEIGNANT"/>
+                                 selected="true"
+                                 style="-fx-font-size: 13; -fx-font-weight: 500;"/>
+                    <RadioButton fx:id="radioEnseignant" text="Enseignant"
+                                 userData="ENSEIGNANT"
+                                 style="-fx-font-size: 13; -fx-font-weight: 500;"/>
                 </HBox>
             </VBox>
 
             <!-- Champ Mot de passe -->
-            <VBox spacing="4">
-                <Label text="Mot de passe *" styleClass="field-label"/>
-                <PasswordField fx:id="passwordField" promptText="Min 8 chars, 1 MAJ, 1 chiffre, 1 spécial"
+            <VBox spacing="5">
+                <Label text="🔐  Mot de passe" styleClass="field-label"/>
+                <PasswordField fx:id="passwordField" promptText="Min 8 caractères, 1 MAJ, 1 chiffre, 1 spécial"
                                styleClass="text-field"/>
             </VBox>
 
             <!-- Champ Confirmer mot de passe -->
-            <VBox spacing="4">
-                <Label text="Confirmer le mot de passe *" styleClass="field-label"/>
+            <VBox spacing="5">
+                <Label text="✓  Confirmer le mot de passe" styleClass="field-label"/>
                 <PasswordField fx:id="confirmPasswordField" promptText="Répétez le mot de passe"
                                styleClass="text-field"/>
             </VBox>
 
             <!-- Bouton inscription -->
-            <Button fx:id="btnRegister" text="Créer mon compte →"
+            <Button fx:id="btnRegister" text="✏️  CRÉER MON COMPTE"
                     styleClass="btn-primary" maxWidth="Infinity"
-                    onAction="#handleRegister"/>
+                    style="-fx-font-weight: 700; -fx-font-size: 14;"/>
 
             <!-- Lien vers connexion -->
-            <HBox alignment="CENTER" spacing="4">
-                <Text text="Déjà inscrit ?" style="-fx-fill: #666; -fx-font-size: 13;"/>
-                <Hyperlink text="Se connecter" style="-fx-font-size: 13;" onAction="#allerVersLogin"/>
+            <HBox alignment="CENTER" spacing="6" style="-fx-padding: 10 0 0 0;">
+                <Text text="Déjà un compte ?" style="-fx-fill: #6B7280; -fx-font-size: 13; -fx-font-weight: 500;"/>
+                <Hyperlink text="Se connecter" style="-fx-font-size: 13; -fx-font-weight: 600; -fx-text-fill: #5B7BFF;" onAction="#allerVersLogin"/>
             </HBox>
 
         </VBox>

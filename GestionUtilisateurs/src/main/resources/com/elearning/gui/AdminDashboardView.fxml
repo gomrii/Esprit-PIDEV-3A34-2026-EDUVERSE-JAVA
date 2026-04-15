@@ -102,8 +102,10 @@
                             onAction="#handleAjouter"/>
                     <Button text="✅ Approuver" styleClass="btn-success"
                             onAction="#handleApprouver"/>
-                    <Button text="📄 Exporter PDF" style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-cursor: hand;"
-                            onAction="#handleExporterPDF"/>
+                    <Button text="📄 Export PDF" styleClass="btn-pdf"
+                            onAction="#handleExportPdf">
+                        <HBox.margin><Insets left="10"/></HBox.margin>
+                    </Button>
                 </HBox>
             </HBox>
 

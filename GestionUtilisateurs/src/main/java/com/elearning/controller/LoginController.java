@@ -100,14 +100,16 @@ public class LoginController {
     }
 
     private void afficherErreur(String message) {
-        errorLabel.setText("⚠ " + message);
+        errorLabel.setText("⚠  " + message);
         errorLabel.setVisible(true);
         errorLabel.setManaged(true);
-        emailField.setStyle("-fx-border-color: #e74c3c;");
-        passwordField.setStyle("-fx-border-color: #e74c3c;");
+        emailField.setStyle("-fx-border-color: #e74c3c; -fx-border-width: 2;");
+        passwordField.setStyle("-fx-border-color: #e74c3c; -fx-border-width: 2;");
     }
 
     private void clearErrors() {
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(false);
         emailField.setStyle("");
         passwordField.setStyle("");
     }
