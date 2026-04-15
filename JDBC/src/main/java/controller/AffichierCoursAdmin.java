@@ -143,6 +143,7 @@ public class AffichierCoursAdmin {
                         btnApprouver.setDisable(true);
                         new Thread(() -> {
                             try {
+
                                 sc.updateStatus(cours.getId(), "approuved");
                                 sendSMS("Félicitations ! Votre cours '" + cours.getTitle() + "' est approuvé.");
                                 javafx.application.Platform.runLater(() -> {
@@ -259,15 +260,7 @@ public class AffichierCoursAdmin {
         } catch (IOException e) { e.printStackTrace(); }
     }
 
-    // --- UTILITAIRES ---
-    private void sendSMS(String text) {
-        String ACCOUNT_SID = "AC563f90ef77c3a87ba6b4aa4b6e249774";
-        String AUTH_TOKEN = "b632734b438492fd3e23173cdd0dfef0";
-        try {
-            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-            Message.creator(new PhoneNumber("+21696068308"), new PhoneNumber("+17754598634"), text).create();
-        } catch (Exception e) { System.err.println("Erreur Twilio : " + e.getMessage()); }
-    }
+
 
     @FXML
     private void resetFilters() {
