@@ -111,17 +111,11 @@ public class RegisterController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/elearning/gui/LoginView.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root, 900, 600);
+            Scene scene = ((Node) event.getSource()).getScene();
+            scene.setRoot(root);
+            scene.getStylesheets().clear();
             scene.getStylesheets().add(getClass().getResource("/com/elearning/css/style.css").toExternalForm());
-            stage.setScene(scene);
             stage.setTitle("Eduverse — Connexion");
-            
-            // ✅ FORCER LES DIMENSIONS (DEUX FOIS POUR ÊTRE SÛR)
-            stage.setWidth(900);
-            stage.setHeight(600);
-            com.elearning.util.WindowHelper.fixDimensions(stage);
-            
-            stage.show();
         } catch (IOException e) {
             afficherErreur("Erreur lors du chargement de la page de connexion.");
             e.printStackTrace();

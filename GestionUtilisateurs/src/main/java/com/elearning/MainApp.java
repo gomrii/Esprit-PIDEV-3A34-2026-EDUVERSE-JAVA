@@ -1,15 +1,15 @@
 package com.elearning;
 
 import com.elearning.util.DatabaseConnection;
+import com.elearning.util.WindowHelper;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-/**
- * Point d'entrée de l'application JavaFX.
- */
+import java.io.IOException;
+
 public class MainApp extends Application {
 
     private Stage primaryStage;
@@ -17,37 +17,34 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
-        
-        // ✅ FORCER LES DIMENSIONS DÈS LE DÉPART
+
+        // Configuration initiale de la fenêtre
+        primaryStage.setTitle("Eduverse — e-Learning");
         primaryStage.setMinWidth(900);
         primaryStage.setMinHeight(600);
-        primaryStage.setWidth(900);
-        primaryStage.setHeight(600);
-        primaryStage.setResizable(true);
-        
+
+        // Charger la première vue
         loadScene("/com/elearning/gui/LoginView.fxml");
-        
+
+        // Appliquer les dimensions et afficher
+        WindowHelper.fixDimensions(primaryStage);
         primaryStage.show();
-        primaryStage.centerOnScreen();
     }
 
-    private void loadScene(String fxmlPath) {
+    public void loadScene(String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            
+
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
-                getClass().getResource("/com/elearning/css/style.css").toExternalForm());
-            
+                    getClass().getResource("/com/elearning/css/style.css").toExternalForm());
+
             primaryStage.setScene(scene);
-            primaryStage.setTitle("Eduverse — e-Learning");
-            
-            // ✅ RÉAPPLIQUER LES DIMENSIONS APRÈS CHAQUE CHANGEMENT DE SCÈNE
-            primaryStage.setWidth(900);
-            primaryStage.setHeight(600);
-            primaryStage.centerOnScreen();
-            
+
+            // Forcer les dimensions à chaque changement de scène
+            WindowHelper.fixDimensions(primaryStage);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

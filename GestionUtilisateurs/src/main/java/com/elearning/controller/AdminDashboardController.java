@@ -374,17 +374,12 @@ public class AdminDashboardController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/elearning/gui/LoginView.fxml"));
-            Scene scene = new Scene(loader.load(), 900, 600);
+            Parent root = loader.load();
+            Scene scene = ((Node) event.getSource()).getScene();
+            scene.setRoot(root);
+            scene.getStylesheets().clear();
             scene.getStylesheets().add(
                     getClass().getResource("/com/elearning/css/style.css").toExternalForm());
-
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(scene);
-            
-            // ✅ FORCER LES DIMENSIONS (DEUX FOIS POUR ÊTRE SÛR)
-            stage.setWidth(900);
-            stage.setHeight(600);
-            com.elearning.util.WindowHelper.fixDimensions(stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
