@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600" prefWidth="800"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controllers.EventController"
+            style="-fx-background-color: #f0f2f5;">
+
+    <VBox spacing="20" alignment="TOP_CENTER"
+          AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20"
+          AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+
+        <!-- ═══════════ TITRE ═══════════ -->
+        <Label text="📅 Gestion des Événements" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;">
+            <font><Font size="24"/></font>
+        </Label>
+
+        <!-- ═══════════ FORMULAIRE ═══════════ -->
+        <GridPane hgap="15" vgap="12" alignment="CENTER"
+                  style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+
+            <!-- Titre -->
+            <Label text="Titre :" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold;"/>
+            <TextField fx:id="tfTitle" promptText="Titre de l'événement"
+                       prefWidth="300"
+                       GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <!-- Description -->
+            <Label text="Description :" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold;"/>
+            <TextArea fx:id="taDescription" promptText="Description de l'événement"
+                      prefWidth="300" prefHeight="60"
+                      GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <!-- Date -->
+            <Label text="Date :" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold;"/>
+            <DatePicker fx:id="dpEventDate" prefWidth="300"
+                        GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <!-- Lieu -->
+            <Label text="Lieu :" GridPane.rowIndex="3" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold;"/>
+            <TextField fx:id="tfLocation" promptText="Lieu de l'événement"
+                       prefWidth="300"
+                       GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+            <!-- Statut -->
+            <Label text="Statut :" GridPane.rowIndex="4" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold;"/>
+            <ComboBox fx:id="cbStatus" prefWidth="300"
+                      GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+            <!-- Club ID -->
+            <Label text="Club ID :" GridPane.rowIndex="5" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold;"/>
+            <TextField fx:id="tfClubId" promptText="ID du club"
+                       prefWidth="300"
+                       GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+            <!-- Boutons -->
+            <HBox spacing="10" alignment="CENTER"
+                  GridPane.rowIndex="6" GridPane.columnIndex="0" GridPane.columnSpan="2">
+                <Button fx:id="btnAdd" text="➕ Ajouter" onAction="#addEvent"
+                        style="-fx-background-color: #27ae60; -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-radius: 5;
+                               -fx-cursor: hand;"/>
+                <Button fx:id="btnUpdate" text="✏️ Modifier" onAction="#updateEvent"
+                        style="-fx-background-color: #2980b9; -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-radius: 5;
+                               -fx-cursor: hand;"/>
+                <Button fx:id="btnDelete" text="🗑️ Supprimer" onAction="#deleteEvent"
+                        style="-fx-background-color: #e74c3c; -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-radius: 5;
+                               -fx-cursor: hand;"/>
+                <Button text="🔄 Effacer" onAction="#clearForm"
+                        style="-fx-background-color: #95a5a6; -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-radius: 5;
+                               -fx-cursor: hand;"/>
+            </HBox>
+        </GridPane>
+
+        <!-- ═══════════ TABLEAU ═══════════ -->
+        <TableView fx:id="tvEvents" prefHeight="250"
+                   style="-fx-background-radius: 10;">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+                <TableColumn fx:id="colTitle" text="Titre" prefWidth="130"/>
+                <TableColumn fx:id="colDescription" text="Description" prefWidth="180"/>
+                <TableColumn fx:id="colDate" text="Date" prefWidth="100"/>
+                <TableColumn fx:id="colLocation" text="Lieu" prefWidth="100"/>
+                <TableColumn fx:id="colStatus" text="Statut" prefWidth="90"/>
+                <TableColumn fx:id="colClubId" text="Club ID" prefWidth="65"/>
+            </columns>
+        </TableView>
+
+    </VBox>
+</AnchorPane>

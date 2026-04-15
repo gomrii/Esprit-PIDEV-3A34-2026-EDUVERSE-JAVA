@@ -1,0 +1,10 @@
+Test\Main.class
+Services\ServiceClub.class
+Services\ServiceEvent.class
+Utils\MyDb.class
+Entities\Event.class
+module-info.class
+Test\MainFX.class
+Entities\Club.class
+Controllers\EventController.class
+Interfaces\IService.class
