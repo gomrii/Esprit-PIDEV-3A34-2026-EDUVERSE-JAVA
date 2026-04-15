@@ -356,8 +356,7 @@ public class AdminDashboardController implements Initializable {
             try {
                 List<User> users = userService.rechercherUsers(
                     searchField.getText(), "", "id", "ASC");
-                new com.elearning.service.PdfExportService()
-                    .exporterListeUtilisateurs(users, fichier.getAbsolutePath());
+                pdfService.exporterListeUtilisateurs(users, fichier.getAbsolutePath());
                 afficherSucces("✅ PDF exporté avec succès : " + fichier.getName());
             } catch (Exception e) {
                 afficherErreur("❌ Erreur lors de l'export PDF : " + e.getMessage());
