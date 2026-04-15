@@ -64,7 +64,7 @@
                                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                                     <children>
                                         <Button onAction="#choisier" text="Choisir une image" style="-fx-background-color: transparent; -fx-border-color: #3C3362; -fx-border-radius: 15; -fx-text-fill: #3C3362; -fx-cursor: hand;" />
-                                        <Label text="Aucune image" textFill="#95a5a6" />
+                                        <Label text="" textFill="#95a5a6" />
                                     </children>
                                 </HBox>
 

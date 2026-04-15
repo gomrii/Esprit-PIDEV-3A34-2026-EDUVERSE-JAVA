@@ -160,25 +160,50 @@ public class AjouterCoursEnseignant {
     }
 
     @FXML
+
     void choisier(ActionEvent event) {
-        System.out.println("Clic détecté sur le bouton choisir !"); // <--- AJOUTE ÇA
+        System.out.println("Clic détecté sur le bouton choisir !");
 
         FileChooser fc = new FileChooser();
         fc.setTitle("Choisir l'image du cours");
 
-        // Essaye de passer le stage actuel au lieu de 'null'
+        // Filtres pour ne sélectionner que des formats d'images
+        fc.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Images", "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp")
+        );
+
+        // Récupération du stage actuel
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         File selectedFile = fc.showOpenDialog(stage);
 
         if (selectedFile != null) {
-            System.out.println("Fichier sélectionné : " + selectedFile.getAbsolutePath());
-            viewimage.setImage(new Image(selectedFile.toURI().toString()));
-            viewimage.setFitWidth(200);
-            viewimage.setFitHeight(200);
-            viewimage.setPreserveRatio(true);
-            this.pathImage = selectedFile.getAbsolutePath();
+            try {
+                // Conversion en URI pour une compatibilité maximale avec JavaFX
+                String imageUri = selectedFile.toURI().toString();
+                Image img = new Image(imageUri, true); // Chargement en arrière-plan
+
+                if (!img.isError()) {
+                    // Affichage dans l'aperçu
+                    viewimage.setImage(img);
+                    viewimage.setFitWidth(280); // Ajusté selon ton design FXML
+                    viewimage.setFitHeight(180);
+                    viewimage.setPreserveRatio(true);
+
+                    // ✅ CRITIQUE : On stocke l'URI pour que la TableView puisse la lire
+                    this.pathImage = imageUri;
+
+                    // Mise à jour du label à côté du bouton (si tu en as un)
+                    // imageLabel.setText(selectedFile.getName());
+
+                    System.out.println("Image chargée avec succès : " + imageUri);
+                } else {
+                    showError("Le fichier sélectionné n'est pas une image valide.");
+                }
+            } catch (Exception e) {
+                showError("Erreur lors du chargement : " + e.getMessage());
+            }
         } else {
-            System.out.println("Aucun fichier n'a été sélectionné.");
+            System.out.println("Sélection annulée.");
         }
     }
     @FXML

@@ -2,14 +2,14 @@ package Services;
 
 import Entities.Cours;
 import Entities.Chapitre;
-import Interfaces.Iservice;
+import Interfaces.IService;
 import Utils.MyDb;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceCours implements Iservice <Cours> {
+public class ServiceCours implements IService<Cours> {
 
     public Connection conn;
 
@@ -116,5 +116,15 @@ public class ServiceCours implements Iservice <Cours> {
             coursList.add(c);
         }
         return coursList;
+    }
+    public boolean exists(String titre) throws SQLException {
+        String query = "SELECT count(*) FROM cours WHERE title = ?";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setString(1, titre);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
+        }
+        return false;
     }
 }

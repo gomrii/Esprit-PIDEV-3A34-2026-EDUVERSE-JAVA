@@ -54,45 +54,74 @@ public class ModifierCoursAdmin {
     }
 
     public void setCours(Cours cours) {
-        this.cours = cours;
+         this.cours = cours;
 
-        title.setText(cours.getTitle());
-        category.setValue(cours.getCategory());
-        descrption.setText(cours.getDescrption());
-        level.setValue(cours.getLevel());
+         title.setText(cours.getTitle());
+         category.setValue(cours.getCategory());
+         descrption.setText(cours.getDescrption());
+         level.setValue(cours.getLevel());
 
-        // On récupère le chemin de l'image actuelle
-        this.pathImage = cours.getImage();
+         // On récupère le chemin de l'image actuelle
+         this.pathImage = cours.getImage();
 
-        // Affichage de l'image actuelle dans l'ImageView au chargement
-        if (pathImage != null && !pathImage.isEmpty() && !pathImage.equals("hello")) {
-            try {
-                File file = new File(pathImage.replace("\\", "/"));
-                if (file.exists()) {
-                    view.setImage(new Image(file.toURI().toString()));
-                }
-            } catch (Exception e) {
-                System.err.println("Erreur chargement image : " + e.getMessage());
-            }
-        }
-    }
+         // Affichage de l'image actuelle dans l'ImageView au chargement
+         if (pathImage != null && !pathImage.isEmpty() && !pathImage.equals("hello")) {
+             try {
+                 File file = new File(pathImage.replace("\\", "/"));
+                 if (file.exists()) {
+                     Image img = new Image(file.toURI().toString());
+                     if (!img.isError()) {
+                         view.setImage(img);
+                     }
+                 }
+             } catch (Exception e) {
+                 System.err.println("Erreur chargement image : " + e.getMessage());
+             }
+         }
+     }
+
 
     @FXML
     void choisirImage(ActionEvent event) {
         FileChooser fc = new FileChooser();
         fc.setTitle("Choisir l'image du cours");
+
+        // Filtres pour restreindre aux formats d'image
+        fc.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Images", "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp")
+        );
+
+        // Récupération du stage à partir de l'événement
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         File selectedFile = fc.showOpenDialog(stage);
 
         if (selectedFile != null) {
-            this.pathImage = selectedFile.getAbsolutePath();
-            view.setImage(new Image(selectedFile.toURI().toString()));
-            view.setFitWidth(200);
-            view.setFitHeight(200);
-            view.setPreserveRatio(true);
+            try {
+                // ✅ Utilisation de l'URI pour la compatibilité JavaFX (file:/C:/...)
+                String imageUri = selectedFile.toURI().toString();
+                Image img = new Image(imageUri, true); // true = chargement en arrière-plan
+
+                if (!img.isError()) {
+                    // On stocke l'URI dans la variable de classe pour la BDD
+                    this.pathImage = imageUri;
+
+                    // Mise à jour de l'aperçu (ImageView fx:id="view")
+                    view.setImage(img);
+                    view.setFitWidth(280); // Ajusté pour correspondre au design moderne
+                    view.setFitHeight(180);
+                    view.setPreserveRatio(true);
+
+                    System.out.println("Image mise à jour : " + imageUri);
+                } else {
+                    showError("Le fichier sélectionné n'est pas une image valide.");
+                }
+            } catch (Exception e) {
+                showError("Erreur lors du chargement de l'image : " + e.getMessage());
+            }
+        } else {
+            System.out.println("Aucune nouvelle image sélectionnée.");
         }
     }
-
     @FXML
     void edit(ActionEvent event) {
         ServiceCours service = new ServiceCours();

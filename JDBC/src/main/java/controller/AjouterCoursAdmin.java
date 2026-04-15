@@ -46,35 +46,15 @@ public class AjouterCoursAdmin {
     private ImageView viewimage;
     @FXML
     private Button addc;
+    // Au lieu de : private String pathImage = "default.png";
+    private String pathImage = ""; // On initialise à vide
 
 
 
-    // Assure-toi d'avoir cette variable au niveau de ta classe
-    private String pathImage = "default.png";
 
 
-    @FXML
-    void choisier(ActionEvent event) {
-        System.out.println("Clic détecté sur le bouton choisir !");
 
-        FileChooser fc = new FileChooser();
-        fc.setTitle("Choisir l'image du cours");
 
-        // Essaye de passer le stage actuel au lieu de 'null'
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        File selectedFile = fc.showOpenDialog(stage);
-
-        if (selectedFile != null) {
-            System.out.println("Fichier sélectionné : " + selectedFile.getAbsolutePath());
-            viewimage.setImage(new Image(selectedFile.toURI().toString()));
-            viewimage.setFitWidth(200);
-            viewimage.setFitHeight(200);
-            viewimage.setPreserveRatio(true);
-            this.pathImage = selectedFile.getAbsolutePath();
-        } else {
-            System.out.println("Aucun fichier n'a été sélectionné.");
-        }
-    }
     @FXML
     public void initialize() {
 
@@ -102,12 +82,37 @@ public class AjouterCoursAdmin {
         // On cible la colonne 'image'
 
     }
+    @FXML
+    void choisier(ActionEvent event) {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Choisir l'image du cours");
+
+        // Filtre pour n'accepter que des images
+        fc.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg")
+        );
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        File selectedFile = fc.showOpenDialog(stage);
+
+        if (selectedFile != null) {
+            // ✅ ON STOCK l'URI (file:/C:/...) au lieu du chemin brut
+            this.pathImage = selectedFile.toURI().toString();
+
+            // Affichage immédiat dans l'ImageView
+            viewimage.setImage(new Image(this.pathImage));
+
+            // Optionnel : Mettre à jour le label "Aucune image"
+            // Si tu as un Label fx:id="imageLabel"
+            // imageLabel.setText(selectedFile.getName());
+        }
+    }
 
     @FXML
     void add(ActionEvent event) {
 
 
-
+        String titreSaisi = title.getText().trim();
         ServiceCours service = new ServiceCours();
 
         Cours c = new Cours();
@@ -137,10 +142,15 @@ public class AjouterCoursAdmin {
                 showError("Le niveau est obligatoire.");
                 return;
             }
-            /*if (viewimage.getImage() == null) {
-                showError("L'image du cours est obligatoire.");
+            if (pathImage == null || pathImage.isEmpty()) {
+                showError("Veuillez choisir une image pour le cours.");
                 return;
-            }*/
+            }
+            // 2. TEST D'UNICITÉ
+            if (service.exists(titreSaisi)) {
+                showError("Erreur : Un cours avec le titre '" + titreSaisi + "' existe déjà !");
+                return; // On arrête l'exécution ici
+            }
             else {
                 service.add(c);
                 // 4. Alerte de succès (Attend le clic sur OK)
@@ -189,5 +199,6 @@ public class AjouterCoursAdmin {
 
 
         }
+
 
 }

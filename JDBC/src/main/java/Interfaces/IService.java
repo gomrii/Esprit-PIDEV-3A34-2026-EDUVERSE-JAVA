@@ -1,11 +1,9 @@
 package Interfaces;
 
-import Entities.Cours;
-
 import java.sql.SQLException;
 import java.util.List;
 
-public interface Iservice <T> {
+public interface IService<T> {
 
 
     void add(T t )throws SQLException;

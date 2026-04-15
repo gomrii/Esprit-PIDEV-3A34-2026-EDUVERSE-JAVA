@@ -1,14 +1,14 @@
 package Services;
 
 import Entities.Chapitre;
-import Interfaces.Iservice;
+import Interfaces.IService;
 import Utils.MyDb;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceChapitre implements Iservice<Chapitre> {
+public class ServiceChapitre implements IService<Chapitre> {
 
     private Connection conn;
 

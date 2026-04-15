@@ -52,41 +52,57 @@ public class ModifierCoursEnseignant {
     }
 
     public void setCours(Cours cours) {
-        this.cours = cours;
+         this.cours = cours;
 
-        title.setText(cours.getTitle());
-        category.setValue(cours.getCategory());
-        descrption.setText(cours.getDescrption());
-        level.setValue(cours.getLevel());
+         title.setText(cours.getTitle());
+         category.setValue(cours.getCategory());
+         descrption.setText(cours.getDescrption());
+         level.setValue(cours.getLevel());
 
-        // Récupérer l'image actuelle
-        this.pathImage = cours.getImage();
+         // Récupérer l'image actuelle
+         this.pathImage = cours.getImage();
 
-        // ✅ Afficher l'ancienne image au chargement
-        if (pathImage != null && !pathImage.isEmpty() && !pathImage.equals("hello")) {
-            try {
-                File file = new File(pathImage.replace("\\", "/"));
-                if (file.exists()) {
-                    view.setImage(new Image(file.toURI().toString()));
-                }
-            } catch (Exception e) {
-                System.err.println("Erreur chargement image : " + e.getMessage());
-            }
-        }
-    }
+         // ✅ Afficher l'ancienne image au chargement
+         if (pathImage != null && !pathImage.isEmpty() && !pathImage.equals("hello")) {
+             try {
+                 File file = new File(pathImage.replace("\\", "/"));
+                 if (file.exists()) {
+                     Image img = new Image(file.toURI().toString());
+                     if (!img.isError()) {
+                         view.setImage(img);
+                     }
+                 }
+             } catch (Exception e) {
+                 System.err.println("Erreur chargement image : " + e.getMessage());
+             }
+         }
+     }
 
     @FXML
     void choisirImage(ActionEvent event) {
         FileChooser fc = new FileChooser();
         fc.setTitle("Choisir une nouvelle image");
+        fc.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("Images", "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp")
+        );
+
         File selectedFile = fc.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
 
         if (selectedFile != null) {
-            this.pathImage = selectedFile.getAbsolutePath();
-            view.setImage(new Image(selectedFile.toURI().toString()));
-            view.setFitWidth(200);
-            view.setFitHeight(200);
-            view.setPreserveRatio(true);
+            try {
+                Image img = new Image(selectedFile.toURI().toString());
+                if (!img.isError()) {
+                    this.pathImage = selectedFile.getAbsolutePath();
+                    view.setImage(img);
+                    view.setFitWidth(200);
+                    view.setFitHeight(200);
+                    view.setPreserveRatio(true);
+                } else {
+                    showError("Erreur: Le fichier sélectionné n'est pas une image valide.");
+                }
+            } catch (Exception e) {
+                showError("Erreur lors du chargement de l'image: " + e.getMessage());
+            }
         }
     }
 

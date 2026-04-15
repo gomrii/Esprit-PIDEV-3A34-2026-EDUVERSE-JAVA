@@ -61,23 +61,30 @@ public class AffichierCoursAdmin {
 
         image.setCellFactory(param -> new TableCell<Cours, String>() {
             private final ImageView imageView = new ImageView();
+
             @Override
             protected void updateItem(String photoPath, boolean empty) {
                 super.updateItem(photoPath, empty);
-                if (empty || photoPath == null || photoPath.isEmpty() || photoPath.equalsIgnoreCase("hello")) {
+
+                // Si la cellule est vide ou si le chemin est invalide (comme "hello" ou "default.png")
+                if (empty || photoPath == null || photoPath.isBlank() || photoPath.equalsIgnoreCase("hello") || photoPath.equals("default.png")) {
                     setGraphic(null);
                 } else {
                     try {
-                        java.io.File file = new java.io.File(photoPath.replace("\\", "/"));
-                        if (file.exists()) {
-                            Image img = new Image(file.toURI().toString());
+                        // On tente de charger l'image
+                        Image img = new Image(photoPath, 80, 50, true, true, true);
+
+                        // Si l'image charge avec une erreur (fichier supprimé du disque par ex)
+                        if (img.isError()) {
+                            setGraphic(null); // On n'affiche rien du tout
+                        } else {
                             imageView.setImage(img);
-                            imageView.setFitWidth(80);
-                            imageView.setFitHeight(50);
-                            imageView.setPreserveRatio(true);
                             setGraphic(imageView);
-                        } else { setGraphic(null); }
-                    } catch (Exception e) { setGraphic(null); }
+                        }
+                    } catch (Exception e) {
+                        // En cas d'exception, on sécurise en n'affichant rien
+                        setGraphic(null);
+                    }
                 }
             }
         });

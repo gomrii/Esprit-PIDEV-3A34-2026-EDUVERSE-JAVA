@@ -94,21 +94,52 @@ public class AffichierCoursStudent {
         DropShadow ds = new DropShadow(15, Color.rgb(0, 0, 0, 0.1));
         ds.setOffsetY(5);
         card.setEffect(ds);
-
+         
+        // 1. Image du cours
         // 1. Image du cours
         ImageView img = new ImageView();
         img.setFitWidth(280);
         img.setFitHeight(150);
-        if (c.getImage() != null && !c.getImage().isEmpty()) {
+        img.setPreserveRatio(true);
+
+        boolean imageLoaded = false;
+        String path = c.getImage();
+
+        if (path != null && !path.isEmpty()) {
             try {
-                File file = new File(c.getImage());
-                if(file.exists()) img.setImage(new Image(file.toURI().toString()));
-            } catch (Exception e) { /* Image par défaut */ }
+                // Vérifie si c'est déjà une URI ou un chemin brut
+                String imageUri;
+                if (path.startsWith("file:/") || path.startsWith("http")) {
+                    imageUri = path;
+                } else {
+                    imageUri = new File(path).toURI().toString();
+                }
+
+                Image loadedImage = new Image(imageUri, true); // true pour chargement asynchrone
+
+                // On attend que l'image soit chargée pour vérifier les erreurs
+                loadedImage.errorProperty().addListener((obs, old, hasError) -> {
+                    if (hasError) {
+                        // Si erreur, on peut mettre une image par défaut ici
+                        System.err.println("Erreur de chargement pour : " + path);
+                    }
+                });
+
+                img.setImage(loadedImage);
+                imageLoaded = true;
+
+            } catch (Exception e) {
+                System.err.println("Erreur lors du traitement du chemin : " + e.getMessage());
+            }
         }
-        // Arrondi du haut de l'image
-        Rectangle clip = new Rectangle(280, 150);
-        clip.setArcWidth(30); clip.setArcHeight(30);
-        img.setClip(clip);
+
+// Si pas d'image chargée, on peut soit laisser vide, soit charger une ressource interne
+        if (!imageLoaded) {
+            // Optionnel : img.setImage(new Image(getClass().getResourceAsStream("/default-course.png")));
+        }
+        // Dans createCourseCard
+        img.setPreserveRatio(false); // On force le remplissage du rectangle 280x150
+        img.setSmooth(true);
 
         // 2. Conteneur d'informations
         VBox info = new VBox(10);
