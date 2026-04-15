@@ -25,7 +25,7 @@ public class MainApp extends Application {
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/elearning/gui/LoginView.fxml"));
 
-        Scene scene = new Scene(loader.load(), 500, 400);
+        Scene scene = new Scene(loader.load(), 900, 600);
 
         // Appliquer le CSS global
         scene.getStylesheets().add(
@@ -33,7 +33,7 @@ public class MainApp extends Application {
 
         primaryStage.setTitle("Eduverse — Gestion des Utilisateurs");
         primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
+        primaryStage.setResizable(true);
         primaryStage.show();
     }
 
