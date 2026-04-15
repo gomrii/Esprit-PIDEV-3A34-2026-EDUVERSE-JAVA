@@ -12,29 +12,45 @@ import javafx.stage.Stage;
  */
 public class MainApp extends Application {
 
+    private Stage primaryStage;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/com/elearning/gui/LoginView.fxml"));
-        Parent root = loader.load();
-
-        Scene scene = new Scene(root);
-
-        // Appliquer le CSS global
-        scene.getStylesheets().add(
-                getClass().getResource("/com/elearning/css/style.css").toExternalForm());
-
-        primaryStage.setTitle("Eduverse — Gestion des Utilisateurs");
-        primaryStage.setScene(scene);
-
-        // Les dimensions sont déjà définies dans chaque FXML (prefWidth/prefHeight)
+        this.primaryStage = primaryStage;
+        
+        // ✅ FORCER LES DIMENSIONS DÈS LE DÉPART
         primaryStage.setMinWidth(900);
         primaryStage.setMinHeight(600);
         primaryStage.setWidth(900);
         primaryStage.setHeight(600);
         primaryStage.setResizable(true);
-        primaryStage.centerOnScreen();
+        
+        loadScene("/com/elearning/gui/LoginView.fxml");
+        
         primaryStage.show();
+        primaryStage.centerOnScreen();
+    }
+
+    private void loadScene(String fxmlPath) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(
+                getClass().getResource("/com/elearning/css/style.css").toExternalForm());
+            
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Eduverse — e-Learning");
+            
+            // ✅ RÉAPPLIQUER LES DIMENSIONS APRÈS CHAQUE CHANGEMENT DE SCÈNE
+            primaryStage.setWidth(900);
+            primaryStage.setHeight(600);
+            primaryStage.centerOnScreen();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

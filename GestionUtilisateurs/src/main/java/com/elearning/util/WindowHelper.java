@@ -9,17 +9,14 @@ public class WindowHelper {
     
     public static void fixDimensions(Stage stage) {
         if (stage != null) {
+            // Forcer les dimensions de manière agressive
             stage.setMinWidth(WIDTH);
             stage.setMinHeight(HEIGHT);
+            stage.setMaxWidth(WIDTH);
+            stage.setMaxHeight(HEIGHT);
             stage.setWidth(WIDTH);
             stage.setHeight(HEIGHT);
             stage.centerOnScreen();
-        }
-    }
-    
-    public static void fixDimensions(javafx.scene.Scene scene) {
-        if (scene != null && scene.getWindow() != null) {
-            fixDimensions((Stage) scene.getWindow());
         }
     }
 }

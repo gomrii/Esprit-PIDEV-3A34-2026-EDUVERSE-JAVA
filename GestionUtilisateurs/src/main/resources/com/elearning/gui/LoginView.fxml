@@ -7,8 +7,7 @@
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.elearning.controller.LoginController"
-           styleClass="login-root"
-           prefWidth="900" prefHeight="600">
+           styleClass="login-root">
 
     <!-- Carte blanche centrée -->
     <HBox alignment="CENTER" spacing="0">

@@ -116,7 +116,9 @@ public class RegisterController {
             stage.setScene(scene);
             stage.setTitle("Eduverse — Connexion");
             
-            // ✅ FORCER LES DIMENSIONS
+            // ✅ FORCER LES DIMENSIONS (DEUX FOIS POUR ÊTRE SÛR)
+            stage.setWidth(900);
+            stage.setHeight(600);
             com.elearning.util.WindowHelper.fixDimensions(stage);
             
             stage.show();

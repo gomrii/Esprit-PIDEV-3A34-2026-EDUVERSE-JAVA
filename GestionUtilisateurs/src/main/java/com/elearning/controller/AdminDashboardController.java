@@ -381,7 +381,9 @@ public class AdminDashboardController implements Initializable {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
             
-            // ✅ FORCER LES DIMENSIONS
+            // ✅ FORCER LES DIMENSIONS (DEUX FOIS POUR ÊTRE SÛR)
+            stage.setWidth(900);
+            stage.setHeight(600);
             com.elearning.util.WindowHelper.fixDimensions(stage);
         } catch (IOException e) {
             e.printStackTrace();

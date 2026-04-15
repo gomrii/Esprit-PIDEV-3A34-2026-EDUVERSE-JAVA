@@ -13,7 +13,6 @@
 -->
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.elearning.controller.AdminDashboardController"
-            prefWidth="900" prefHeight="600"
             styleClass="main-container">
 
     <!-- ===================== SIDEBAR GAUCHE ===================== -->
