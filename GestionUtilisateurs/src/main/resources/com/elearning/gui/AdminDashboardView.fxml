@@ -103,6 +103,7 @@
                 <ComboBox fx:id="sortDirection" promptText="Ordre" styleClass="combo-field" prefWidth="80"/>
 
                 <Button text="➕ Ajouter" styleClass="btn-primary" onAction="#handleAjouter"/>
+                <Button text="✅ Approuver" styleClass="btn-success" onAction="#handleApprouver"/>
                 <Button text="📄 Export PDF" styleClass="btn-pdf" onAction="#handleExportPdf"/>
             </HBox>
 

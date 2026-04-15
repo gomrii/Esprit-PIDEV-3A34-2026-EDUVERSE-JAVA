@@ -38,6 +38,7 @@ public class RegisterController {
 
     @FXML
     public void initialize() {
+        fixSceneDimensions();
         // Créer le ToggleGroup programmatiquement
         roleGroup = new ToggleGroup();
         radioEtudiant.setToggleGroup(roleGroup);
@@ -49,6 +50,19 @@ public class RegisterController {
         errorLabel.setManaged(false);
         successLabel.setVisible(false);
         successLabel.setManaged(false);
+    }
+
+    private void fixSceneDimensions() {
+        javafx.application.Platform.runLater(() -> {
+            if (emailField != null && emailField.getScene() != null && emailField.getScene().getWindow() != null) {
+                Stage stage = (Stage) emailField.getScene().getWindow();
+                stage.setMinWidth(900);
+                stage.setMinHeight(600);
+                stage.setWidth(900);
+                stage.setHeight(600);
+                stage.centerOnScreen();
+            }
+        });
     }
 
     @FXML

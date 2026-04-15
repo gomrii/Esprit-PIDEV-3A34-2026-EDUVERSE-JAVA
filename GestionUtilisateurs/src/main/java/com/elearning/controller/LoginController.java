@@ -35,6 +35,24 @@ public class LoginController {
 
     private final UserService userService = new UserService();
 
+    @FXML
+    public void initialize() {
+        fixSceneDimensions();
+    }
+
+    private void fixSceneDimensions() {
+        javafx.application.Platform.runLater(() -> {
+            if (emailField.getScene() != null && emailField.getScene().getWindow() != null) {
+                Stage stage = (Stage) emailField.getScene().getWindow();
+                stage.setMinWidth(900);
+                stage.setMinHeight(600);
+                stage.setWidth(900);
+                stage.setHeight(600);
+                stage.centerOnScreen();
+            }
+        });
+    }
+
     /**
      * Appelé au clic sur "Se connecter".
      * Équivalent Symfony : AppAuthenticator::authenticate()
