@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.connexion3a36.Controller.TeacherModifierQuestionController"
+            style="-fx-padding: 20;">
+    
+    <VBox spacing="15" style="-fx-alignment: top-center;">
+        <Label text="Modifier une Question" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+        
+        <GridPane hgap="10" vgap="10">
+            <Label text="Question:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextArea fx:id="questionTA" GridPane.rowIndex="0" GridPane.columnIndex="1" style="-fx-min-width: 400; -fx-min-height: 150;"/>
+        </GridPane>
+        
+        <HBox spacing="10" style="-fx-padding-top: 20;">
+            <Button text="Enregistrer" onAction="#modifierQuestion" styleClass="primary-button"/>
+            <Button text="Annuler" onAction="#handleBack" styleClass="secondary-button"/>
+        </HBox>
+    </VBox>
+</AnchorPane>

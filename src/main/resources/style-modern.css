@@ -1,0 +1,87 @@
+/* Stronger modern JavaFX stylesheet - refined visuals, clearer colors, selection-blue */
+
+/* Palette */
+/* primary: #066ac9  dark blue: #1d3b53  success: #0cbc87  warning: #f7c32e  danger: #d6293e */
+
+.root {
+    -fx-font-family: "Segoe UI", "Roboto", "Heebo", "System";
+    -fx-font-size: 13px;
+    -fx-background-color: linear-gradient(to bottom, #f4f6f8 0%, #eef3f7 100%);
+    -fx-text-fill: #22272a;
+}
+
+.AnchorPane, .VBox, .HBox, .BorderPane, .GridPane { -fx-background-color: transparent; }
+
+.section-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 14;
+    -fx-padding: 22;
+    -fx-effect: dropshadow(gaussian, rgba(29,59,83,0.08), 20, 0.0, 0, 6);
+}
+
+/* Home card */
+.home-card { -fx-max-width: 780px; -fx-padding: 30; }
+.page-title { -fx-font-size: 28px; -fx-font-weight: 800; -fx-text-fill: #08355f; }
+.page-subtitle { -fx-font-size: 14px; -fx-text-fill: #57656a; -fx-padding: 6 0 14 0; }
+
+/* Buttons */
+.button { -fx-cursor: hand; -fx-background-radius: 10; -fx-border-radius: 10; -fx-font-weight: 700; }
+.large-button { -fx-padding: 12 28; -fx-font-size: 14px; }
+
+.primary-button { -fx-background-color: linear-gradient(#0b7edb, #066ac9); -fx-text-fill: white; -fx-effect: dropshadow(gaussian, rgba(6,106,201,0.18), 8, 0, 0, 3); }
+.primary-button:hover { -fx-background-color: linear-gradient(#1292f0,#0a6fb5); }
+.secondary-button { -fx-background-color: #ffffff; -fx-border-color: #dce6ef; -fx-text-fill: #08355f; }
+.secondary-button:hover { -fx-background-color: #f7fbff; }
+
+.add-button { -fx-background-color: linear-gradient(#3fb0ff,#066ac9); -fx-text-fill: white; }
+.edit-button { -fx-background-color: linear-gradient(#6ec9ff,#1d8be6); -fx-text-fill: white; }
+.delete-button { -fx-background-color: linear-gradient(#ff7585,#d6293e); -fx-text-fill: white; }
+.validate-button { -fx-background-color: linear-gradient(#16d29b,#0cbc87); -fx-text-fill: white; }
+.reject-button { -fx-background-color: linear-gradient(#ffd77a,#f7c32e); -fx-text-fill: #08355f; }
+.refresh-button { -fx-background-color: linear-gradient(#f0f6fb,#e6f0fb); -fx-text-fill: #08355f; -fx-border-color: #dde9f4; }
+.search-button { -fx-background-color: linear-gradient(#e9f5ff,#d6edff); -fx-text-fill: #08355f; -fx-border-color: #cfe8ff; }
+.back-button { -fx-background-color: transparent; -fx-text-fill: #57656a; }
+
+.button:hover { -fx-opacity: 0.95; }
+
+/* Inputs */
+.text-field, .password-field, .text-area, .combo-box, .date-picker { -fx-background-color: #ffffff; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e6ebef; -fx-padding: 9 12; }
+.text-field:focused { -fx-border-color: #066ac9; -fx-effect: dropshadow(gaussian, rgba(6,106,201,0.10), 6, 0, 0, 2); }
+.search-field.large-search { -fx-pref-width: 420px; }
+
+/* Tool bar layout */
+.tool-bar { -fx-background-color: transparent; -fx-padding: 10 12; -fx-spacing: 8; }
+.tool-bar .search-field { -fx-background-color: white; -fx-border-color: #ddeffb; -fx-padding: 8 10; }
+
+/* Table styling */
+.table-view.modern-table { -fx-background-color: #ffffff; -fx-background-radius: 12; -fx-padding: 8; -fx-effect: dropshadow(gaussian, rgba(3,38,76,0.06), 14, 0, 0, 6); }
+.table-view.modern-table .column-header-background { -fx-background-color: linear-gradient(#fcfeff,#f3f9ff); -fx-padding: 8 10; }
+.table-view .column-header .label { -fx-text-fill: #08355f; -fx-font-weight: 700; -fx-font-size: 13px; }
+.table-view.modern-table { -fx-fixed-cell-size: 48px; }
+.table-row-cell { -fx-padding: 10 12; }
+.table-row-cell:odd { -fx-background-color: #fbfeff; }
+.table-row-cell:even { -fx-background-color: transparent; }
+.table-row-cell:hover { -fx-background-color: rgba(6,106,201,0.06); }
+
+/* Selection color: modern blue */
+.table-row-cell:selected {
+    -fx-background-color: linear-gradient(#0b74d1,#066ac9);
+}
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: white;
+}
+.table-row-cell:focused { -fx-background-color: linear-gradient(#0b74d1,#066ac9); }
+
+/* Header separator */
+.table-view .column-header-background { -fx-border-color: transparent transparent #e6f0fb transparent; -fx-border-width: 0 0 1 0; }
+
+/* Alerts */
+.alert-success { -fx-background-color: linear-gradient(#eafff4,#eefaf0); -fx-border-color: rgba(12,188,135,0.25); }
+.alert-error { -fx-background-color: linear-gradient(#fff4f6,#fff1f2); -fx-border-color: rgba(214,41,62,0.18); }
+
+/* Minor utilities */
+.h-spacer { -fx-pref-width: 12; }
+.muted { -fx-text-fill: #6b7377; }
+
+/* Responsive */
+@media screen and (max-width:800px) { .search-field.large-search { -fx-pref-width: 180px; } }

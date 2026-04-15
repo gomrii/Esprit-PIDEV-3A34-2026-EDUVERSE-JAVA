@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.connexion3a36.Controller.ListeQuizController">
+  <top>
+    <VBox>
+      <ToolBar styleClass="tool-bar">
+        <TextField fx:id="searchTF" promptText="Rechercher..." styleClass="search-field large-search" />
+        <Button text="Rechercher" fx:id="searchButton" onAction="#handleSearch" styleClass="search-button" />
+        <ChoiceBox fx:id="sortChoice" style="-fx-min-width: 180;" />
+        <Button text="Rafraîchir" fx:id="refreshButton" onAction="#handleRefresh" styleClass="refresh-button" />
+        <Separator />
+        <Button text="Ajouter" fx:id="addButton" onAction="#handleAdd" styleClass="add-button" />
+        <Button text="Modifier" fx:id="editButton" onAction="#handleEdit" styleClass="edit-button" />
+        <Button text="Supprimer" fx:id="deleteButton" onAction="#handleDelete" styleClass="delete-button" />
+        <Button text="Valider" fx:id="validateButton" onAction="#handleValidate" styleClass="validate-button" />
+        <Button text="Rejeter" fx:id="rejectButton" onAction="#handleReject" styleClass="reject-button" />
+        <Region fx:id="spacer" />
+        <Button text="Retour" fx:id="backButton" onAction="#handleBack" styleClass="back-button" />
+      </ToolBar>
+      <HBox spacing="8">
+        <Label fx:id="alertSuccess" styleClass="alert-success" visible="false" managed="false" />
+        <Label fx:id="alertError" styleClass="alert-error" visible="false" managed="false" />
+      </HBox>
+    </VBox>
+  </top>
+  <center>
+    <TableView fx:id="quizzesTable" styleClass="modern-table">
+      <columns>
+        <TableColumn fx:id="colId" text="ID" />
+        <TableColumn fx:id="colTitle" text="Titre" />
+        <TableColumn fx:id="colStatus" text="Statut" />
+      </columns>
+    </TableView>
+  </center>
+  <bottom>
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+      <padding>
+        <Insets top="10" right="10" bottom="10" left="10" />
+      </padding>
+      <children>
+        <Label text="Sélection:" />
+        <Label fx:id="selectionLabel" text="Aucun" />
+      </children>
+    </HBox>
+  </bottom>
+</BorderPane>

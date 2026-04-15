@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.connexion3a36.Controller.TeacherQuestionListController">
+    <top>
+        <VBox style="-fx-background-color: #2c3e50; -fx-padding: 20;">
+            <Label fx:id="quizTitleLabel" style="-fx-text-fill: white; -fx-font-size: 20; -fx-font-weight: bold;"/>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="10" style="-fx-padding: 15;">
+            <HBox spacing="10" style="-fx-alignment: center-left;">
+                <TextField fx:id="searchTF" promptText="Rechercher..." style="-fx-min-width: 220;"/>
+                <Button text="Rechercher" onAction="#handleSearch"/>
+                <ChoiceBox fx:id="sortChoice" style="-fx-min-width: 180;"/>
+                <Button text="Actualiser" onAction="#handleRefresh"/>
+            </HBox>
+
+            <TableView fx:id="questionsTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                    <TableColumn fx:id="colQuestion" text="Question" prefWidth="500"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" style="-fx-padding: 15;">
+            <Button text="Ajouter" onAction="#handleAdd" styleClass="primary-button"/>
+            <Button text="Modifier" onAction="#handleEdit" styleClass="primary-button"/>
+            <Button text="Supprimer" onAction="#handleDelete" styleClass="danger-button"/>
+            <Button text="Gérer Réponses" onAction="#handleManageAnswers" styleClass="success-button"/>
+            <Button text="Retour" onAction="#handleBack" style="-fx-margin-left: 50;"/>
+        </HBox>
+    </bottom>
+</BorderPane>
