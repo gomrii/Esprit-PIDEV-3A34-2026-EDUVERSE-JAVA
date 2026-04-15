@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!-- Vue simplifiée pour les Étudiants -->
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.elearning.controller.SimpleViewController"
+      spacing="20" alignment="CENTER"
+      prefWidth="600" prefHeight="400"
+      style="-fx-background-color: #f4f6f9; -fx-padding: 40;">
+
+    <Label text="🎓 Espace Étudiant" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+    <Label fx:id="welcomeLabel" text="Bienvenue !"
+           style="-fx-font-size: 16px; -fx-text-fill: #555;"/>
+    <Label text="Accès : Catalogue de formations, quiz, résultats."
+           style="-fx-font-size: 13px; -fx-text-fill: #777;"/>
+    <Button text="🚪 Déconnexion" onAction="#handleDeconnexion"
+            style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 8 20 8 20; -fx-background-radius: 5;"/>
+</VBox>
