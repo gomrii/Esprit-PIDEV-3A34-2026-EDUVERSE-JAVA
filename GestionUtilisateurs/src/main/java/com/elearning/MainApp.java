@@ -24,8 +24,14 @@ public class MainApp extends Application {
         // Charger la vue de login (première page affichée)
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/elearning/gui/LoginView.fxml"));
+        Parent root = loader.load();
+        
+        // Forcer les dimensions pour éviter la déformation
+        // (Comme demandé dans "Problème 1")
+        root.setPrefWidth(900);
+        root.setPrefHeight(600);
 
-        Scene scene = new Scene(loader.load(), 900, 600);
+        Scene scene = new Scene(root);
 
         // Appliquer le CSS global
         scene.getStylesheets().add(
@@ -33,7 +39,13 @@ public class MainApp extends Application {
 
         primaryStage.setTitle("Eduverse — Gestion des Utilisateurs");
         primaryStage.setScene(scene);
+        
+        primaryStage.setMinWidth(900);
+        primaryStage.setMinHeight(600);
+        primaryStage.setWidth(900);
+        primaryStage.setHeight(600);
         primaryStage.setResizable(true);
+        primaryStage.centerOnScreen();
         primaryStage.show();
     }
 

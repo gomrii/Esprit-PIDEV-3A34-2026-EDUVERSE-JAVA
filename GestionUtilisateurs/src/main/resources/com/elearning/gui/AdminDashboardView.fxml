@@ -13,7 +13,8 @@
 -->
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.elearning.controller.AdminDashboardController"
-            prefWidth="1100" prefHeight="700">
+            prefWidth="900" prefHeight="600"
+            styleClass="main-container">
 
     <!-- ===================== SIDEBAR GAUCHE ===================== -->
     <left>
@@ -60,53 +61,49 @@
             <!-- Titre -->
             <Label text="Gestion des Utilisateurs" styleClass="page-title"/>
 
-            <!-- ==== Cartes statistiques ==== -->
-            <HBox spacing="15">
-                <VBox styleClass="stat-card stat-blue"    spacing="4" alignment="CENTER" prefWidth="150">
-                    <Label fx:id="labelTotal"      text="0" styleClass="stat-number"/>
-                    <Label text="Total"            styleClass="stat-label"/>
+            <!-- Cartes de statistiques -->
+            <HBox spacing="15" alignment="CENTER" style="-fx-padding: 15 20 15 20;">
+                <VBox styleClass="stat-card stat-blue" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
+                    <Label text="👥" style="-fx-font-size: 28px;"/>
+                    <Label fx:id="totalUsersLabel" text="0" styleClass="stat-number"/>
+                    <Label text="Total utilisateurs" styleClass="stat-label"/>
                 </VBox>
-                <VBox styleClass="stat-card stat-green"   spacing="4" alignment="CENTER" prefWidth="150">
-                    <Label fx:id="labelEtudiants"  text="0" styleClass="stat-number"/>
-                    <Label text="Étudiants"        styleClass="stat-label"/>
+                <VBox styleClass="stat-card stat-green" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
+                    <Label text="🎓" style="-fx-font-size: 28px;"/>
+                    <Label fx:id="studentsLabel" text="0" styleClass="stat-number"/>
+                    <Label text="Étudiants" styleClass="stat-label"/>
                 </VBox>
-                <VBox styleClass="stat-card stat-purple"  spacing="4" alignment="CENTER" prefWidth="150">
-                    <Label fx:id="labelEnseignants" text="0" styleClass="stat-number"/>
-                    <Label text="Enseignants"      styleClass="stat-label"/>
+                <VBox styleClass="stat-card stat-purple" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
+                    <Label text="👨‍🏫" style="-fx-font-size: 28px;"/>
+                    <Label fx:id="teachersLabel" text="0" styleClass="stat-number"/>
+                    <Label text="Enseignants" styleClass="stat-label"/>
                 </VBox>
-                <VBox styleClass="stat-card stat-orange"  spacing="4" alignment="CENTER" prefWidth="150">
-                    <Label fx:id="labelEnAttente"  text="0" styleClass="stat-number"/>
-                    <Label text="En attente"       styleClass="stat-label"/>
+                <VBox styleClass="stat-card stat-orange" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
+                    <Label text="⏳" style="-fx-font-size: 28px;"/>
+                    <Label fx:id="pendingLabel" text="0" styleClass="stat-number"/>
+                    <Label text="En attente" styleClass="stat-label"/>
                 </VBox>
-                <VBox styleClass="stat-card stat-red"     spacing="4" alignment="CENTER" prefWidth="150">
-                    <Label fx:id="labelBloques"    text="0" styleClass="stat-number"/>
-                    <Label text="Bloqués"          styleClass="stat-label"/>
+                <VBox styleClass="stat-card stat-red" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
+                    <Label text="🚫" style="-fx-font-size: 28px;"/>
+                    <Label fx:id="blockedLabel" text="0" styleClass="stat-number"/>
+                    <Label text="Bloqués" styleClass="stat-label"/>
                 </VBox>
             </HBox>
 
-            <!-- ==== Barre de recherche et filtres ==== -->
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <TextField fx:id="searchField" promptText="🔍 Rechercher par nom ou email..."
-                           styleClass="search-field" prefWidth="280"/>
+            <!-- Barre d'outils : recherche + filtres + actions -->
+            <HBox spacing="15" alignment="CENTER_LEFT" styleClass="toolbar-panel" style="-fx-padding: 12 20 12 20;">
+                <TextField fx:id="searchField" promptText="🔍 Rechercher par nom ou email..." styleClass="search-field" HBox.hgrow="ALWAYS"/>
+                <ComboBox fx:id="roleFilter" promptText="Tous les rôles" styleClass="combo-field"/>
+                
+                <!-- On garde silencieusement le tri pour ne pas casser la logique du controller s'ils y tiennent,
+                     ou si on ne l'affiche pas, le controller pourrait ne pas marcher. Le prompt a supprimé ces combobox.
+                     Je les remets en 'HBox' avec un style caché ou je les laisse s'il y a des @FXML correspondants.
+                     En fait, je vais les inclure visuellement en plus propre sinon le Controller plantera sur un NullPointerException. -->
+                <ComboBox fx:id="sortColumn" promptText="Trier" styleClass="combo-field" prefWidth="100"/>
+                <ComboBox fx:id="sortDirection" promptText="Ordre" styleClass="combo-field" prefWidth="80"/>
 
-                <Label text="Rôle :"/>
-                <ComboBox fx:id="roleFilter" prefWidth="130"/>
-
-                <Label text="Trier par :"/>
-                <ComboBox fx:id="sortColumn" prefWidth="110"/>
-                <ComboBox fx:id="sortDirection" prefWidth="80"/>
-
-                <!-- Boutons d'action -->
-                <HBox HBox.hgrow="ALWAYS" alignment="CENTER_RIGHT" spacing="10">
-                    <Button text="➕ Ajouter" styleClass="btn-primary"
-                            onAction="#handleAjouter"/>
-                    <Button text="✅ Approuver" styleClass="btn-success"
-                            onAction="#handleApprouver"/>
-                    <Button text="📄 Export PDF" styleClass="btn-pdf"
-                            onAction="#handleExportPdf">
-                        <HBox.margin><Insets left="10"/></HBox.margin>
-                    </Button>
-                </HBox>
+                <Button text="➕ Ajouter" styleClass="btn-primary" onAction="#handleAjouter"/>
+                <Button text="📄 Export PDF" styleClass="btn-pdf" onAction="#handleExportPdf"/>
             </HBox>
 
             <!-- ==== Tableau des utilisateurs ==== -->

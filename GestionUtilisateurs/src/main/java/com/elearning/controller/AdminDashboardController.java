@@ -64,12 +64,11 @@ public class AdminDashboardController implements Initializable {
     // -------------------------------------------------------
     // Labels statistiques (dashboard)
     // -------------------------------------------------------
-    @FXML private Label labelTotal;
-    @FXML private Label labelEtudiants;
-    @FXML private Label labelEnseignants;
-    @FXML private Label labelActifs;
-    @FXML private Label labelBloques;
-    @FXML private Label labelEnAttente;
+    @FXML private Label totalUsersLabel;
+    @FXML private Label studentsLabel;
+    @FXML private Label teachersLabel;
+    @FXML private Label pendingLabel;
+    @FXML private Label blockedLabel;
     @FXML private Label labelNomAdmin;
 
     // Services injectés manuellement (pas d'IoC container en Java pur)
@@ -95,7 +94,7 @@ public class AdminDashboardController implements Initializable {
         chargerUtilisateurs();
 
         // 4. Afficher les statistiques
-        actualiserStatistiques();
+        updateStats();
 
         // 5. Afficher le nom de l'admin connecté
         User admin = SessionManager.getInstance().getUtilisateurConnecte();
@@ -199,7 +198,7 @@ public class AdminDashboardController implements Initializable {
                             User admin = SessionManager.getInstance().getUtilisateurConnecte();
                             userService.supprimerUser(user.getId(), admin.getId());
                             chargerUtilisateurs();
-                            actualiserStatistiques();
+                            updateStats();
                             afficherSucces("Utilisateur supprimé avec succès.");
                         } catch (UserService.ValidationException ex) {
                             afficherErreur(ex.getMessage());
@@ -212,7 +211,7 @@ public class AdminDashboardController implements Initializable {
                     User user = getTableView().getItems().get(getIndex());
                     userService.toggleBloquer(user.getId());
                     chargerUtilisateurs();
-                    actualiserStatistiques();
+                    updateStats();
                 });
             }
 
@@ -264,13 +263,12 @@ public class AdminDashboardController implements Initializable {
     /**
      * Met à jour les compteurs statistiques du dashboard.
      */
-    private void actualiserStatistiques() {
-        if (labelTotal != null)       labelTotal.setText(String.valueOf(userService.compterTotal()));
-        if (labelEtudiants != null)   labelEtudiants.setText(String.valueOf(userService.compterEtudiants()));
-        if (labelEnseignants != null) labelEnseignants.setText(String.valueOf(userService.compterEnseignants()));
-        if (labelActifs != null)      labelActifs.setText(String.valueOf(userService.compterActifs()));
-        if (labelBloques != null)     labelBloques.setText(String.valueOf(userService.compterBloques()));
-        if (labelEnAttente != null)   labelEnAttente.setText(String.valueOf(userService.compterEnAttente()));
+    private void updateStats() {
+        if (totalUsersLabel != null) totalUsersLabel.setText(String.valueOf(userService.compterTotal()));
+        if (studentsLabel != null)   studentsLabel.setText(String.valueOf(userService.compterEtudiants()));
+        if (teachersLabel != null)   teachersLabel.setText(String.valueOf(userService.compterEnseignants()));
+        if (pendingLabel != null)    pendingLabel.setText(String.valueOf(userService.compterEnAttente()));
+        if (blockedLabel != null)    blockedLabel.setText(String.valueOf(userService.compterBloques()));
     }
 
     // -------------------------------------------------------
@@ -300,7 +298,7 @@ public class AdminDashboardController implements Initializable {
             formController.setUser(user);
             formController.setOnSaveCallback(() -> {
                 chargerUtilisateurs();
-                actualiserStatistiques();
+                updateStats();
             });
 
             // Ouvrir en fenêtre modale (bloque l'accès à la fenêtre principale)
@@ -331,7 +329,7 @@ public class AdminDashboardController implements Initializable {
         }
         if (userService.approuverUser(selected.getId())) {
             chargerUtilisateurs();
-            actualiserStatistiques();
+            updateStats();
             afficherSucces(selected.getFullName() + " a été approuvé(e).");
         }
     }
@@ -374,14 +372,17 @@ public class AdminDashboardController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/elearning/gui/LoginView.fxml"));
-            Scene scene = new Scene(loader.load(), 500, 400);
+            Scene scene = new Scene(loader.load(), 900, 600);
             scene.getStylesheets().add(
                     getClass().getResource("/com/elearning/css/style.css").toExternalForm());
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
-            stage.setWidth(500);
-            stage.setHeight(400);
+            stage.setResizable(true);
+            stage.setMinWidth(900);
+            stage.setMinHeight(600);
+            stage.setWidth(900);
+            stage.setHeight(600);
             stage.centerOnScreen();
         } catch (IOException e) {
             e.printStackTrace();

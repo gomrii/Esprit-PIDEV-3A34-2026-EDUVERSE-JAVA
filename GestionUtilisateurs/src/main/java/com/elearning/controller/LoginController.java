@@ -124,14 +124,16 @@ public class LoginController {
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root, 500, 620);
+            Scene scene = new Scene(root, 900, 600);
             scene.getStylesheets().add(getClass().getResource("/com/elearning/css/style.css").toExternalForm());
 
             stage.setScene(scene);
             stage.setTitle("Eduverse — Inscription");
-            stage.setResizable(false);
-            stage.setWidth(500);
-            stage.setHeight(620);
+            stage.setResizable(true);
+            stage.setMinWidth(900);
+            stage.setMinHeight(600);
+            stage.setWidth(900);
+            stage.setHeight(600);
             stage.centerOnScreen();
 
         } catch (IOException e) {
