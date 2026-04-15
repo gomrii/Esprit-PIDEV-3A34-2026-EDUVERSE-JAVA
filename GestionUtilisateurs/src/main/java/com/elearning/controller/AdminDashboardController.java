@@ -1,4 +1,4 @@
-package com.elearning.controller;
+﻿package com.elearning.controller;
 
 import com.elearning.entity.User;
 import com.elearning.service.UserService;
@@ -33,11 +33,9 @@ import java.util.ResourceBundle;
 /**
  * AdminDashboardController — Contrôleur principal du tableau de bord Admin.
  *
- * Équivalent Symfony : AdminController (src/Controller/Admin/AdminController.php).
  *
  * Implements Initializable → la méthode initialize() est appelée
  * automatiquement par JavaFX une fois que le FXML est chargé.
- * Équivalent Symfony : __construct() + injections de dépendances.
  */
 public class AdminDashboardController implements Initializable {
 
@@ -76,7 +74,6 @@ public class AdminDashboardController implements Initializable {
     private final com.elearning.service.PdfService pdfService = new com.elearning.service.PdfService();
 
     // Liste observable : quand elle change, la TableView se met à jour automatiquement
-    // Équivalent Twig : la variable passée à render() qui alimente le tableau HTML
     private final ObservableList<User> listeUsers = FXCollections.observableArrayList();
 
     // -------------------------------------------------------
@@ -103,7 +100,6 @@ public class AdminDashboardController implements Initializable {
         }
 
         // 6. Recherche dynamique : recharger à chaque frappe
-        // Équivalent Symfony : la recherche se fait via ?q= en GET
         searchField.textProperty().addListener((obs, oldVal, newVal) -> chargerUtilisateurs());
         roleFilter.valueProperty().addListener((obs, oldVal, newVal)  -> chargerUtilisateurs());
         sortColumn.valueProperty().addListener((obs, oldVal, newVal)  -> chargerUtilisateurs());
@@ -162,7 +158,6 @@ public class AdminDashboardController implements Initializable {
 
     /**
      * Ajoute une colonne avec des boutons d'action pour chaque ligne.
-     * Équivalent Symfony/Twig : les boutons dans le tableau HTML
      * {% for user in users %} <a href="...edit/{{ user.id }}">Modifier</a> {% endfor %}
      */
     private void ajouterColonneActions() {
@@ -187,8 +182,6 @@ public class AdminDashboardController implements Initializable {
                 // === Bouton SUPPRIMER ===
                 btnSupprimer.setOnAction(e -> {
                     User user = getTableView().getItems().get(getIndex());
-
-                    // Confirmation (équivalent JS confirm() dans Twig)
                     Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
                     confirm.setTitle("Confirmation");
                     confirm.setHeaderText("Supprimer " + user.getFullName() + " ?");
@@ -237,7 +230,6 @@ public class AdminDashboardController implements Initializable {
 
     /**
      * Recharge la liste depuis la BDD en appliquant les filtres actifs.
-     * Équivalent Symfony : AdminController::renderUserList()
      */
     private void chargerUtilisateurs() {
         String search    = searchField != null ? searchField.getText() : "";
@@ -422,3 +414,4 @@ public class AdminDashboardController implements Initializable {
         alert.showAndWait();
     }
 }
+

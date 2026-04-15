@@ -1,4 +1,4 @@
-package com.elearning.service;
+﻿package com.elearning.service;
 
 import com.elearning.entity.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
  *   → Le DAO ne contient que des requêtes SQL, difficiles à tester sans BDD.
  *   → Le Service contient la logique métier : c'est ce qui a de la valeur à tester.
  *
- * Équivalent Symfony : tests dans tests/Service/UserServiceTest.php
  */
 class UserServiceTest {
 
@@ -173,3 +172,4 @@ class UserServiceTest {
         assertNotNull(service.validerTelephone("123"));         // trop court
     }
 }
+

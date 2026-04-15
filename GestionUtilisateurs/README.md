@@ -1,5 +1,4 @@
-# 🎓 Module Gestion des Utilisateurs — JavaFX + JDBC
-## Projet Eduverse · Migration Symfony → Java
+﻿# 🎓 Module Gestion des Utilisateurs — JavaFX + JDBC
 
 ---
 
@@ -17,14 +16,10 @@ GestionUtilisateurs/
     │   ├── MainApp.java              ← Point d'entrée (lance l'application JavaFX)
     │   │
     │   ├── entity/
-    │   │   └── User.java             ← Entité POJO (≈ Entity Symfony)
     │   │
     │   ├── dao/
-    │   │   └── UserDAO.java          ← Accès BDD JDBC (≈ UserRepository Symfony)
     │   │
     │   ├── service/
-    │   │   ├── UserService.java      ← Logique métier + validation (≈ Services Symfony)
-    │   │   └── PdfExportService.java ← Export PDF avec iText (≈ PdfService Symfony)
     │   │
     │   ├── controller/
     │   │   ├── LoginController.java           ← Page connexion
@@ -156,9 +151,7 @@ Ou dans IntelliJ :
 
 ---
 
-## 🏗️ Architecture — Tableau de correspondance Symfony ↔ Java
 
-| Couche | Symfony | Java (ce projet) |
 |---|---|---|
 | **Entité** | `src/Entity/User.php` avec annotations ORM | `entity/User.java` POJO (pas d'ORM) |
 | **Base de données** | Doctrine (ORM automatique) | JDBC + `PreparedStatement` manuel |
@@ -167,7 +160,6 @@ Ou dans IntelliJ :
 | **Controller** | `AdminController extends AbstractController` | `AdminDashboardController implements Initializable` |
 | **Vue** | Templates Twig `.html.twig` | Fichiers FXML `.fxml` |
 | **CSS** | Fichiers `.css` dans `public/assets/` | Fichiers `.css` dans `resources/css/` |
-| **Session** | Session PHP Symfony | `SessionManager` Singleton |
 | **Sécurité** | `UserChecker`, `AppAuthenticator` | `UserService.authentifier()` |
 | **Formulaire** | `FormType` + `handleRequest()` | Champs `@FXML` + listener `setOnAction()` |
 | **Validation** | Annotations `#[Assert\...]` | `userService.validerCreation()` |
@@ -247,7 +239,6 @@ private void handleExportPdf(ActionEvent event) {
 | Contrôle de saisie | 2 | ✅ Tous les contrôles + unicité email + messages d'erreur |
 | Fonctionnalités supplémentaires | 1 | ✅ Recherche, tri, stats, export PDF, bloquer/approuver |
 | Interface graphique | 4 | ✅ Toutes les vues réalisées, navigation fonctionnelle, CSS soigné |
-| Compréhension du code | 7 | ✅ Commentaires détaillés, liens Symfony dans chaque classe |
 | Git collaboratif | 2 | → Committer régulièrement sur votre branche ! |
 | **TOTAL** | **20** | |
 
@@ -273,3 +264,4 @@ git add .
 git commit -m "fix: validation email en temps réel"
 git push
 ```
+

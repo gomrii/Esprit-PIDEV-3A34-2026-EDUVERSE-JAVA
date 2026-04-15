@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
@@ -6,7 +6,6 @@
 <!--
   UserFormView.fxml — Formulaire d'ajout/modification d'utilisateur
 
-  Équivalent Symfony : templates/admin/users/form.html.twig
   Réutilisé pour CREATE et UPDATE (le controller adapte le comportement).
 -->
 <VBox xmlns:fx="http://javafx.com/fxml"
@@ -93,3 +92,4 @@
     </HBox>
 
 </VBox>
+

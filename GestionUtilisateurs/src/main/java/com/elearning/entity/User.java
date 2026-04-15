@@ -1,12 +1,10 @@
-package com.elearning.entity;
+﻿package com.elearning.entity;
 
 import java.time.LocalDateTime;
 
 /**
  * Entité User — POJO (Plain Old Java Object).
  *
- * Équivalent Symfony : src/Entity/User.php
- * En Java, pas de Doctrine : les colonnes SQL sont gérées manuellement via JDBC.
  *
  * Contient UNIQUEMENT les données + getters/setters.
  * Aucune logique métier ici (c'est le rôle du Service).
@@ -75,7 +73,6 @@ public class User {
 
     // -------------------------------------------------------
     // Getters & Setters
-    // Équivalent PHP : les méthodes getXxx() / setXxx()
     // -------------------------------------------------------
 
     public int getId()                          { return id; }
@@ -123,3 +120,4 @@ public class User {
                 + "', role='" + role + "', statut='" + statut + "'}";
     }
 }
+

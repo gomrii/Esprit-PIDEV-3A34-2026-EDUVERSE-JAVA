@@ -1,4 +1,4 @@
-package com.elearning.service;
+﻿package com.elearning.service;
 
 import com.elearning.dao.UserDAO;
 import com.elearning.entity.User;
@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
  * RÔLE : Valider les données, appliquer les règles métier,
  *        puis déléguer au DAO pour la persistance.
  *
- * Équivalent Symfony : Services (PasswordStrengthService, etc.)
  *                    + logique dans les Form Types + UserChecker.
  *
  * Le Service NE CONNAÎT PAS JavaFX (pas d'import javafx.*).
@@ -44,7 +43,6 @@ public class UserService {
     }
 
     // ================================================================
-    //  VALIDATION — Équivalent des Assert Symfony + Form Types
     // ================================================================
 
     /**
@@ -159,7 +157,6 @@ public class UserService {
         user.setPassword(hasherMotDePasse(password));
         user.setRole(role);
 
-        // 3. Règle métier (Symfony) : L'utilisateur n'est pas approuvé par défaut
         user.setApproved(false);
         user.setStatut(User.STATUT_EN_ATTENTE);
 
@@ -278,7 +275,6 @@ public class UserService {
 
     /**
      * Vérifie les identifiants de connexion.
-     * Équivalent Symfony : AppAuthenticator + UserChecker
      *
      * @return le User si les identifiants sont corrects, null sinon
      * @throws ValidationException avec un message explicite selon le cas
@@ -307,7 +303,6 @@ public class UserService {
             throw new ValidationException(List.of("Mot de passe incorrect."));
         }
 
-        // 4. Vérifications métier (équivalent UserChecker Symfony)
         if (user.isBlocked()) {
             throw new ValidationException(List.of("Votre compte est bloqué. Contactez l'administrateur."));
         }
@@ -405,3 +400,4 @@ public class UserService {
         }
     }
 }
+

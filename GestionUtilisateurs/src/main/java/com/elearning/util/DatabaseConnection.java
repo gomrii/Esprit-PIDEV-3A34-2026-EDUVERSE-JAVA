@@ -1,4 +1,4 @@
-package com.elearning.util;
+﻿package com.elearning.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,7 +12,6 @@ import java.sql.SQLException;
  *   On ne veut qu'UNE seule connexion partagée dans toute l'application.
  *   Le Singleton garantit qu'une seule instance de la connexion existe.
  *
- * Équivalent Symfony : le service Doctrine EntityManager est aussi un singleton
  * géré par le conteneur d'injection de dépendances.
  */
 public class DatabaseConnection {
@@ -93,3 +92,4 @@ public class DatabaseConnection {
         }
     }
 }
+

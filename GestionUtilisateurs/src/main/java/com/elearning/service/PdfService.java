@@ -1,4 +1,4 @@
-package com.elearning.service;
+﻿package com.elearning.service;
 
 import com.elearning.entity.User;
 import com.itextpdf.text.*;
@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * PdfService — Génération de PDF avec iText.
  *
- * Équivalent Symfony : PdfService (utilisant Dompdf ou Snappy).
  * On sépare la logique de création du PDF de l'interface graphique.
  */
 public class PdfService {
@@ -88,3 +87,4 @@ public class PdfService {
         return cell;
     }
 }
+

@@ -1,4 +1,4 @@
-package com.elearning.dao;
+﻿package com.elearning.dao;
 
 import com.elearning.entity.User;
 import com.elearning.util.DatabaseConnection;
@@ -16,7 +16,6 @@ import java.util.LinkedHashMap;
  * RÔLE : Toute la communication avec la BDD pour la table `user`.
  *        Aucune logique métier ici, juste des requêtes SQL.
  *
- * Équivalent Symfony : UserRepository (qui étend ServiceEntityRepository).
  *
  * Pourquoi PreparedStatement ?
  *   → Protège contre les injections SQL (jamais de concaténation de chaînes dans une requête).
@@ -37,10 +36,8 @@ public class UserDAO {
      * Insère un nouvel utilisateur en BDD.
      * @return l'ID auto-généré par MySQL, ou -1 en cas d'erreur.
      *
-     * Équivalent Symfony : $em->persist($user); $em->flush();
      */
     public int ajouterUser(User user) {
-        // Ajout des colonnes Symfony obligatoires : roles, is_rejected, is_verified, updated_at, created_by_id
         String sql = "INSERT INTO user (full_name, email, password, role, statut, " +
                      "is_approved, is_blocked, phone_number, bio, picture, created_at, " +
                      "roles, is_rejected, is_verified, updated_at, created_by_id) " +
@@ -62,7 +59,6 @@ public class UserDAO {
             Timestamp now = Timestamp.valueOf(user.getCreatedAt() != null ? user.getCreatedAt() : LocalDateTime.now());
             ps.setTimestamp(11, now);
 
-            // Remplissage des champs Symfony manquants pour ne pas avoir d'erreur SQL
             String roleJson = user.getRole() != null && user.getRole().equals(User.ROLE_ENSEIGNANT) ? "[\"ROLE_INSTRUCTOR\"]" : "[\"ROLE_STUDENT\"]";
             ps.setString(12, roleJson);      // roles
             ps.setBoolean(13, false);        // is_rejected
@@ -94,7 +90,6 @@ public class UserDAO {
 
     /**
      * Retourne TOUS les utilisateurs (sans filtre).
-     * Équivalent Symfony : $userRepository->findAll()
      */
     public List<User> afficherTousLesUsers() {
         return rechercherUsers("", "", "id", "ASC");
@@ -102,7 +97,6 @@ public class UserDAO {
 
     /**
      * Retourne un utilisateur par son ID.
-     * Équivalent Symfony : $userRepository->find($id)  ou  User $user (ParamConverter)
      */
     public User trouverParId(int id) {
         String sql = "SELECT * FROM user WHERE id = ?";
@@ -121,7 +115,6 @@ public class UserDAO {
 
     /**
      * Retourne un utilisateur par son email (utile pour le login).
-     * Équivalent Symfony : $userRepository->findOneByEmail($email)
      */
     public User trouverParEmail(String email) {
         String sql = "SELECT * FROM user WHERE email = ?";
@@ -146,7 +139,6 @@ public class UserDAO {
      * @param sortColumn  colonne de tri (whitelist appliquée)
      * @param sortDir     "ASC" ou "DESC"
      *
-     * Équivalent Symfony : UserRepository::findUsersByRoleAndStatus() avec QueryBuilder
      *
      * SÉCURITÉ : la colonne de tri est whitelistée pour éviter
      * les injections SQL via noms de colonnes (on ne peut pas binder
@@ -208,7 +200,6 @@ public class UserDAO {
 
     /**
      * Met à jour les informations d'un utilisateur existant.
-     * Équivalent Symfony : $em->flush() (l'entité est déjà "managed")
      *
      * @return true si la mise à jour a réussi.
      */
@@ -254,7 +245,6 @@ public class UserDAO {
 
     /**
      * Toggle bloquer/débloquer un utilisateur.
-     * Équivalent Symfony : AdminController::toggleBlock()
      */
     public boolean toggleBloquer(int userId) {
         String sql = "UPDATE user SET is_blocked = NOT is_blocked, " +
@@ -288,7 +278,6 @@ public class UserDAO {
 
     /**
      * Supprime un utilisateur par son ID.
-     * Équivalent Symfony : $em->remove($user); $em->flush();
      */
     public boolean supprimerUser(int id) {
         String sql = "DELETE FROM user WHERE id=?";
@@ -307,7 +296,6 @@ public class UserDAO {
 
     /**
      * Compte le total d'utilisateurs par rôle.
-     * Équivalent Symfony : UserRepository::countByRole()
      */
     public int compterParRole(String role) {
         String sql = "SELECT COUNT(*) FROM user WHERE role=?";
@@ -385,7 +373,6 @@ public class UserDAO {
      * Convertit une ligne de ResultSet en objet User.
      * Factorisation : utilisée dans toutes les méthodes de lecture.
      *
-     * Équivalent Symfony : Doctrine le fait automatiquement (hydratation).
      * En JDBC on doit le faire manuellement.
      */
     private User mapResultSetToUser(ResultSet rs) throws SQLException {
@@ -408,3 +395,4 @@ public class UserDAO {
         return u;
     }
 }
+

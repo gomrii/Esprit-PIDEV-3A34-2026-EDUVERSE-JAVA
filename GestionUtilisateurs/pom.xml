@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
@@ -25,7 +25,6 @@
 
         <!-- ====================================================
              JavaFX — Interface graphique
-             Équivalent Symfony : Twig + Bootstrap
              ==================================================== -->
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -40,7 +39,6 @@
 
         <!-- ====================================================
              MySQL Connector — Connexion JDBC
-             Équivalent Symfony : doctrine/doctrine-bundle
              ==================================================== -->
         <dependency>
             <groupId>com.mysql</groupId>
@@ -50,7 +48,6 @@
 
         <!-- ====================================================
              iText PDF — Export PDF
-             Équivalent Symfony : dompdf/dompdf
              ==================================================== -->
         <dependency>
             <groupId>com.itextpdf</groupId>
@@ -105,3 +102,4 @@
     </build>
 
 </project>
+

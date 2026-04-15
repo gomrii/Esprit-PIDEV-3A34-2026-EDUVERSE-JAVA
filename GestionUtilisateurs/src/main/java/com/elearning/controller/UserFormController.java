@@ -1,4 +1,4 @@
-package com.elearning.controller;
+﻿package com.elearning.controller;
 
 import com.elearning.entity.User;
 import com.elearning.service.UserService;
@@ -15,7 +15,6 @@ import java.util.ResourceBundle;
 /**
  * UserFormController — Formulaire d'ajout/modification d'utilisateur.
  *
- * Équivalent Symfony : UserFormType + la partie submit de addUser()/editUser()
  * dans AdminController.
  *
  * Ce controller est réutilisé pour :
@@ -83,7 +82,6 @@ public class UserFormController implements Initializable {
      * Si user == null → mode création.
      * Si user != null → mode modification (pré-remplissage).
      *
-     * Équivalent Symfony : la résolution automatique de User par ParamConverter
      * + $form = $this->createForm(UserFormType::class, $user)
      */
     public void setUser(User user) {
@@ -236,3 +234,4 @@ public class UserFormController implements Initializable {
         stage.close();
     }
 }
+
