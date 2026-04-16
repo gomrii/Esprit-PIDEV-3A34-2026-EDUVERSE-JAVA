@@ -1,4 +1,4 @@
-﻿package com.elearning.dao;
+package com.elearning.dao;
 
 import com.elearning.entity.User;
 import com.elearning.util.DatabaseConnection;

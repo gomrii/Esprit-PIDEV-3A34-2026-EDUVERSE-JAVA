@@ -1,4 +1,4 @@
-﻿package com.elearning.util;
+package com.elearning.util;
 
 import com.elearning.entity.User;
 

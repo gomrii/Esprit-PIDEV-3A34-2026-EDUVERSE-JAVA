@@ -1,4 +1,4 @@
-﻿# 🎓 Module Gestion des Utilisateurs — JavaFX + JDBC
+# 🎓 Module Gestion des Utilisateurs — JavaFX + JDBC
 
 ---
 

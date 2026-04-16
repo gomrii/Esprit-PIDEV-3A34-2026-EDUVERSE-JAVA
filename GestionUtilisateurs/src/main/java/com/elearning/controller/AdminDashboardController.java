@@ -1,4 +1,4 @@
-﻿package com.elearning.controller;
+package com.elearning.controller;
 
 import com.elearning.entity.User;
 import com.elearning.service.UserService;

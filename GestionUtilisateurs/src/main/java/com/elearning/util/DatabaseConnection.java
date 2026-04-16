@@ -1,4 +1,4 @@
-﻿package com.elearning.util;
+package com.elearning.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

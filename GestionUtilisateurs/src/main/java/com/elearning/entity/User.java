@@ -1,4 +1,4 @@
-﻿package com.elearning.entity;
+package com.elearning.entity;
 
 import java.time.LocalDateTime;
 
