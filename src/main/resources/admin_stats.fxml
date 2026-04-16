@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.connexion3a36.Controller.AdminStatsController">
+    <left>
+        <VBox prefWidth="220" spacing="0" styleClass="sidebar">
+            <VBox alignment="CENTER" styleClass="sidebar-header">
+                <padding>
+                    <Insets top="20" bottom="20"/>
+                </padding>
+                <ImageView fitHeight="100" preserveRatio="true">
+                    <image>
+                        <Image url="@eduverse-logo.png"/>
+                    </image>
+                </ImageView>
+                <Label styleClass="sidebar-username" text="Admin"/>
+            </VBox>
+            <VBox spacing="4">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <Label styleClass="sidebar-item" text="Gestion Quiz"/>
+                <Label styleClass="sidebar-item sidebar-item-active" text="Statistiques"/>
+            </VBox>
+            <VBox alignment="BOTTOM_CENTER" VBox.vgrow="ALWAYS">
+                <padding>
+                    <Insets bottom="20" left="10" right="10"/>
+                </padding>
+                <Button maxWidth="Infinity" onAction="#handleBack" styleClass="btn-logout" text="Retour quiz"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox spacing="22" styleClass="main-content stats-dashboard">
+            <padding>
+                <Insets top="24" right="24" bottom="24" left="24"/>
+            </padding>
+
+            <VBox spacing="10" styleClass="stats-hero-shell">
+                <Label styleClass="stats-dashboard-title" text="Statistiques Admin"/>
+                <Label styleClass="stats-dashboard-subtitle" text="Vision consolidée du pilotage EduVerse : statuts des quiz, volume de contenu et répartition des créations." wrapText="true"/>
+            </VBox>
+
+            <TilePane hgap="14" prefColumns="4" prefTileHeight="112" prefTileWidth="176" styleClass="stats-dashboard-grid" vgap="14">
+                <VBox styleClass="stats-dashboard-card">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Region styleClass="stats-card-dot dot-blue"/>
+                        <Label styleClass="stats-card-overline" text="Volume global"/>
+                    </HBox>
+                    <Label fx:id="totalQuizValueLabel" styleClass="stats-card-value" text="0"/>
+                    <Label styleClass="stats-card-text" text="Quiz total"/>
+                </VBox>
+                <VBox styleClass="stats-dashboard-card">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Region styleClass="stats-card-dot dot-green"/>
+                        <Label styleClass="stats-card-overline" text="Statut"/>
+                    </HBox>
+                    <Label fx:id="validatedQuizValueLabel" styleClass="stats-card-value" text="0"/>
+                    <Label styleClass="stats-card-text" text="Validés"/>
+                </VBox>
+                <VBox styleClass="stats-dashboard-card">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Region styleClass="stats-card-dot dot-yellow"/>
+                        <Label styleClass="stats-card-overline" text="Statut"/>
+                    </HBox>
+                    <Label fx:id="pendingQuizValueLabel" styleClass="stats-card-value" text="0"/>
+                    <Label styleClass="stats-card-text" text="En attente"/>
+                </VBox>
+                <VBox styleClass="stats-dashboard-card">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Region styleClass="stats-card-dot dot-red"/>
+                        <Label styleClass="stats-card-overline" text="Statut"/>
+                    </HBox>
+                    <Label fx:id="rejectedQuizValueLabel" styleClass="stats-card-value" text="0"/>
+                    <Label styleClass="stats-card-text" text="Rejetés"/>
+                </VBox>
+                <VBox styleClass="stats-dashboard-card">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Region styleClass="stats-card-dot dot-sky"/>
+                        <Label styleClass="stats-card-overline" text="Contenu"/>
+                    </HBox>
+                    <Label fx:id="totalQuestionsValueLabel" styleClass="stats-card-value" text="0"/>
+                    <Label styleClass="stats-card-text" text="Questions"/>
+                </VBox>
+                <VBox styleClass="stats-dashboard-card">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Region styleClass="stats-card-dot dot-navy"/>
+                        <Label styleClass="stats-card-overline" text="Contenu"/>
+                    </HBox>
+                    <Label fx:id="totalResponsesValueLabel" styleClass="stats-card-value" text="0"/>
+                    <Label styleClass="stats-card-text" text="Réponses"/>
+                </VBox>
+                <VBox styleClass="stats-dashboard-card">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Region styleClass="stats-card-dot dot-indigo"/>
+                        <Label styleClass="stats-card-overline" text="Origine"/>
+                    </HBox>
+                    <Label fx:id="adminCreatedValueLabel" styleClass="stats-card-value" text="0"/>
+                    <Label styleClass="stats-card-text" text="Créés par admin"/>
+                </VBox>
+                <VBox styleClass="stats-dashboard-card">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Region styleClass="stats-card-dot dot-teal"/>
+                        <Label styleClass="stats-card-overline" text="Origine"/>
+                    </HBox>
+                    <Label fx:id="teacherCreatedValueLabel" styleClass="stats-card-value" text="0"/>
+                    <Label styleClass="stats-card-text" text="Créés par enseignant"/>
+                </VBox>
+            </TilePane>
+
+            <HBox spacing="18" VBox.vgrow="ALWAYS">
+                <VBox spacing="14" styleClass="stats-panel" HBox.hgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <VBox spacing="3">
+                            <Label styleClass="stats-panel-title" text="Répartition des statuts"/>
+                            <Label styleClass="stats-panel-subtitle" text="Lecture immédiate des quiz validés, en attente et rejetés"/>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <PieChart fx:id="statusPieChart" labelsVisible="true" legendVisible="true" styleClass="stats-dashboard-chart stats-dashboard-pie" VBox.vgrow="ALWAYS"/>
+                </VBox>
+
+                <VBox spacing="14" styleClass="stats-panel" HBox.hgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <VBox spacing="3">
+                            <Label styleClass="stats-panel-title" text="Volumes principaux"/>
+                            <Label styleClass="stats-panel-subtitle" text="Quiz, questions, réponses et origine des créations"/>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <BarChart fx:id="totalsBarChart" categoryGap="24" legendVisible="false" styleClass="stats-dashboard-chart stats-dashboard-bar" VBox.vgrow="ALWAYS">
+                        <xAxis>
+                            <CategoryAxis/>
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis forceZeroInRange="true" minorTickVisible="false"/>
+                        </yAxis>
+                    </BarChart>
+                </VBox>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

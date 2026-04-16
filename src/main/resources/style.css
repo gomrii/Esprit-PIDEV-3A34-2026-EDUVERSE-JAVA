@@ -412,6 +412,444 @@
     -fx-alignment: center-left;
 }
 
+.stats-strip {
+    -fx-pref-wrap-length: 860;
+}
+
+.stats-card {
+    -fx-min-width: 165;
+    -fx-pref-width: 165;
+    -fx-max-width: 165;
+    -fx-padding: 16 18 16 18;
+    -fx-spacing: 8;
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(36,55,70,0.10), 16, 0.18, 0, 6);
+    -fx-border-color: rgba(255,255,255,0.55);
+}
+
+.stats-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(36,55,70,0.16), 18, 0.2, 0, 8);
+}
+
+.stats-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-text-fill: white;
+}
+
+.stats-title {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-fill: rgba(255,255,255,0.88);
+}
+
+.stats-card-blue {
+    -fx-background-color: linear-gradient(to bottom right, #1f8ef1, #0b6cc4);
+}
+
+.stats-card-green {
+    -fx-background-color: linear-gradient(to bottom right, #18c28e, #0a9c71);
+}
+
+.stats-card-yellow {
+    -fx-background-color: linear-gradient(to bottom right, #f4b63f, #dd8f12);
+}
+
+.stats-card-red {
+    -fx-background-color: linear-gradient(to bottom right, #f06a7e, #d63c55);
+}
+
+.stats-card-indigo {
+    -fx-background-color: linear-gradient(to bottom right, #6276ff, #4357d8);
+}
+
+.stats-card-cyan {
+    -fx-background-color: linear-gradient(to bottom right, #33b6d8, #1b8db2);
+}
+
+.stats-card-slate {
+    -fx-background-color: linear-gradient(to bottom right, #5c7087, #425366);
+}
+
+.stats-card-teal {
+    -fx-background-color: linear-gradient(to bottom right, #1da79a, #137d74);
+}
+
+.chart-card {
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f8fbff);
+    -fx-background-radius: 18;
+    -fx-border-color: #d9e6f2;
+    -fx-border-radius: 18;
+    -fx-padding: 18;
+    -fx-effect: dropshadow(gaussian, rgba(44, 62, 80, 0.08), 20, 0.18, 0, 6);
+}
+
+.chart-title {
+    -fx-text-fill: #243746;
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+}
+
+.stats-chart {
+    -fx-background-color: transparent;
+    -fx-padding: 8 0 0 0;
+}
+
+.chart-plot-background {
+    -fx-background-color: #f8fbff;
+    -fx-background-radius: 12;
+}
+
+.axis {
+    -fx-tick-label-fill: #607182;
+    -fx-font-size: 11px;
+}
+
+.axis-label {
+    -fx-text-fill: #607182;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+
+.chart-legend {
+    -fx-background-color: transparent;
+}
+
+.default-color0.chart-pie { -fx-pie-color: #0cbc87; }
+.default-color1.chart-pie { -fx-pie-color: #f7c32e; }
+.default-color2.chart-pie { -fx-pie-color: #d6293e; }
+
+.default-color0.chart-bar {
+    -fx-bar-fill: #0b7edb;
+}
+
+.default-color1.chart-bar {
+    -fx-bar-fill: #0cbc87;
+}
+
+.default-color2.chart-bar {
+    -fx-bar-fill: #f7c32e;
+}
+
+.teacher-stats-page {
+    -fx-background-color: linear-gradient(to bottom, #f4f7fb 0%, #eef3f8 100%);
+}
+
+.stats-dashboard {
+    -fx-background-color: linear-gradient(to bottom, #f4f7fb 0%, #eef3f8 100%);
+}
+
+.stats-hero-shell {
+    -fx-background-color: linear-gradient(to right, #ffffff, #f7fbff);
+    -fx-background-radius: 22;
+    -fx-border-color: #d8e6f2;
+    -fx-border-radius: 22;
+    -fx-padding: 22 24 22 24;
+    -fx-effect: dropshadow(gaussian, rgba(29, 59, 83, 0.08), 18, 0.15, 0, 4);
+}
+
+.stats-dashboard-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #18364d;
+}
+
+.stats-dashboard-subtitle {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #6a7b88;
+}
+
+.stats-dashboard-grid {
+    -fx-pref-tile-width: 176;
+    -fx-pref-tile-height: 112;
+    -fx-tile-alignment: CENTER;
+    -fx-alignment: center;
+}
+
+.stats-dashboard-card {
+    -fx-min-width: 176;
+    -fx-pref-width: 176;
+    -fx-max-width: 176;
+    -fx-min-height: 112;
+    -fx-pref-height: 112;
+    -fx-max-height: 112;
+    -fx-padding: 12 14 12 14;
+    -fx-spacing: 8;
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #fbfdff);
+    -fx-background-radius: 18;
+    -fx-border-color: #dce7f1;
+    -fx-border-radius: 18;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(40, 58, 76, 0.08), 14, 0.14, 0, 4);
+}
+
+.stats-card-dot {
+    -fx-min-width: 12;
+    -fx-pref-width: 12;
+    -fx-max-width: 12;
+    -fx-min-height: 12;
+    -fx-pref-height: 12;
+    -fx-max-height: 12;
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+}
+
+.dot-blue { -fx-background-color: #2f80ed; }
+.dot-green { -fx-background-color: #16b67f; }
+.dot-yellow { -fx-background-color: #e8a12a; }
+.dot-red { -fx-background-color: #e25b63; }
+.dot-sky { -fx-background-color: #25a8d9; }
+.dot-navy { -fx-background-color: #3c5d93; }
+.dot-indigo { -fx-background-color: #5f67df; }
+.dot-teal { -fx-background-color: #139887; }
+
+.stats-card-overline {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #8a98a4;
+}
+
+.stats-card-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1d3345;
+}
+
+.stats-card-text {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #6d7d89;
+}
+
+.stats-panel {
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f9fbfe);
+    -fx-background-radius: 22;
+    -fx-border-color: #d9e6f2;
+    -fx-border-radius: 22;
+    -fx-padding: 18 20 18 20;
+    -fx-effect: dropshadow(gaussian, rgba(36, 55, 70, 0.10), 18, 0.18, 0, 6);
+}
+
+.stats-panel-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #18364d;
+}
+
+.stats-panel-subtitle {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #7d8c97;
+}
+
+.stats-dashboard-chart {
+    -fx-background-color: transparent;
+    -fx-padding: 6 0 0 0;
+}
+
+.stats-dashboard-chart .chart-content {
+    -fx-padding: 8;
+}
+
+.stats-dashboard-pie .chart-pie-label {
+    -fx-fill: #374957;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+}
+
+.stats-dashboard-pie .chart-legend-item {
+    -fx-text-fill: #425766;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+
+.stats-dashboard-bar .chart-plot-background {
+    -fx-background-color: #f7fbff;
+    -fx-background-radius: 14;
+}
+
+.stats-dashboard-bar .chart-horizontal-grid-lines,
+.stats-dashboard-bar .chart-vertical-grid-lines {
+    -fx-stroke: #e5edf5;
+    -fx-stroke-dash-array: 2 6;
+}
+
+.stats-dashboard-bar .axis {
+    -fx-tick-label-fill: #607182;
+    -fx-font-size: 11px;
+}
+
+.stats-dashboard-bar .axis-label {
+    -fx-text-fill: #607182;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+
+.stats-hero-card {
+    -fx-background-color: linear-gradient(to right, #ffffff, #f7fbff);
+    -fx-background-radius: 20;
+    -fx-border-color: #d8e6f2;
+    -fx-border-radius: 20;
+    -fx-padding: 22 24 22 24;
+    -fx-effect: dropshadow(gaussian, rgba(29, 59, 83, 0.08), 18, 0.15, 0, 4);
+}
+
+.stats-hero-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #18364d;
+}
+
+.stats-hero-subtitle {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #6a7b88;
+}
+
+.teacher-stats-grid {
+    -fx-pref-wrap-length: 980;
+}
+
+.stats-card-grid {
+    -fx-alignment: center;
+}
+
+.stats-card-board {
+    -fx-pref-tile-width: 180;
+    -fx-pref-tile-height: 112;
+    -fx-tile-alignment: CENTER;
+    -fx-alignment: center;
+}
+
+.teacher-stat-tile {
+    -fx-min-width: 180;
+    -fx-pref-width: 180;
+    -fx-max-width: 180;
+    -fx-min-height: 112;
+    -fx-pref-height: 112;
+    -fx-max-height: 112;
+    -fx-padding: 16 18 16 18;
+    -fx-spacing: 10;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(40, 58, 76, 0.08), 16, 0.16, 0, 5);
+    -fx-alignment: center;
+}
+
+.teacher-stat-number {
+    -fx-font-size: 26px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1d3345;
+}
+
+.teacher-stat-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #6d7d89;
+}
+
+.teacher-stat-blue {
+    -fx-border-color: #3b82f6;
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f3f8ff);
+}
+
+.teacher-stat-green {
+    -fx-border-color: #15b67b;
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f1fcf7);
+}
+
+.teacher-stat-yellow {
+    -fx-border-color: #e5a227;
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #fff9ef);
+}
+
+.teacher-stat-red {
+    -fx-border-color: #e0565b;
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #fff4f4);
+}
+
+.teacher-stat-sky {
+    -fx-border-color: #27a7d8;
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f2fbff);
+}
+
+.teacher-stat-navy {
+    -fx-border-color: #355c9b;
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f4f7fd);
+}
+
+.teacher-chart-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 20;
+    -fx-border-color: #d9e6f2;
+    -fx-border-radius: 20;
+    -fx-padding: 18 20 18 20;
+    -fx-effect: dropshadow(gaussian, rgba(36, 55, 70, 0.10), 18, 0.18, 0, 6);
+}
+
+.teacher-chart-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #18364d;
+}
+
+.teacher-chart-note {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #7d8c97;
+}
+
+.teacher-stats-chart {
+    -fx-background-color: transparent;
+    -fx-padding: 6 0 0 0;
+}
+
+.teacher-stats-chart .chart-content {
+    -fx-padding: 8;
+}
+
+.teacher-pie-chart .chart-pie-label {
+    -fx-fill: #374957;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+}
+
+.teacher-pie-chart .chart-legend-item {
+    -fx-text-fill: #425766;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+
+.teacher-bar-chart .chart-plot-background {
+    -fx-background-color: #f7fbff;
+    -fx-background-radius: 14;
+}
+
+.teacher-bar-chart .chart-horizontal-grid-lines,
+.teacher-bar-chart .chart-vertical-grid-lines {
+    -fx-stroke: #e5edf5;
+    -fx-stroke-dash-array: 2 6;
+}
+
+.teacher-bar-chart .axis {
+    -fx-tick-label-fill: #607182;
+    -fx-font-size: 11px;
+}
+
+.teacher-bar-chart .axis-label {
+    -fx-text-fill: #607182;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+
+.teacher-bar-chart .default-color0.chart-bar {
+    -fx-bar-fill: #2f80ed;
+}
+
 .meta-chip {
     -fx-background-color: #f2f7fb;
     -fx-background-radius: 14;

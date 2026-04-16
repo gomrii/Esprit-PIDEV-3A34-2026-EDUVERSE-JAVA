@@ -46,6 +46,10 @@
             <Label styleClass="page-title" text="Espace Enseignant"/>
             <Label styleClass="page-subtitle" text="Les quiz crees par l admin restent en lecture seule."/>
 
+            <HBox alignment="CENTER_RIGHT">
+                <Button onAction="#handleOpenStatistics" styleClass="btn-primary" text="Voir statistiques"/>
+            </HBox>
+
             <HBox alignment="CENTER_LEFT" spacing="10">
                 <TextField fx:id="searchTF" prefWidth="320" promptText="Rechercher par titre, statut ou createur..." styleClass="search-field"/>
                 <Button onAction="#handleSearch" styleClass="search-action-button">

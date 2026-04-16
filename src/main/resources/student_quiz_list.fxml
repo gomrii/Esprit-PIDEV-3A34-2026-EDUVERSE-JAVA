@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.connexion3a36.Controller.AdminQuizListController">
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.connexion3a36.Controller.StudentQuizListController">
     <left>
         <VBox prefWidth="220" spacing="0" styleClass="sidebar">
             <VBox alignment="CENTER" styleClass="sidebar-header">
@@ -21,18 +21,16 @@
                 <ImageView fitHeight="100" preserveRatio="true">
                     <image><Image url="@eduverse-logo.png"/></image>
                 </ImageView>
-                <Label styleClass="sidebar-username" text="Admin">
+                <Label styleClass="sidebar-username" text="Etudiant">
                     <VBox.margin><Insets top="10"/></VBox.margin>
                 </Label>
             </VBox>
-
             <VBox spacing="4">
                 <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-                <Label styleClass="sidebar-item sidebar-item-active" text="Gestion Quiz"/>
-                <Label styleClass="sidebar-item" text="Questions"/>
-                <Label styleClass="sidebar-item" text="Reponses"/>
+                <Label styleClass="sidebar-item sidebar-item-active" text="Quiz valides"/>
+                <Label styleClass="sidebar-item" text="Passage du quiz"/>
+                <Label styleClass="sidebar-item" text="Resultat"/>
             </VBox>
-
             <VBox alignment="BOTTOM_CENTER" VBox.vgrow="ALWAYS">
                 <padding><Insets bottom="20" left="10" right="10"/></padding>
                 <Button maxWidth="Infinity" onAction="#handleBack" styleClass="btn-logout" text="Retour accueil"/>
@@ -43,15 +41,15 @@
     <center>
         <VBox spacing="20" styleClass="main-content">
             <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
-            <Label styleClass="page-title" text="Gestion des Quiz"/>
-            <Label styleClass="page-subtitle" text="L admin peut gerer tous les quiz et valider ceux des enseignants."/>
+            <Label styleClass="page-title" text="Espace Etudiant"/>
+            <Label styleClass="page-subtitle" text="Consultez les quiz valides et lancez un passage en mode etudiant."/>
 
             <HBox alignment="CENTER_RIGHT">
                 <Button onAction="#handleOpenStatistics" styleClass="btn-primary" text="Voir statistiques"/>
             </HBox>
 
             <HBox alignment="CENTER_LEFT" spacing="10">
-                <TextField fx:id="searchTF" prefWidth="280" promptText="Rechercher..." styleClass="search-field"/>
+                <TextField fx:id="searchTF" prefWidth="280" promptText="Rechercher un quiz valide..." styleClass="search-field"/>
                 <Button onAction="#handleSearch" styleClass="search-action-button">
                     <graphic>
                         <SVGPath content="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16a6.47 6.47 0 0 0 4.23-1.57l.27.28v.79L19 20.49 20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" styleClass="search-icon"/>
@@ -60,7 +58,6 @@
                 <ChoiceBox fx:id="sortChoice" prefWidth="180"/>
                 <HBox alignment="CENTER_RIGHT" spacing="10" HBox.hgrow="ALWAYS">
                     <Button onAction="#handleRefresh" styleClass="btn-secondary" text="Actualiser"/>
-                    <Button onAction="#handleAdd" styleClass="btn-primary" text="Ajouter Quiz"/>
                 </HBox>
             </HBox>
 

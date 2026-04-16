@@ -37,7 +37,6 @@ public class TeacherQuizListController {
     private ChoiceBox<String> sortChoice;
     @FXML
     private Label summaryLabel;
-
     private final QuizService quizService = new QuizService();
     private ObservableList<Quiz> masterData = FXCollections.observableArrayList();
 
@@ -91,6 +90,16 @@ public class TeacherQuizListController {
             searchTF.clear();
         }
         chargerQuiz();
+    }
+
+    @FXML
+    private void handleOpenStatistics(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/teacher_stats.fxml"));
+            switchScene(event, root);
+        } catch (IOException e) {
+            ControllerUtils.showError("Impossible d'ouvrir la page statistiques : " + e.getMessage());
+        }
     }
 
     private void openQuizEditor(Quiz quiz, ActionEvent event) {
