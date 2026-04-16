@@ -1,29 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.connexion3a36.Controller.HomeController">
-    <top>
-        <VBox style="-fx-background-color: #2c3e50; -fx-padding: 20;">
-            <Label text="Gestion Quiz - Choix du Rôle" style="-fx-text-fill: white; -fx-font-size: 24; -fx-font-weight: bold;"/>
-        </VBox>
-    </top>
-    
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.connexion3a36.Controller.HomeController"
+            styleClass="login-container">
     <center>
-        <VBox spacing="20" style="-fx-padding: 40; -fx-alignment: center;">
-            <HBox spacing="30" style="-fx-alignment: center;">
-                <Button text="Espace Enseignant" onAction="#openTeacherSpace" 
-                        style="-fx-font-size: 16; -fx-padding: 15; -fx-min-width: 200;"
-                        styleClass="primary-button"/>
-                <Button text="Espace Admin" onAction="#openAdminSpace" 
-                        style="-fx-font-size: 16; -fx-padding: 15; -fx-min-width: 200;"
-                        styleClass="secondary-button"/>
-            </HBox>
+        <VBox alignment="CENTER" spacing="24" styleClass="main-content">
+            <padding>
+                <Insets top="40" right="40" bottom="40" left="40"/>
+            </padding>
+
+            <VBox alignment="CENTER" spacing="12" styleClass="home-card">
+                <ImageView fitHeight="120" preserveRatio="true">
+                    <image>
+                        <Image url="@eduverse-logo.png"/>
+                    </image>
+                </ImageView>
+                <Label text="Gestion des Quiz EduVerse" styleClass="page-title"/>
+                <Label text="Choisissez un espace pour accéder au module." styleClass="page-subtitle"/>
+
+                <HBox spacing="18" alignment="CENTER">
+                    <Button text="Espace Enseignant" onAction="#openTeacherSpace" styleClass="btn-primary"/>
+                    <Button text="Espace Admin" onAction="#openAdminSpace" styleClass="btn-secondary"/>
+                    <Button text="Espace Étudiant" onAction="#openStudentSpace" styleClass="btn-success"/>
+                </HBox>
+            </VBox>
         </VBox>
     </center>
 </BorderPane>

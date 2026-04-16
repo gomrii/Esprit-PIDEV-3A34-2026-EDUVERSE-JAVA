@@ -4,6 +4,7 @@ import edu.connexion3a36.entities.Quiz;
 import edu.connexion3a36.services.QuizService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
@@ -18,6 +19,12 @@ public class ModifierQuizController {
     private TextField titreTF;
 
     @FXML
+    private TextField dureeTF;
+
+    @FXML
+    private ChoiceBox<String> levelChoice;
+
+    @FXML
     private Label statutLabel;
 
     @FXML
@@ -30,6 +37,12 @@ public class ModifierQuizController {
     private Quiz selectedQuiz;
     private String actorType = "teacher";
 
+    @FXML
+    public void initialize() {
+        levelChoice.getItems().setAll("facile", "moyen", "difficile");
+        ControllerUtils.applyQuizTitleFormatter(titreTF);
+    }
+
     public void setActorType(String actorType) {
         this.actorType = actorType;
         applyPermissions();
@@ -40,6 +53,8 @@ public class ModifierQuizController {
         if (quiz != null) {
             idLabel.setText(String.valueOf(quiz.getIdQuiz()));
             titreTF.setText(quiz.getTitre());
+            dureeTF.setText(String.valueOf(quiz.getDuree()));
+            levelChoice.setValue(quiz.getLevel());
             statutLabel.setText(quiz.getStatut());
             createdByLabel.setText(quiz.getCreatedBy());
         }
@@ -49,28 +64,50 @@ public class ModifierQuizController {
     @FXML
     public void modifierQuiz() {
         if (selectedQuiz == null) {
-            ControllerUtils.showWarning("Sélectionnez un quiz à modifier.");
+            ControllerUtils.showWarning("Selectionnez un quiz a modifier.");
             return;
         }
 
         if ("teacher".equals(actorType) && "admin".equalsIgnoreCase(selectedQuiz.getCreatedBy())) {
-            ControllerUtils.showWarning("Ce quiz a été créé par l'admin. Il est en lecture seule pour l'enseignant.");
+            ControllerUtils.showWarning("Ce quiz a ete cree par l'admin. Il est en lecture seule pour l'enseignant.");
             return;
         }
 
-        if (!ControllerUtils.isTextValid(titreTF)) {
-            ControllerUtils.showError("Le titre doit être rempli et contenir au moins 6 caractères.");
+        String titreErrorMessage = ControllerUtils.getQuizTitleValidationMessage(titreTF);
+        if (titreErrorMessage != null) {
+            ControllerUtils.showError(titreErrorMessage);
+            return;
+        }
+        if (!ControllerUtils.isInteger(dureeTF) || Integer.parseInt(dureeTF.getText().trim()) <= 0) {
+            ControllerUtils.showError("La duree doit etre un nombre entier positif.");
+            return;
+        }
+        if (levelChoice.getValue() == null || levelChoice.getValue().isBlank()) {
+            ControllerUtils.showError("Le niveau du quiz doit etre selectionne.");
             return;
         }
 
         selectedQuiz.setTitre(titreTF.getText().trim());
+        selectedQuiz.setDuree(Integer.parseInt(dureeTF.getText().trim()));
+        selectedQuiz.setLevel(levelChoice.getValue());
 
         try {
+            if (quizService.quizTitleExistsForAnotherQuiz(selectedQuiz.getTitre(), selectedQuiz.getIdQuiz())) {
+                ControllerUtils.showError(QuizService.QUIZ_TITLE_ALREADY_EXISTS_MESSAGE);
+                return;
+            }
             quizService.modifierQuiz(selectedQuiz);
-            ControllerUtils.showInfo("Quiz modifié avec succès.");
+            ControllerUtils.showInfo("Quiz modifie avec succes.");
             String targetPage = "teacher".equals(actorType) ? "/teacher_quiz_list.fxml" : "/admin_quiz_list.fxml";
             ControllerUtils.navigateTo(idLabel, targetPage);
         } catch (SQLException e) {
+            if (QuizService.QUIZ_TITLE_ALREADY_EXISTS_MESSAGE.equals(e.getMessage())
+                    || QuizService.QUIZ_TITLE_REQUIRED_MESSAGE.equals(e.getMessage())
+                    || QuizService.QUIZ_TITLE_TOO_SHORT_MESSAGE.equals(e.getMessage())
+                    || QuizService.QUIZ_TITLE_INVALID_CHARACTERS_MESSAGE.equals(e.getMessage())) {
+                ControllerUtils.showError(e.getMessage());
+                return;
+            }
             ControllerUtils.showError("Erreur lors de la modification du quiz : " + e.getMessage());
         }
     }
@@ -97,7 +134,7 @@ public class ModifierQuizController {
     }
 
     private void applyPermissions() {
-        if (titreTF == null || saveButton == null) {
+        if (titreTF == null || dureeTF == null || levelChoice == null || saveButton == null) {
             return;
         }
 
@@ -106,6 +143,8 @@ public class ModifierQuizController {
                 && "admin".equalsIgnoreCase(selectedQuiz.getCreatedBy());
 
         titreTF.setDisable(readOnlyForTeacher);
+        dureeTF.setDisable(readOnlyForTeacher);
+        levelChoice.setDisable(readOnlyForTeacher);
         saveButton.setDisable(readOnlyForTeacher);
     }
 }

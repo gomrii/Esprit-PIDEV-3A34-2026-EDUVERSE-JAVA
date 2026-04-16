@@ -1,34 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.connexion3a36.Controller.ListeQuestionController">
-  <top>
-    <VBox>
-      <ToolBar styleClass="tool-bar">
-        <TextField fx:id="searchTF" promptText="Rechercher..." styleClass="search-field large-search" />
-        <Button text="Rechercher" fx:id="searchButton" onAction="#handleSearch" styleClass="search-button" />
-        <ChoiceBox fx:id="sortChoice" style="-fx-min-width: 180;" />
-        <Button text="Rafraîchir" fx:id="refreshButton" onAction="#handleRefresh" styleClass="refresh-button" />
-        <Separator />
-        <Button text="Ajouter" fx:id="addButton" onAction="#handleAdd" styleClass="add-button" />
-        <Button text="Modifier" fx:id="editButton" onAction="#handleEdit" styleClass="edit-button" />
-        <Button text="Supprimer" fx:id="deleteButton" onAction="#handleDelete" styleClass="delete-button" />
-        <Region fx:id="spacer" />
-        <Button text="Retour" fx:id="backButton" onAction="#handleBack" styleClass="back-button" />
-      </ToolBar>
-      <HBox spacing="8">
-        <Label fx:id="alertSuccess" styleClass="alert-success" visible="false" managed="false" />
-        <Label fx:id="alertError" styleClass="alert-error" visible="false" managed="false" />
-      </HBox>
-    </VBox>
-  </top>
-  <center>
-    <TableView fx:id="questionsTable" styleClass="modern-table">
-      <columns>
-        <TableColumn fx:id="colId" text="ID" />
-        <TableColumn fx:id="colQuestion" text="Question" />
-        <TableColumn fx:id="colIdQuiz" text="ID Quiz" />
-      </columns>
-    </TableView>
-  </center>
+    <center>
+        <VBox spacing="20" styleClass="main-content">
+            <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+            <Label styleClass="page-title" text="Liste des Questions"/>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <TextField fx:id="searchTF" prefWidth="280" promptText="Rechercher..." styleClass="search-field"/>
+                <Button onAction="#handleSearch" styleClass="search-action-button">
+                    <graphic>
+                        <SVGPath content="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16a6.47 6.47 0 0 0 4.23-1.57l.27.28v.79L19 20.49 20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" styleClass="search-icon"/>
+                    </graphic>
+                </Button>
+                <ChoiceBox fx:id="sortChoice" prefWidth="180"/>
+                <HBox alignment="CENTER_RIGHT" spacing="10" HBox.hgrow="ALWAYS">
+                    <Button onAction="#handleRefresh" styleClass="btn-secondary" text="Actualiser"/>
+                    <Button onAction="#handleAdd" styleClass="btn-primary" text="Ajouter"/>
+                    <Button onAction="#handleBack" styleClass="btn-secondary" text="Retour"/>
+                </HBox>
+            </HBox>
+            <Label fx:id="summaryLabel" styleClass="list-summary" text="0 question affichee"/>
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="content-scroll" VBox.vgrow="ALWAYS">
+                <content>
+                    <VBox fx:id="cardsContainer" spacing="16" styleClass="card-list">
+                        <padding><Insets bottom="12"/></padding>
+                    </VBox>
+                </content>
+            </ScrollPane>
+        </VBox>
+    </center>
 </BorderPane>

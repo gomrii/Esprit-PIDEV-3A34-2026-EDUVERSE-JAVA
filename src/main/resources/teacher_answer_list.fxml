@@ -1,42 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.connexion3a36.Controller.TeacherAnswerListController">
-    <top>
-        <VBox style="-fx-background-color: #2c3e50; -fx-padding: 20;">
-            <Label fx:id="questionLabel" style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;"/>
+    <left>
+        <VBox prefWidth="220" spacing="0" styleClass="sidebar">
+            <VBox alignment="CENTER" styleClass="sidebar-header">
+                <padding><Insets top="20" bottom="20"/></padding>
+                <ImageView fitHeight="100" preserveRatio="true">
+                    <image><Image url="@eduverse-logo.png"/></image>
+                </ImageView>
+                <Label styleClass="sidebar-username" text="Enseignant"/>
+            </VBox>
+            <VBox spacing="4">
+                <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                <Label styleClass="sidebar-item" text="Mes quiz"/>
+                <Label styleClass="sidebar-item" text="Questions"/>
+                <Label styleClass="sidebar-item sidebar-item-active" text="Reponses"/>
+            </VBox>
+            <VBox alignment="BOTTOM_CENTER" VBox.vgrow="ALWAYS">
+                <padding><Insets bottom="20" left="10" right="10"/></padding>
+                <Button maxWidth="Infinity" onAction="#handleBack" styleClass="btn-logout" text="Retour questions"/>
+            </VBox>
         </VBox>
-    </top>
+    </left>
 
     <center>
-        <VBox spacing="10" style="-fx-padding: 15;">
-            <HBox spacing="10" style="-fx-alignment: center-left;">
-                <TextField fx:id="searchTF" promptText="Rechercher..." style="-fx-min-width: 220;"/>
-                <Button text="Rechercher" onAction="#handleSearch"/>
-                <ChoiceBox fx:id="sortChoice" style="-fx-min-width: 180;"/>
-                <Button text="Actualiser" onAction="#handleRefresh"/>
+        <VBox spacing="20" styleClass="main-content">
+            <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+            <Label fx:id="questionLabel" styleClass="page-title" text="Reponses de la question"/>
+            <Label styleClass="page-subtitle" text="L enseignant gere les reponses des questions de ses quiz."/>
+
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <TextField fx:id="searchTF" prefWidth="260" promptText="Rechercher une reponse..." styleClass="search-field"/>
+                <Button onAction="#handleSearch" styleClass="search-action-button">
+                    <graphic>
+                        <SVGPath content="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16a6.47 6.47 0 0 0 4.23-1.57l.27.28v.79L19 20.49 20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" styleClass="search-icon"/>
+                    </graphic>
+                </Button>
+                <ChoiceBox fx:id="sortChoice" prefWidth="180"/>
+                <HBox alignment="CENTER_RIGHT" spacing="10" HBox.hgrow="ALWAYS">
+                    <Button onAction="#handleRefresh" styleClass="btn-secondary" text="Actualiser"/>
+                    <Button onAction="#handleAdd" styleClass="btn-primary" text="Ajouter"/>
+                </HBox>
             </HBox>
 
-            <TableView fx:id="reponsesTable" VBox.vgrow="ALWAYS">
-                <columns>
-                    <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
-                    <TableColumn fx:id="colReponse" text="Réponse" prefWidth="350"/>
-                    <TableColumn fx:id="colScore" text="Score" prefWidth="100"/>
-                </columns>
-            </TableView>
+            <Label fx:id="summaryLabel" styleClass="list-summary" text="0 reponse affichee"/>
+
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="content-scroll" VBox.vgrow="ALWAYS">
+                <content>
+                    <VBox fx:id="cardsContainer" spacing="16" styleClass="card-list">
+                        <padding><Insets bottom="12"/></padding>
+                    </VBox>
+                </content>
+            </ScrollPane>
         </VBox>
     </center>
-
-    <bottom>
-        <HBox spacing="10" style="-fx-padding: 15;">
-            <Button text="Ajouter" onAction="#handleAdd" styleClass="primary-button"/>
-            <Button text="Modifier" onAction="#handleEdit" styleClass="primary-button"/>
-            <Button text="Supprimer" onAction="#handleDelete" styleClass="danger-button"/>
-            <Button text="Retour" onAction="#handleBack" style="-fx-margin-left: 50;"/>
-        </HBox>
-    </bottom>
 </BorderPane>

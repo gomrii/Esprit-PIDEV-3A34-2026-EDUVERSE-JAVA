@@ -7,51 +7,45 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Comparator;
 import java.sql.SQLException;
+import java.util.Comparator;
 
 public class ListeQuestionController {
 
     @FXML
-    private TableView<Question> questionsTable;
-
+    private VBox cardsContainer;
     @FXML
-    private TableColumn<Question, Integer> colId;
-
+    private Label summaryLabel;
     @FXML
-    private TableColumn<Question, String> colQuestion;
-
+    private TextField searchTF;
     @FXML
-    private TableColumn<Question, Integer> colIdQuiz;
+    private ChoiceBox<String> sortChoice;
 
     private final QuestionService questionService = new QuestionService();
     private ObservableList<Question> masterData = FXCollections.observableArrayList();
 
     @FXML
-    private javafx.scene.control.TextField searchTF;
-
-    @FXML
-    private javafx.scene.control.ChoiceBox<String> sortChoice;
-
-    @FXML
     public void initialize() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("idQuestion"));
-        colQuestion.setCellValueFactory(new PropertyValueFactory<>("question"));
-        colIdQuiz.setCellValueFactory(new PropertyValueFactory<>("idQuiz"));
         sortChoice.setItems(FXCollections.observableArrayList(
                 "ID croissant",
-                "ID décroissant",
+                "ID decroissant",
                 "Question A-Z",
                 "Question Z-A"
         ));
@@ -70,92 +64,65 @@ public class ListeQuestionController {
     }
 
     @FXML
-    private void handleSearch(javafx.event.ActionEvent event) {
+    private void handleSearch(ActionEvent event) {
         applyFiltersAndSort();
     }
 
-    public Question getSelectedQuestion() {
-        return questionsTable.getSelectionModel().getSelectedItem();
+    @FXML
+    private void handleAdd(ActionEvent event) {
+        openQuestionForm(event, null, "/question_add.fxml");
     }
 
     @FXML
-    private void handleAdd(ActionEvent event) { openFXML(event, "/question_add.fxml"); }
-
-    @FXML
-    private void handleEdit(ActionEvent event) {
-        if (getSelectedQuestion() == null) { ControllerUtils.showWarning("Sélectionnez une question à modifier."); return; }
-        openFXML(event, "/question_edit.fxml");
-    }
-
-    @FXML
-    private void handleDelete(ActionEvent event) {
-        // kept for compatibility with FXML using handleDelete
-        supprimerQuestion(event);
-    }
-
-    @FXML
-    private void supprimerQuestion(ActionEvent event) {
-        if (getSelectedQuestion() == null) {
-            ControllerUtils.showWarning("Sélectionnez une question à supprimer.");
-            return;
+    private void handleRefresh(ActionEvent event) {
+        if (searchTF != null) {
+            searchTF.clear();
         }
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Supprimer la question sélectionnée ?", javafx.scene.control.ButtonType.YES, javafx.scene.control.ButtonType.NO);
-        confirm.showAndWait();
-        if (confirm.getResult() == javafx.scene.control.ButtonType.YES) {
-            try {
-                questionService.supprimerQuestion(getSelectedQuestion().getIdQuestion());
-                ControllerUtils.showInfo("Question supprimée.");
-                chargerQuestions();
-            } catch (SQLException e) {
-                ControllerUtils.showError("Erreur lors de la suppression : " + e.getMessage());
-            }
-        }
+        chargerQuestions();
     }
-
-    @FXML
-    private void handleRefresh(ActionEvent event) { chargerQuestions(); }
 
     @FXML
     private void handleBack(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/home.fxml"));
             Parent root = loader.load();
-            Node source = (Node) event.getSource();
-            Stage stage = (Stage) source.getScene().getWindow();
-            Scene scene = stage.getScene();
-            if (scene == null) {
-                Scene newScene = new Scene(root, 1100, 700);
-                newScene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
-                stage.setScene(newScene);
-            } else {
-                scene.setRoot(root);
-            }
+            switchScene(event, root);
         } catch (IOException e) {
-            ControllerUtils.showError("Impossible de retourner à l'accueil: " + e.getMessage());
+            ControllerUtils.showError("Impossible de retourner a l'accueil: " + e.getMessage());
         }
     }
 
-    private void openFXML(ActionEvent event, String fxmlPath) {
+    private void handleEdit(Question question, ActionEvent event) {
+        openQuestionForm(event, question, "/question_edit.fxml");
+    }
+
+    private void handleDelete(Question question) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Supprimer la question selectionnee ?", ButtonType.YES, ButtonType.NO);
+        confirm.showAndWait();
+        if (confirm.getResult() != ButtonType.YES) {
+            return;
+        }
+        try {
+            questionService.supprimerQuestion(question.getIdQuestion());
+            ControllerUtils.showInfo("Question supprimee.");
+            chargerQuestions();
+        } catch (SQLException e) {
+            ControllerUtils.showError("Erreur lors de la suppression : " + e.getMessage());
+        }
+    }
+
+    private void openQuestionForm(ActionEvent event, Question question, String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
             Object controller = loader.getController();
-            try {
-                if (controller != null) {
-                    java.lang.reflect.Method m = null;
-                    try { m = controller.getClass().getMethod("setQuestion", Question.class); } catch (NoSuchMethodException ignored) {}
-                    if (m != null) m.invoke(controller, getSelectedQuestion());
+            if (question != null && controller != null) {
+                try {
+                    controller.getClass().getMethod("setQuestion", Question.class).invoke(controller, question);
+                } catch (Exception ignored) {
                 }
-            } catch (Exception ignored) {}
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = stage.getScene();
-            if (scene == null) {
-                Scene newScene = new Scene(root, 1100, 700);
-                newScene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
-                stage.setScene(newScene);
-            } else {
-                scene.setRoot(root);
             }
+            switchScene(event, root);
         } catch (IOException e) {
             ControllerUtils.showError("Impossible d'ouvrir la page: " + e.getMessage());
         }
@@ -167,7 +134,7 @@ public class ListeQuestionController {
         for (Question item : masterData) {
             boolean matches = q.isEmpty()
                     || String.valueOf(item.getIdQuestion()).contains(q)
-                    || (item.getQuestion() != null && item.getQuestion().toLowerCase().contains(q))
+                    || safeValue(item.getQuestion()).toLowerCase().contains(q)
                     || String.valueOf(item.getIdQuiz()).contains(q);
             if (matches) {
                 filtered.add(item);
@@ -176,7 +143,7 @@ public class ListeQuestionController {
 
         Comparator<Question> comparator = Comparator.comparingInt(Question::getIdQuestion);
         String sort = sortChoice != null ? sortChoice.getValue() : "ID croissant";
-        if ("ID décroissant".equals(sort)) {
+        if ("ID decroissant".equals(sort)) {
             comparator = Comparator.comparingInt(Question::getIdQuestion).reversed();
         } else if ("Question A-Z".equals(sort)) {
             comparator = Comparator.comparing(question -> safeValue(question.getQuestion()), String.CASE_INSENSITIVE_ORDER);
@@ -184,10 +151,84 @@ public class ListeQuestionController {
             comparator = Comparator.comparing((Question question) -> safeValue(question.getQuestion()), String.CASE_INSENSITIVE_ORDER).reversed();
         }
         FXCollections.sort(filtered, comparator);
-        questionsTable.setItems(filtered);
+        renderQuestionCards(filtered);
+    }
+
+    private void renderQuestionCards(ObservableList<Question> questions) {
+        cardsContainer.getChildren().clear();
+        summaryLabel.setText(questions.size() + (questions.size() > 1 ? " questions affichees" : " question affichee"));
+
+        if (questions.isEmpty()) {
+            cardsContainer.getChildren().add(createEmptyState("Aucune question trouvee", "Les resultats filtres apparaitront ici."));
+            return;
+        }
+
+        for (Question question : questions) {
+            cardsContainer.getChildren().add(createQuestionCard(question));
+        }
+    }
+
+    private VBox createQuestionCard(Question question) {
+        VBox card = new VBox(16);
+        card.getStyleClass().add("dashboard-card");
+        card.setPadding(new Insets(18));
+
+        Label overline = new Label("Question #" + question.getIdQuestion());
+        overline.getStyleClass().add("card-overline");
+
+        Label title = new Label(safeValue(question.getQuestion()));
+        title.getStyleClass().add("card-title");
+        title.setWrapText(true);
+
+        HBox header = new HBox(12, new VBox(6, overline, title), createStatusBadge("Quiz #" + question.getIdQuiz(), "status-neutral"));
+        HBox.setHgrow(header.getChildren().get(0), Priority.ALWAYS);
+        header.setAlignment(Pos.TOP_LEFT);
+
+        Button edit = new Button("Modifier");
+        edit.getStyleClass().add("btn-modifier");
+        edit.setOnAction(event -> handleEdit(question, event));
+
+        Button delete = new Button("Supprimer");
+        delete.getStyleClass().add("btn-supprimer");
+        delete.setOnAction(event -> handleDelete(question));
+
+        HBox actions = new HBox(10, edit, delete);
+        actions.getStyleClass().add("card-actions");
+
+        card.getChildren().addAll(header, actions);
+        return card;
+    }
+
+    private Label createStatusBadge(String text, String styleClass) {
+        Label badge = new Label(text);
+        badge.getStyleClass().addAll("status-badge", styleClass);
+        return badge;
+    }
+
+    private VBox createEmptyState(String titleText, String bodyText) {
+        Label title = new Label(titleText);
+        title.getStyleClass().add("empty-state-title");
+        Label body = new Label(bodyText);
+        body.getStyleClass().add("empty-state-text");
+        body.setWrapText(true);
+        VBox box = new VBox(8, title, body);
+        box.getStyleClass().add("empty-state");
+        return box;
     }
 
     private String safeValue(String value) {
         return value == null ? "" : value;
+    }
+
+    private void switchScene(ActionEvent event, Parent root) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = stage.getScene();
+        if (scene == null) {
+            Scene newScene = new Scene(root, 1100, 700);
+            newScene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+            stage.setScene(newScene);
+        } else {
+            scene.setRoot(root);
+        }
     }
 }

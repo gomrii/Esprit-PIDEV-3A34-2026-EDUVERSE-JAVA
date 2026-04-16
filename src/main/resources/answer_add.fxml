@@ -1,34 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.connexion3a36.Controller.AjouterReponseController"
-            style="-fx-padding: 20;">
-
-    <VBox spacing="15" style="-fx-alignment: center;">
-        <Label text="Ajouter une Réponse" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
-
-        <HBox spacing="10">
-            <Label text="Question:" style="-fx-min-width: 100;"/>
-            <ChoiceBox fx:id="questionChoice" style="-fx-min-width: 320;"/>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.connexion3a36.Controller.AjouterReponseController" styleClass="form-container">
+    <top>
+        <VBox styleClass="form-header">
+            <padding><Insets top="18" right="24" bottom="18" left="24"/></padding>
+            <Label styleClass="form-title" text="Ajouter une Réponse"/>
+        </VBox>
+    </top>
+    <center>
+        <VBox spacing="18" styleClass="form-body">
+            <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+            <Label styleClass="field-label" text="Question"/>
+            <ChoiceBox fx:id="questionChoice" prefWidth="420"/>
+            <Label styleClass="field-label" text="Réponse"/>
+            <TextArea fx:id="reponseTA" prefHeight="120" promptText="Saisir la réponse proposée" wrapText="true"/>
+            <Label styleClass="field-label" text="Score"/>
+            <TextField fx:id="scoreTF" promptText="Exemple : 0 ou 2"/>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="form-footer">
+            <padding><Insets top="16" right="24" bottom="16" left="24"/></padding>
+            <Button onAction="#handleBack" styleClass="btn-secondary" text="Annuler"/>
+            <Button onAction="#ajouterReponse" styleClass="btn-primary" text="Enregistrer"/>
         </HBox>
-
-        <HBox spacing="10">
-            <Label text="Réponse:" style="-fx-min-width: 100;"/>
-            <TextArea fx:id="reponseTA" style="-fx-min-width: 420; -fx-min-height: 100;"/>
-        </HBox>
-
-        <HBox spacing="10">
-            <Label text="Score:" style="-fx-min-width: 100;"/>
-            <TextField fx:id="scoreTF" style="-fx-min-width: 200;"/>
-        </HBox>
-
-        <HBox spacing="10" style="-fx-padding-top: 20;">
-            <Button text="Enregistrer" onAction="#ajouterReponse" styleClass="primary-button"/>
-            <Button text="Annuler" onAction="#handleBack" styleClass="secondary-button"/>
-        </HBox>
-    </VBox>
-</AnchorPane>
+    </bottom>
+</BorderPane>

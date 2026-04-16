@@ -125,6 +125,9 @@ public class ListeReponseController {
 
     @FXML
     private void handleRefresh(ActionEvent event) {
+        if (searchTF != null) {
+            searchTF.clear();
+        }
         chargerReponses();
     }
 

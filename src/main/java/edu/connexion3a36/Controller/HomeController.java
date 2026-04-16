@@ -22,6 +22,11 @@ public class HomeController {
         open(event, "/admin_quiz_list.fxml");
     }
 
+    @FXML
+    private void openStudentSpace(ActionEvent event) {
+        open(event, "/student_quiz_list.fxml");
+    }
+
     private void open(ActionEvent event, String fxml) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxml));

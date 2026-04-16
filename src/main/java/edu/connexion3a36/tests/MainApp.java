@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/quiz_list.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/home.fxml"));
         Scene sc = new Scene(root, 1100, 700);
         sc.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
         primaryStage.setTitle("Application");

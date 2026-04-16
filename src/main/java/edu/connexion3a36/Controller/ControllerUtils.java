@@ -5,27 +5,68 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.Node;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 
 public final class ControllerUtils {
+    private static final Pattern QUIZ_TITLE_ALLOWED_PATTERN = Pattern.compile("[\\p{L}\\p{Nd} _-]*");
 
     private ControllerUtils() {
     }
 
     public static boolean isTextValid(TextInputControl control) {
+        return isTextValid(control, 6);
+    }
+
+    public static boolean isTextValid(TextInputControl control, int minLength) {
         return control != null
                 && control.getText() != null
                 && !control.getText().trim().isEmpty()
-                && control.getText().trim().length() > 5;
+                && control.getText().trim().length() >= minLength;
     }
 
     public static boolean isRequiredFilled(TextInputControl control) {
         return control != null
                 && control.getText() != null
                 && !control.getText().trim().isEmpty();
+    }
+
+    public static boolean isQuizTitleValid(TextInputControl control) {
+        return getQuizTitleValidationMessage(control) == null;
+    }
+
+    public static String getQuizTitleValidationMessage(TextInputControl control) {
+        if (!isRequiredFilled(control)) {
+            return "Le titre du quiz est obligatoire.";
+        }
+
+        String title = control.getText().trim();
+        if (title.length() < 2) {
+            return "Le titre doit contenir au moins 2 caracteres.";
+        }
+        if (!QUIZ_TITLE_ALLOWED_PATTERN.matcher(title).matches()) {
+            return "Le titre contient des caracteres non autorises.";
+        }
+
+        return null;
+    }
+
+    public static void applyQuizTitleFormatter(TextInputControl control) {
+        if (control == null) {
+            return;
+        }
+
+        UnaryOperator<TextFormatter.Change> filter = change -> {
+            String nextText = change.getControlNewText();
+            return QUIZ_TITLE_ALLOWED_PATTERN.matcher(nextText).matches() ? change : null;
+        };
+
+        control.setTextFormatter(new TextFormatter<>(filter));
     }
 
     public static boolean isInteger(TextInputControl control) {

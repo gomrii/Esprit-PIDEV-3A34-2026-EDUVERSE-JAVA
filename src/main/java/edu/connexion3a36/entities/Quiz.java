@@ -10,22 +10,36 @@ public class Quiz {
     private String titre;
     private String statut;
     private String createdBy;
+    private int duree;
+    private String level;
     private List<Question> questions = new ArrayList<>();
 
     public Quiz() {
     }
 
-    public Quiz(String titre, String statut, String createdBy) {
+    public Quiz(String titre, String statut, String createdBy, int duree, String level) {
         this.titre = titre;
         this.statut = statut;
         this.createdBy = createdBy;
+        this.duree = duree;
+        this.level = level;
     }
 
-    public Quiz(int idQuiz, String titre, String statut, String createdBy) {
+    public Quiz(String titre, String statut, String createdBy) {
+        this(titre, statut, createdBy, 0, null);
+    }
+
+    public Quiz(int idQuiz, String titre, String statut, String createdBy, int duree, String level) {
         this.idQuiz = idQuiz;
         this.titre = titre;
         this.statut = statut;
         this.createdBy = createdBy;
+        this.duree = duree;
+        this.level = level;
+    }
+
+    public Quiz(int idQuiz, String titre, String statut, String createdBy) {
+        this(idQuiz, titre, statut, createdBy, 0, null);
     }
 
     public int getIdQuiz() {
@@ -58,6 +72,22 @@ public class Quiz {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public int getDuree() {
+        return duree;
+    }
+
+    public void setDuree(int duree) {
+        this.duree = duree;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
     }
 
     public List<Question> getQuestions() {

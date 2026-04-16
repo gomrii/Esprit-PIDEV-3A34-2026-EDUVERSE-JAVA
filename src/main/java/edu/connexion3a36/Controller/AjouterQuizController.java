@@ -3,6 +3,7 @@ package edu.connexion3a36.Controller;
 import edu.connexion3a36.entities.Quiz;
 import edu.connexion3a36.services.QuizService;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 
 import java.sql.SQLException;
@@ -12,8 +13,21 @@ public class AjouterQuizController {
     @FXML
     private TextField titreTF;
 
+    @FXML
+    private TextField dureeTF;
+
+    @FXML
+    private ChoiceBox<String> levelChoice;
+
     private final QuizService quizService = new QuizService();
-    private String actorType = "teacher"; // "teacher" or "admin"
+    private String actorType = "teacher";
+
+    @FXML
+    public void initialize() {
+        levelChoice.getItems().setAll("facile", "moyen", "difficile");
+        levelChoice.setValue("moyen");
+        ControllerUtils.applyQuizTitleFormatter(titreTF);
+    }
 
     public void setActorType(String actorType) {
         this.actorType = actorType;
@@ -21,32 +35,52 @@ public class AjouterQuizController {
 
     @FXML
     public void ajouterQuiz() {
-        if (!ControllerUtils.isTextValid(titreTF)) {
-            ControllerUtils.showError("Le titre doit être rempli et contenir au moins 6 caractères.");
+        String titreErrorMessage = ControllerUtils.getQuizTitleValidationMessage(titreTF);
+        if (titreErrorMessage != null) {
+            ControllerUtils.showError(titreErrorMessage);
+            return;
+        }
+        if (!ControllerUtils.isInteger(dureeTF) || Integer.parseInt(dureeTF.getText().trim()) <= 0) {
+            ControllerUtils.showError("La duree doit etre un nombre entier positif.");
+            return;
+        }
+        if (levelChoice.getValue() == null || levelChoice.getValue().isBlank()) {
+            ControllerUtils.showError("Le niveau du quiz doit etre selectionne.");
             return;
         }
 
-        // Set status and createdBy based on actor type
         String statut = "teacher".equals(actorType) ? "en_attente" : "valide";
         String createdBy = "teacher".equals(actorType) ? "enseignant" : "admin";
-        Quiz quiz = new Quiz(titreTF.getText().trim(), statut, createdBy);
+        Quiz quiz = new Quiz(
+                titreTF.getText().trim(),
+                statut,
+                createdBy,
+                Integer.parseInt(dureeTF.getText().trim()),
+                levelChoice.getValue()
+        );
 
         try {
+            if (quizService.quizTitleExists(quiz.getTitre())) {
+                ControllerUtils.showError(QuizService.QUIZ_TITLE_ALREADY_EXISTS_MESSAGE);
+                return;
+            }
             quizService.ajouterQuiz(quiz);
             String message = "teacher".equals(actorType)
-                    ? "Quiz ajouté avec succès (en attente de validation)."
-                    : "Quiz ajouté avec succès (validé).";
+                    ? "Quiz ajoute avec succes (en attente de validation)."
+                    : "Quiz ajoute avec succes (valide).";
             ControllerUtils.showInfo(message);
-            // Navigate back to list
             String targetPage = "teacher".equals(actorType) ? "/teacher_quiz_list.fxml" : "/admin_quiz_list.fxml";
             ControllerUtils.navigateTo(titreTF, targetPage);
         } catch (SQLException e) {
+            if (QuizService.QUIZ_TITLE_ALREADY_EXISTS_MESSAGE.equals(e.getMessage())
+                    || QuizService.QUIZ_TITLE_REQUIRED_MESSAGE.equals(e.getMessage())
+                    || QuizService.QUIZ_TITLE_TOO_SHORT_MESSAGE.equals(e.getMessage())
+                    || QuizService.QUIZ_TITLE_INVALID_CHARACTERS_MESSAGE.equals(e.getMessage())) {
+                ControllerUtils.showError(e.getMessage());
+                return;
+            }
             ControllerUtils.showError("Erreur lors de l'ajout du quiz : " + e.getMessage());
         }
-    }
-
-    private void clearFields() {
-        titreTF.clear();
     }
 
     @FXML

@@ -7,72 +7,54 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Comparator;
 import java.sql.SQLException;
+import java.util.Comparator;
 
 public class AdminQuizListController {
 
     @FXML
-    private TableView<Quiz> quizzesTable;
-
+    private VBox cardsContainer;
     @FXML
-    private TableColumn<Quiz, Integer> colId;
-
+    private TextField searchTF;
     @FXML
-    private TableColumn<Quiz, String> colTitle;
-
+    private ChoiceBox<String> sortChoice;
     @FXML
-    private TableColumn<Quiz, String> colStatus;
-
-    @FXML
-    private TableColumn<Quiz, String> colCreatedBy;
-
-    @FXML
-    private Button btnModify;
-
-    @FXML
-    private Button btnDelete;
-
-    @FXML
-    private Button btnManageQuestions;
+    private Label summaryLabel;
 
     private final QuizService quizService = new QuizService();
     private ObservableList<Quiz> masterData = FXCollections.observableArrayList();
 
     @FXML
-    private TextField searchTF;
-
-    @FXML
-    private ChoiceBox<String> sortChoice;
-
-    @FXML
     public void initialize() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("idQuiz"));
-        colTitle.setCellValueFactory(new PropertyValueFactory<>("titre"));
-        colStatus.setCellValueFactory(new PropertyValueFactory<>("statut"));
-        colCreatedBy.setCellValueFactory(new PropertyValueFactory<>("createdBy"));
-
-        quizzesTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            updateButtonStates(newVal);
-        });
         sortChoice.setItems(FXCollections.observableArrayList(
                 "ID croissant",
-                "ID décroissant",
+                "ID decroissant",
                 "Titre A-Z",
                 "Titre Z-A",
-                "Statut"
+                "Statut",
+                "Niveau",
+                "Duree croissante",
+                "Duree decroissante"
         ));
         sortChoice.setValue("ID croissant");
         sortChoice.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFiltersAndSort());
-
         chargerQuiz();
     }
 
@@ -80,27 +62,14 @@ public class AdminQuizListController {
         try {
             masterData = FXCollections.observableArrayList(quizService.afficherQuiz());
             applyFiltersAndSort();
-            quizzesTable.getSelectionModel().clearSelection();
-            updateButtonStates(null);
         } catch (SQLException e) {
             ControllerUtils.showError("Erreur lors du chargement des quiz : " + e.getMessage());
         }
     }
 
-    private void updateButtonStates(Quiz selectedQuiz) {
-        boolean disableActions = selectedQuiz == null;
-        btnModify.setDisable(disableActions);
-        btnDelete.setDisable(disableActions);
-        btnManageQuestions.setDisable(disableActions);
-    }
-
     @FXML
     private void handleSearch(ActionEvent event) {
         applyFiltersAndSort();
-    }
-
-    public Quiz getSelectedQuiz() {
-        return quizzesTable.getSelectionModel().getSelectedItem();
     }
 
     @FXML
@@ -110,137 +79,79 @@ public class AdminQuizListController {
             Parent root = loader.load();
             AjouterQuizController controller = loader.getController();
             controller.setActorType("admin");
-            
-            Node source = (Node) event.getSource();
-            Stage stage = (Stage) source.getScene().getWindow();
-            Scene scene = stage.getScene();
-            if (scene == null) {
-                Scene newScene = new Scene(root, 1100, 700);
-                newScene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
-                stage.setScene(newScene);
-            } else {
-                scene.setRoot(root);
-            }
+            switchScene(event, root);
         } catch (IOException e) {
             ControllerUtils.showError("Impossible d'ouvrir le formulaire d'ajout: " + e.getMessage());
         }
     }
 
     @FXML
-    private void handleEdit(ActionEvent event) {
-        Quiz selected = getSelectedQuiz();
-        if (selected == null) {
-            ControllerUtils.showWarning("SÃ©lectionnez un quiz Ã  modifier.");
-            return;
+    private void handleRefresh(ActionEvent event) {
+        if (searchTF != null) {
+            searchTF.clear();
         }
+        chargerQuiz();
+    }
 
+    private void openQuizEditor(Quiz quiz, ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/quiz_edit.fxml"));
             Parent root = loader.load();
             ModifierQuizController controller = loader.getController();
-            controller.setQuiz(selected);
+            controller.setQuiz(quiz);
             controller.setActorType("admin");
-
-            Node source = (Node) event.getSource();
-            Stage stage = (Stage) source.getScene().getWindow();
-            Scene scene = stage.getScene();
-            if (scene == null) {
-                Scene newScene = new Scene(root, 1100, 700);
-                newScene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
-                stage.setScene(newScene);
-            } else {
-                scene.setRoot(root);
-            }
+            switchScene(event, root);
         } catch (IOException e) {
             ControllerUtils.showError("Impossible d'ouvrir le formulaire de modification: " + e.getMessage());
         }
     }
 
-    @FXML
-    private void handleDelete(ActionEvent event) {
-        Quiz selected = getSelectedQuiz();
-        if (selected == null) {
-            ControllerUtils.showWarning("SÃ©lectionnez un quiz Ã  supprimer.");
-            return;
-        }
-
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Supprimer le quiz sÃ©lectionnÃ© ?", ButtonType.YES, ButtonType.NO);
+    private void deleteQuiz(Quiz quiz) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Supprimer le quiz selectionne ?", ButtonType.YES, ButtonType.NO);
         confirm.showAndWait();
-        if (confirm.getResult() == ButtonType.YES) {
-            try {
-                quizService.supprimerQuiz(selected.getIdQuiz());
-                ControllerUtils.showInfo("Quiz supprimÃ©.");
-                chargerQuiz();
-            } catch (SQLException e) {
-                ControllerUtils.showError("Erreur lors de la suppression : " + e.getMessage());
-            }
-        }
-    }
-
-    @FXML
-    private void handleValidate(ActionEvent event) {
-        Quiz selected = getSelectedQuiz();
-        if (selected == null) {
-            ControllerUtils.showWarning("Sélectionnez un quiz à accepter.");
+        if (confirm.getResult() != ButtonType.YES) {
             return;
         }
-        
+
         try {
-            quizService.validerQuiz(selected.getIdQuiz());
-            ControllerUtils.showInfo("Quiz accepté.");
+            quizService.supprimerQuiz(quiz.getIdQuiz());
+            ControllerUtils.showInfo("Quiz supprime.");
             chargerQuiz();
         } catch (SQLException e) {
-            ControllerUtils.showError("Erreur lors de l'acceptation : " + e.getMessage());
+            ControllerUtils.showError("Erreur lors de la suppression : " + e.getMessage());
         }
     }
 
-    @FXML
-    private void handleReject(ActionEvent event) {
-        Quiz selected = getSelectedQuiz();
-        if (selected == null) {
-            ControllerUtils.showWarning("Sélectionnez un quiz à rejeter.");
-            return;
-        }
-        
-        try {
-            quizService.rejeterQuiz(selected.getIdQuiz());
-            ControllerUtils.showInfo("Quiz rejeté.");
-            chargerQuiz();
-        } catch (SQLException e) {
-            ControllerUtils.showError("Erreur lors du rejet : " + e.getMessage());
-        }
-    }
-
-    @FXML
-    private void handleManageQuestions(ActionEvent event) {
-        if (getSelectedQuiz() == null) {
-            ControllerUtils.showWarning("Sélectionnez un quiz pour consulter ses questions.");
-            return;
-        }
+    private void manageQuestions(Quiz quiz, ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/admin_question_list.fxml"));
             Parent root = loader.load();
             AdminQuestionListController controller = loader.getController();
-            controller.setQuiz(getSelectedQuiz());
-            
-            Node source = (Node) event.getSource();
-            Stage stage = (Stage) source.getScene().getWindow();
-            Scene scene = stage.getScene();
-            if (scene == null) {
-                Scene newScene = new Scene(root, 1100, 700);
-                newScene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
-                stage.setScene(newScene);
-            } else {
-                scene.setRoot(root);
-            }
+            controller.setQuiz(quiz);
+            switchScene(event, root);
         } catch (IOException e) {
             ControllerUtils.showError("Impossible d'ouvrir la consultation des questions: " + e.getMessage());
         }
     }
 
-    @FXML
-    private void handleRefresh(ActionEvent event) {
-        chargerQuiz();
+    private void validateQuiz(Quiz quiz) {
+        try {
+            quizService.validerQuiz(quiz.getIdQuiz());
+            chargerQuiz();
+            ControllerUtils.showInfo("Quiz accepte.");
+        } catch (SQLException e) {
+            ControllerUtils.showError("Erreur lors de l'acceptation : " + e.getMessage());
+        }
+    }
+
+    private void rejectQuiz(Quiz quiz) {
+        try {
+            quizService.rejeterQuiz(quiz.getIdQuiz());
+            chargerQuiz();
+            ControllerUtils.showInfo("Quiz rejete.");
+        } catch (SQLException e) {
+            ControllerUtils.showError("Erreur lors du rejet : " + e.getMessage());
+        }
     }
 
     private void applyFiltersAndSort() {
@@ -249,16 +160,18 @@ public class AdminQuizListController {
         for (Quiz quiz : masterData) {
             if (q.isEmpty()
                     || String.valueOf(quiz.getIdQuiz()).contains(q)
-                    || (quiz.getTitre() != null && quiz.getTitre().toLowerCase().contains(q))
-                    || (quiz.getStatut() != null && quiz.getStatut().toLowerCase().contains(q))
-                    || (quiz.getCreatedBy() != null && quiz.getCreatedBy().toLowerCase().contains(q))) {
+                    || safeValue(quiz.getTitre()).toLowerCase().contains(q)
+                    || safeValue(quiz.getStatut()).toLowerCase().contains(q)
+                    || safeValue(quiz.getCreatedBy()).toLowerCase().contains(q)
+                    || safeValue(quiz.getLevel()).toLowerCase().contains(q)
+                    || String.valueOf(quiz.getDuree()).contains(q)) {
                 filtered.add(quiz);
             }
         }
 
         Comparator<Quiz> comparator = Comparator.comparingInt(Quiz::getIdQuiz);
         String sort = sortChoice != null ? sortChoice.getValue() : "ID croissant";
-        if ("ID décroissant".equals(sort)) {
+        if ("ID decroissant".equals(sort)) {
             comparator = Comparator.comparingInt(Quiz::getIdQuiz).reversed();
         } else if ("Titre A-Z".equals(sort)) {
             comparator = Comparator.comparing((Quiz quiz) -> safeValue(quiz.getTitre()), String.CASE_INSENSITIVE_ORDER);
@@ -267,10 +180,128 @@ public class AdminQuizListController {
         } else if ("Statut".equals(sort)) {
             comparator = Comparator.comparing((Quiz quiz) -> safeValue(quiz.getStatut()), String.CASE_INSENSITIVE_ORDER)
                     .thenComparingInt(Quiz::getIdQuiz);
+        } else if ("Niveau".equals(sort)) {
+            comparator = Comparator.comparing((Quiz quiz) -> safeValue(quiz.getLevel()), String.CASE_INSENSITIVE_ORDER)
+                    .thenComparingInt(Quiz::getIdQuiz);
+        } else if ("Duree croissante".equals(sort)) {
+            comparator = Comparator.comparingInt(Quiz::getDuree).thenComparingInt(Quiz::getIdQuiz);
+        } else if ("Duree decroissante".equals(sort)) {
+            comparator = Comparator.comparingInt(Quiz::getDuree).reversed().thenComparingInt(Quiz::getIdQuiz);
         }
 
         FXCollections.sort(filtered, comparator);
-        quizzesTable.setItems(filtered);
+        renderQuizCards(filtered);
+    }
+
+    private void renderQuizCards(ObservableList<Quiz> quizzes) {
+        cardsContainer.getChildren().clear();
+        summaryLabel.setText(quizzes.size() + (quizzes.size() > 1 ? " quiz affiches" : " quiz affiche"));
+
+        if (quizzes.isEmpty()) {
+            cardsContainer.getChildren().add(createEmptyState(
+                    "Aucun quiz trouve",
+                    "Essayez un autre filtre ou ajoutez un nouveau quiz."
+            ));
+            return;
+        }
+
+        for (Quiz quiz : quizzes) {
+            cardsContainer.getChildren().add(createQuizCard(quiz));
+        }
+    }
+
+    private VBox createQuizCard(Quiz quiz) {
+        VBox card = new VBox(16);
+        card.getStyleClass().add("dashboard-card");
+        card.setPadding(new Insets(18));
+
+        Label overline = new Label("Quiz #" + quiz.getIdQuiz());
+        overline.getStyleClass().add("card-overline");
+
+        Label title = new Label(safeValue(quiz.getTitre()));
+        title.getStyleClass().add("card-title");
+        title.setWrapText(true);
+
+        HBox topRow = new HBox(12, new VBox(6, overline, title), createStatusBadge(safeValue(quiz.getStatut())));
+        topRow.setAlignment(Pos.TOP_LEFT);
+        HBox.setHgrow(topRow.getChildren().get(0), Priority.ALWAYS);
+
+        HBox metaRow = new HBox(10,
+                createMetaChip("Createur", safeValue(quiz.getCreatedBy())),
+                createMetaChip("Duree", quiz.getDuree() + " min"),
+                createMetaChip("Niveau", safeValue(quiz.getLevel()))
+        );
+        metaRow.setAlignment(Pos.CENTER_LEFT);
+
+        Button manageQuestions = new Button("Gerer Questions");
+        manageQuestions.getStyleClass().add("btn-secondary");
+        manageQuestions.setOnAction(event -> manageQuestions(quiz, event));
+
+        Button modify = new Button("Modifier");
+        modify.getStyleClass().add("btn-modifier");
+        modify.setOnAction(event -> openQuizEditor(quiz, event));
+
+        Button delete = new Button("Supprimer");
+        delete.getStyleClass().add("btn-supprimer");
+        delete.setOnAction(event -> deleteQuiz(quiz));
+
+        Button accept = new Button("Accepter");
+        accept.getStyleClass().add("btn-success");
+        accept.setOnAction(event -> validateQuiz(quiz));
+
+        Button reject = new Button("Rejeter");
+        reject.getStyleClass().add("warning-button");
+        reject.setOnAction(event -> rejectQuiz(quiz));
+
+        HBox actions = new HBox(10, manageQuestions, modify, delete, accept, reject);
+        actions.getStyleClass().add("card-actions");
+        actions.setAlignment(Pos.CENTER_LEFT);
+
+        card.getChildren().addAll(topRow, metaRow, actions);
+        return card;
+    }
+
+    private Label createStatusBadge(String status) {
+        Label badge = new Label(status.isBlank() ? "Sans statut" : status);
+        badge.getStyleClass().addAll("status-badge", statusStyle(status));
+        return badge;
+    }
+
+    private VBox createMetaChip(String labelText, String valueText) {
+        Label label = new Label(labelText);
+        label.getStyleClass().add("meta-label");
+        Label value = new Label(valueText == null || valueText.isBlank() ? "-" : valueText);
+        value.getStyleClass().add("meta-value");
+
+        VBox chip = new VBox(4, label, value);
+        chip.getStyleClass().add("meta-chip");
+        return chip;
+    }
+
+    private VBox createEmptyState(String titleText, String bodyText) {
+        Label title = new Label(titleText);
+        title.getStyleClass().add("empty-state-title");
+        Label body = new Label(bodyText);
+        body.getStyleClass().add("empty-state-text");
+        body.setWrapText(true);
+
+        VBox box = new VBox(8, title, body);
+        box.getStyleClass().add("empty-state");
+        return box;
+    }
+
+    private String statusStyle(String status) {
+        String normalized = safeValue(status).toLowerCase();
+        if (normalized.contains("valid")) {
+            return "status-valid";
+        }
+        if (normalized.contains("rejet")) {
+            return "status-rejected";
+        }
+        if (normalized.contains("attente")) {
+            return "status-pending";
+        }
+        return "status-neutral";
     }
 
     private String safeValue(String value) {
@@ -282,18 +313,22 @@ public class AdminQuizListController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/home.fxml"));
             Parent root = loader.load();
-            Node source = (Node) event.getSource();
-            Stage stage = (Stage) source.getScene().getWindow();
-            Scene scene = stage.getScene();
-            if (scene == null) {
-                Scene newScene = new Scene(root, 1100, 700);
-                newScene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
-                stage.setScene(newScene);
-            } else {
-                scene.setRoot(root);
-            }
+            switchScene(event, root);
         } catch (IOException e) {
-            ControllerUtils.showError("Impossible de retourner à l'accueil: " + e.getMessage());
+            ControllerUtils.showError("Impossible de retourner a l'accueil: " + e.getMessage());
+        }
+    }
+
+    private void switchScene(ActionEvent event, Parent root) {
+        Node source = (Node) event.getSource();
+        Stage stage = (Stage) source.getScene().getWindow();
+        Scene scene = stage.getScene();
+        if (scene == null) {
+            Scene newScene = new Scene(root, 1100, 700);
+            newScene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+            stage.setScene(newScene);
+        } else {
+            scene.setRoot(root);
         }
     }
 }
