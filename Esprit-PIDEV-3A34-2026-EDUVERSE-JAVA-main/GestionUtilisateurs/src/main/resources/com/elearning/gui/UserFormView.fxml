@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<!--
+  UserFormView.fxml — Formulaire d'ajout/modification d'utilisateur
+
+  Équivalent Symfony : templates/admin/users/form.html.twig
+  Réutilisé pour CREATE et UPDATE (le controller adapte le comportement).
+-->
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.elearning.controller.UserFormController"
+      styleClass="form-container"
+      spacing="0" prefWidth="500" prefHeight="580">
+
+    <!-- En-tête -->
+    <HBox styleClass="form-header" alignment="CENTER_LEFT">
+        <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
+        <Label fx:id="titreLabel" text="Utilisateur" styleClass="form-title"/>
+    </HBox>
+
+    <!-- Corps du formulaire -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="form-scroll">
+        <VBox spacing="14" styleClass="form-body">
+            <padding><Insets top="20" right="25" bottom="10" left="25"/></padding>
+
+            <!-- Nom complet -->
+            <VBox spacing="3">
+                <Label text="Nom complet *" styleClass="field-label"/>
+                <TextField fx:id="nomField" promptText="Ahmed Ben Ali" styleClass="text-field"/>
+                <Label fx:id="errNom" styleClass="error-inline" visible="false" managed="false"/>
+            </VBox>
+
+            <!-- Email -->
+            <VBox spacing="3">
+                <Label text="Adresse e-mail *" styleClass="field-label"/>
+                <TextField fx:id="emailField" promptText="ahmed@elearning.tn" styleClass="text-field"/>
+                <Label fx:id="errEmail" styleClass="error-inline" visible="false" managed="false"/>
+            </VBox>
+
+            <!-- Rôle -->
+            <VBox spacing="3">
+                <Label text="Rôle *" styleClass="field-label"/>
+                <ComboBox fx:id="roleCombo" maxWidth="Infinity" styleClass="combo-field"/>
+                <Label fx:id="errRole" styleClass="error-inline" visible="false" managed="false"/>
+            </VBox>
+
+            <!-- Téléphone -->
+            <VBox spacing="3">
+                <Label text="Téléphone (optionnel)" styleClass="field-label"/>
+                <TextField fx:id="phoneField" promptText="+21620123456" styleClass="text-field"/>
+                <Label fx:id="errPhone" styleClass="error-inline" visible="false" managed="false"/>
+            </VBox>
+
+            <!-- Bio -->
+            <VBox spacing="3">
+                <Label text="Biographie (optionnel)" styleClass="field-label"/>
+                <TextArea fx:id="bioArea" promptText="Décrivez cet utilisateur..."
+                          prefRowCount="3" wrapText="true" styleClass="text-area"/>
+            </VBox>
+
+            <!-- Section mot de passe (masquée en mode modification) -->
+            <Label fx:id="passwordSection" text="— Mot de passe —"
+                   styleClass="section-separator"/>
+
+            <VBox spacing="3">
+                <Label text="Mot de passe *" styleClass="field-label"/>
+                <PasswordField fx:id="passwordField" promptText="Min 8 cars, 1 MAJ, 1 chiffre, 1 spécial"
+                               styleClass="text-field"/>
+                <Label fx:id="errPassword" styleClass="error-inline" visible="false" managed="false"/>
+            </VBox>
+
+            <VBox spacing="3">
+                <Label text="Confirmer le mot de passe *" styleClass="field-label"/>
+                <PasswordField fx:id="confirmPasswordField" promptText="Répétez le mot de passe"
+                               styleClass="text-field"/>
+            </VBox>
+
+            <!-- Erreur globale -->
+            <Label fx:id="errGlobal" styleClass="error-global" wrapText="true"
+                   visible="false" managed="false"/>
+
+        </VBox>
+    </ScrollPane>
+
+    <!-- Boutons bas -->
+    <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="form-footer">
+        <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
+        <Button text="Annuler" styleClass="btn-secondary" onAction="#handleAnnuler"/>
+        <Button fx:id="btnSauvegarder" text="💾 Sauvegarder"
+                styleClass="btn-primary" onAction="#handleSauvegarder"/>
+    </HBox>
+
+</VBox>
