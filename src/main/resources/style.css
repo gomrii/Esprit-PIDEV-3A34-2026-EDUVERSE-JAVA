@@ -1,5 +1,5 @@
 /* ============================================================
-   EduVerse Quiz Module — Template aligned with Gestion User
+   EduVerse Quiz Module â€” Template aligned with Gestion User
    ============================================================ */
 
 .root {
@@ -196,6 +196,46 @@
 .primary-button:hover,
 .add-button:hover {
     -fx-background-color: #2980b9;
+}
+
+.accessibility-toggle {
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+    -fx-background-radius: 999;
+    -fx-padding: 8 18 8 18;
+    -fx-cursor: hand;
+    -fx-pref-height: 38px;
+    -fx-text-fill: white;
+}
+
+.accessibility-enabled {
+    -fx-background-color: linear-gradient(to right, #138a72, #16a085);
+}
+
+.accessibility-enabled:hover {
+    -fx-background-color: linear-gradient(to right, #0f725e, #138a72);
+}
+
+.accessibility-disabled {
+    -fx-background-color: linear-gradient(to right, #7f8c8d, #95a5a6);
+}
+
+.accessibility-disabled:hover {
+    -fx-background-color: linear-gradient(to right, #6c7a7b, #7f8c8d);
+}
+.btn-chatbot {
+    -fx-background-color: linear-gradient(to right, #18364d, #24597d);
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+    -fx-background-radius: 999;
+    -fx-padding: 8 18 8 18;
+    -fx-cursor: hand;
+    -fx-pref-height: 38px;
+}
+
+.btn-chatbot:hover {
+    -fx-background-color: linear-gradient(to right, #214967, #2f6e99);
 }
 
 .btn-secondary,
@@ -935,4 +975,146 @@
 .empty-state-text {
     -fx-text-fill: #6f8192;
     -fx-font-size: 13px;
+}
+
+.chatbot-root {
+    -fx-background-color: linear-gradient(to bottom, #f4f8fb 0%, #eef4f9 100%);
+}
+
+.chatbot-header {
+    -fx-background-color: linear-gradient(to right, #18364d, #24597d);
+    -fx-border-color: rgba(255,255,255,0.12);
+    -fx-border-width: 0 0 1 0;
+}
+
+.chatbot-title {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+}
+
+.chatbot-subtitle {
+    -fx-text-fill: rgba(255,255,255,0.82);
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+}
+
+.chatbot-close-button {
+    -fx-background-color: rgba(255,255,255,0.14);
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-background-radius: 999;
+    -fx-padding: 8 16 8 16;
+    -fx-cursor: hand;
+}
+
+.chatbot-close-button:hover {
+    -fx-background-color: rgba(255,255,255,0.24);
+}
+
+.chat-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.chat-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.chat-conversation {
+    -fx-background-color: transparent;
+}
+
+.chatbot-footer {
+    -fx-background-color: rgba(255,255,255,0.76);
+    -fx-border-color: #d7e4ef;
+    -fx-border-width: 1 0 0 0;
+}
+
+.chat-input {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-border-color: #c9d9e7;
+    -fx-border-radius: 16;
+    -fx-padding: 12 14 12 14;
+    -fx-font-size: 13px;
+}
+
+.chat-input:focused {
+    -fx-border-color: #2f80ed;
+    -fx-effect: dropshadow(gaussian, rgba(47,128,237,0.20), 10, 0.15, 0, 0);
+}
+
+.chat-send-button {
+    -fx-background-color: linear-gradient(to right, #2f80ed, #145db8);
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-background-radius: 14;
+    -fx-padding: 10 18 10 18;
+    -fx-cursor: hand;
+    -fx-min-width: 110px;
+}
+
+.chat-send-button:hover {
+    -fx-background-color: linear-gradient(to right, #3c8df6, #1c68c4);
+}
+
+.chat-row {
+    -fx-padding: 0;
+}
+
+.chat-bubble {
+    -fx-padding: 12 14 12 14;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-effect: dropshadow(gaussian, rgba(28,43,56,0.06), 12, 0.14, 0, 3);
+}
+
+.chat-bubble-assistant {
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f4f8fc);
+    -fx-border-color: #d6e3ee;
+}
+
+.chat-bubble-user {
+    -fx-background-color: linear-gradient(to bottom right, #2f80ed, #1664c0);
+    -fx-border-color: rgba(255,255,255,0.12);
+}
+
+.chat-bubble-system {
+    -fx-background-color: linear-gradient(to bottom right, #fff3e5, #fde8d2);
+    -fx-border-color: #f0c38a;
+}
+
+.chat-author {
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
+}
+
+.chat-bubble-assistant .chat-author {
+    -fx-text-fill: #52708a;
+}
+
+.chat-bubble-user .chat-author {
+    -fx-text-fill: rgba(255,255,255,0.86);
+}
+
+.chat-bubble-system .chat-author {
+    -fx-text-fill: #a55b00;
+}
+
+.chat-text {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+.chat-bubble-assistant .chat-text {
+    -fx-text-fill: #203142;
+}
+
+.chat-bubble-user .chat-text {
+    -fx-text-fill: white;
+}
+
+.chat-bubble-system .chat-text {
+    -fx-text-fill: #6f4700;
 }

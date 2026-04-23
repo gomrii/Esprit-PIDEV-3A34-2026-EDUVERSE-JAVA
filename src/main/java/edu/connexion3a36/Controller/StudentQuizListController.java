@@ -35,6 +35,8 @@ public class StudentQuizListController {
     private ChoiceBox<String> sortChoice;
     @FXML
     private Label summaryLabel;
+    @FXML
+    private Button accessibilityButton;
     private final QuizService quizService = new QuizService();
     private ObservableList<Quiz> masterData = FXCollections.observableArrayList();
 
@@ -51,6 +53,8 @@ public class StudentQuizListController {
         ));
         sortChoice.setValue("ID croissant");
         sortChoice.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFiltersAndSort());
+        searchTF.textProperty().addListener((obs, oldVal, newVal) -> applyFiltersAndSort());
+        ControllerUtils.configureAccessibilityButton(accessibilityButton);
         chargerQuizValides();
     }
 
@@ -83,6 +87,20 @@ public class StudentQuizListController {
             switchScene(event, root);
         } catch (IOException e) {
             ControllerUtils.showError("Impossible d'ouvrir la page statistiques : " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleOpenChatbot(ActionEvent event) {
+        ChatbotController.openDialog((Node) event.getSource());
+    }
+
+    @FXML
+    private void handleToggleAccessibility(ActionEvent event) {
+        if (ControllerUtils.isAccessibilityActive()) {
+            ControllerUtils.deactivateAccessibility(accessibilityButton);
+        } else {
+            ControllerUtils.activateAccessibility(accessibilityButton);
         }
     }
 

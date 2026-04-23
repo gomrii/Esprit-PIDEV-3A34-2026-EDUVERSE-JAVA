@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.SVGPath?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.connexion3a36.Controller.ListeQuestionController">
     <center>
@@ -18,11 +17,6 @@
             <Label styleClass="page-title" text="Liste des Questions"/>
             <HBox alignment="CENTER_LEFT" spacing="10">
                 <TextField fx:id="searchTF" prefWidth="280" promptText="Rechercher..." styleClass="search-field"/>
-                <Button onAction="#handleSearch" styleClass="search-action-button">
-                    <graphic>
-                        <SVGPath content="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16a6.47 6.47 0 0 0 4.23-1.57l.27.28v.79L19 20.49 20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" styleClass="search-icon"/>
-                    </graphic>
-                </Button>
                 <ChoiceBox fx:id="sortChoice" prefWidth="180"/>
                 <HBox alignment="CENTER_RIGHT" spacing="10" HBox.hgrow="ALWAYS">
                     <Button onAction="#handleRefresh" styleClass="btn-secondary" text="Actualiser"/>

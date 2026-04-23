@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -13,25 +14,54 @@
     <top>
         <VBox styleClass="form-header">
             <padding><Insets top="18" right="24" bottom="18" left="24"/></padding>
-            <Label styleClass="form-title" text="Ajouter un Quiz"/>
+            <Label styleClass="form-title" text="Generation IA de Quiz"/>
+            <Label styleClass="page-subtitle" text="Remplissez les informations minimales, generez le contenu, ajustez-le puis enregistrez."/>
         </VBox>
     </top>
     <center>
         <VBox spacing="18" styleClass="form-body">
-            <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
-            <Label styleClass="field-label" text="Titre du quiz"/>
-            <TextField fx:id="titreTF" promptText="Saisir le titre du quiz"/>
-            <Label styleClass="field-label" text="Durée (minutes)"/>
-            <TextField fx:id="dureeTF" promptText="Exemple : 30"/>
-            <Label styleClass="field-label" text="Niveau"/>
-            <ChoiceBox fx:id="levelChoice" prefWidth="220"/>
+            <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+            <HBox spacing="16">
+                <VBox spacing="12" HBox.hgrow="ALWAYS">
+                    <Label styleClass="field-label" text="Titre ou theme"/>
+                    <TextField fx:id="titreTF" promptText="Exemple : JavaFX"/>
+                </VBox>
+                <VBox spacing="12">
+                    <Label styleClass="field-label" text="Duree (minutes)"/>
+                    <TextField fx:id="dureeTF" prefWidth="140" promptText="30"/>
+                </VBox>
+                <VBox spacing="12">
+                    <Label styleClass="field-label" text="Niveau"/>
+                    <ChoiceBox fx:id="levelChoice" prefWidth="160"/>
+                </VBox>
+                <VBox spacing="12">
+                    <Label styleClass="field-label" text="Nombre de questions"/>
+                    <TextField fx:id="nombreQuestionsTF" prefWidth="170" promptText="5"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="10">
+                <Button onAction="#genererQuiz" styleClass="btn-primary" text="Generer le quiz"/>
+                <Button onAction="#addManualQuestion" styleClass="btn-secondary" text="Ajouter une question"/>
+            </HBox>
+
+            <Label fx:id="generationStatusLabel" styleClass="list-summary" text="Aucun contenu genere pour le moment."/>
+
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" styleClass="content-scroll">
+                <content>
+                    <VBox fx:id="generatedQuestionsContainer" spacing="16" styleClass="card-list">
+                        <padding><Insets bottom="12"/></padding>
+                    </VBox>
+                </content>
+            </ScrollPane>
         </VBox>
     </center>
     <bottom>
         <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="form-footer">
             <padding><Insets top="16" right="24" bottom="16" left="24"/></padding>
             <Button onAction="#handleBack" styleClass="btn-secondary" text="Annuler"/>
-            <Button onAction="#ajouterQuiz" styleClass="btn-primary" text="Enregistrer"/>
+            <Button fx:id="saveButton" onAction="#ajouterQuiz" styleClass="btn-primary" text="Enregistrer le quiz"/>
         </HBox>
     </bottom>
 </BorderPane>

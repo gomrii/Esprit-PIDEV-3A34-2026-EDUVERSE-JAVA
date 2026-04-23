@@ -1,5 +1,7 @@
 package edu.connexion3a36.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Question {
@@ -7,6 +9,7 @@ public class Question {
     private int idQuestion;
     private String question;
     private int idQuiz;
+    private List<Reponse> reponses = new ArrayList<>();
 
     public Question() {}
 
@@ -29,6 +32,18 @@ public class Question {
 
     public int getIdQuiz() { return idQuiz; }
     public void setIdQuiz(int idQuiz) { this.idQuiz = idQuiz; }
+
+    public List<Reponse> getReponses() {
+        return reponses;
+    }
+
+    public void setReponses(List<Reponse> reponses) {
+        this.reponses = reponses;
+    }
+
+    public void addReponse(Reponse reponse) {
+        this.reponses.add(reponse);
+    }
 
     @Override
     public String toString() {

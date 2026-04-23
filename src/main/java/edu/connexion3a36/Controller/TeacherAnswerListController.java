@@ -65,6 +65,7 @@ public class TeacherAnswerListController {
         ));
         sortChoice.setValue("ID croissant");
         sortChoice.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFiltersAndSort());
+        searchTF.textProperty().addListener((obs, oldVal, newVal) -> applyFiltersAndSort());
     }
 
     public void chargerReponses() {

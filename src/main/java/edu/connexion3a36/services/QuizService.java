@@ -1,12 +1,15 @@
 package edu.connexion3a36.services;
 
+import edu.connexion3a36.entities.Question;
 import edu.connexion3a36.entities.Quiz;
+import edu.connexion3a36.entities.Reponse;
 import edu.connexion3a36.tools.MyConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +40,39 @@ public class QuizService {
             pst.setInt(4, quiz.getDuree());
             pst.setString(5, quiz.getLevel());
             pst.executeUpdate();
+        }
+    }
+
+    public int ajouterQuizComplet(Quiz quiz) throws SQLException {
+        validateQuizForGeneration(quiz);
+        if (quizTitleExists(quiz.getTitre())) {
+            throw new SQLException(QUIZ_TITLE_ALREADY_EXISTS_MESSAGE);
+        }
+
+        boolean autoCommit = cnx.getAutoCommit();
+        cnx.setAutoCommit(false);
+        try {
+            int quizId = insertQuizAndReturnId(quiz);
+            quiz.setIdQuiz(quizId);
+
+            for (Question question : quiz.getQuestions()) {
+                int questionId = insertQuestionAndReturnId(question, quizId);
+                question.setIdQuestion(questionId);
+                question.setIdQuiz(quizId);
+
+                for (Reponse reponse : question.getReponses()) {
+                    insertAnswer(reponse, questionId);
+                    reponse.setIdQuestion(questionId);
+                }
+            }
+
+            cnx.commit();
+            return quizId;
+        } catch (SQLException e) {
+            cnx.rollback();
+            throw e;
+        } finally {
+            cnx.setAutoCommit(autoCommit);
         }
     }
 
@@ -173,6 +209,81 @@ public class QuizService {
         }
         if (!trimmedTitle.matches("[\\p{L}\\p{Nd} _-]+")) {
             throw new SQLException(QUIZ_TITLE_INVALID_CHARACTERS_MESSAGE);
+        }
+    }
+
+    private void validateQuizForGeneration(Quiz quiz) throws SQLException {
+        validateQuizTitle(quiz != null ? quiz.getTitre() : null);
+        if (quiz == null) {
+            throw new SQLException("Le quiz est introuvable.");
+        }
+        if (quiz.getDuree() <= 0) {
+            throw new SQLException("La duree doit etre un entier positif.");
+        }
+        if (quiz.getLevel() == null || quiz.getLevel().isBlank()) {
+            throw new SQLException("Le niveau du quiz est obligatoire.");
+        }
+        if (quiz.getQuestions() == null || quiz.getQuestions().isEmpty()) {
+            throw new SQLException("Ajoutez au moins une question avant l enregistrement.");
+        }
+
+        for (Question question : quiz.getQuestions()) {
+            if (question == null || question.getQuestion() == null || question.getQuestion().trim().length() < 2) {
+                throw new SQLException("Chaque question doit contenir au moins 2 caracteres.");
+            }
+            if (question.getReponses() == null || question.getReponses().isEmpty()) {
+                throw new SQLException("Chaque question doit contenir au moins une reponse.");
+            }
+            for (Reponse reponse : question.getReponses()) {
+                if (reponse == null || reponse.getReponse() == null || reponse.getReponse().trim().length() < 1) {
+                    throw new SQLException("Chaque reponse doit etre renseignee.");
+                }
+            }
+        }
+    }
+
+    private int insertQuizAndReturnId(Quiz quiz) throws SQLException {
+        String requete = "INSERT INTO quiz (titre, statut, created_by, duree, level) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement pst = cnx.prepareStatement(requete, Statement.RETURN_GENERATED_KEYS)) {
+            pst.setString(1, quiz.getTitre().trim());
+            pst.setString(2, quiz.getStatut());
+            pst.setString(3, quiz.getCreatedBy());
+            pst.setInt(4, quiz.getDuree());
+            pst.setString(5, quiz.getLevel());
+            pst.executeUpdate();
+
+            try (ResultSet keys = pst.getGeneratedKeys()) {
+                if (keys.next()) {
+                    return keys.getInt(1);
+                }
+            }
+        }
+        throw new SQLException("Impossible de recuperer l identifiant du quiz cree.");
+    }
+
+    private int insertQuestionAndReturnId(Question question, int quizId) throws SQLException {
+        String requete = "INSERT INTO question (question, id_quiz) VALUES (?, ?)";
+        try (PreparedStatement pst = cnx.prepareStatement(requete, Statement.RETURN_GENERATED_KEYS)) {
+            pst.setString(1, question.getQuestion().trim());
+            pst.setInt(2, quizId);
+            pst.executeUpdate();
+
+            try (ResultSet keys = pst.getGeneratedKeys()) {
+                if (keys.next()) {
+                    return keys.getInt(1);
+                }
+            }
+        }
+        throw new SQLException("Impossible de recuperer l identifiant de la question creee.");
+    }
+
+    private void insertAnswer(Reponse reponse, int questionId) throws SQLException {
+        String requete = "INSERT INTO reponse (reponse, score, id_question) VALUES (?, ?, ?)";
+        try (PreparedStatement pst = cnx.prepareStatement(requete)) {
+            pst.setString(1, reponse.getReponse().trim());
+            pst.setDouble(2, reponse.getScore());
+            pst.setInt(3, questionId);
+            pst.executeUpdate();
         }
     }
 }

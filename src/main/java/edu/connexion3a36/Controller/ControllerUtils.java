@@ -1,11 +1,13 @@
 package edu.connexion3a36.Controller;
 
+import edu.connexion3a36.services.AccessibilityService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.TextInputControl;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.Node;
 import javafx.stage.Stage;
 
@@ -93,6 +95,41 @@ public final class ControllerUtils {
         }
     }
 
+    public static void configureAccessibilityButton(Button button) {
+        if (button == null) {
+            return;
+        }
+
+        button.getStyleClass().removeAll("accessibility-enabled", "accessibility-disabled");
+        if (!button.getStyleClass().contains("accessibility-toggle")) {
+            button.getStyleClass().add("accessibility-toggle");
+        }
+        boolean enabled = AccessibilityService.getInstance().isAccessibilityEnabled();
+        if (enabled) {
+            button.setText("Assistant vocal : ON");
+            button.getStyleClass().add("accessibility-enabled");
+        } else {
+            button.setText("Assistant vocal : OFF");
+            button.getStyleClass().add("accessibility-disabled");
+        }
+    }
+
+    public static boolean isAccessibilityActive() {
+        return AccessibilityService.getInstance().isAccessibilityEnabled();
+    }
+
+    public static boolean activateAccessibility(Button button) {
+        boolean enabled = AccessibilityService.getInstance().activateAccessibility();
+        configureAccessibilityButton(button);
+        return enabled;
+    }
+
+    public static boolean deactivateAccessibility(Button button) {
+        boolean disabled = AccessibilityService.getInstance().deactivateAccessibility();
+        configureAccessibilityButton(button);
+        return disabled;
+    }
+
     public static void showInfo(String message) {
         showAlert(Alert.AlertType.INFORMATION, "Information", message);
     }
@@ -106,6 +143,7 @@ public final class ControllerUtils {
     }
 
     private static void showAlert(Alert.AlertType type, String title, String message) {
+        AccessibilityService.getInstance().announceMessage(title + ". " + message);
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
@@ -124,6 +162,7 @@ public final class ControllerUtils {
             if (scene == null) {
                 Scene newScene = new Scene(root, 1100, 700);
                 newScene.getStylesheets().add(css);
+                AccessibilityService.getInstance().install(newScene);
                 stage.setScene(newScene);
             } else {
                 scene.setRoot(root);

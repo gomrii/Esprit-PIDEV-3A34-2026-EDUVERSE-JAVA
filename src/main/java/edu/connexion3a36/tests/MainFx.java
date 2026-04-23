@@ -1,5 +1,6 @@
 package edu.connexion3a36.tests;
 
+import edu.connexion3a36.services.AccessibilityService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,8 +20,8 @@ public class MainFx extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/home.fxml"));
         Parent root = loader.load();
         Scene sc = new Scene(root, 1100, 700);
-        // apply custom stylesheet
         sc.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+        AccessibilityService.getInstance().install(sc);
         primaryStage.setTitle("Gestion des quiz");
         primaryStage.setMinWidth(900);
         primaryStage.setMinHeight(600);
