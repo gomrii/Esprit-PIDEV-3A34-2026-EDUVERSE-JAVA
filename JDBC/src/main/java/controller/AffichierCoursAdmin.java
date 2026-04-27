@@ -285,4 +285,13 @@ public class AffichierCoursAdmin {
         alert.setHeaderText(null);
         return alert.showAndWait().orElse(ButtonType.NO) == ButtonType.YES;
     }
+    // --- UTILITAIRES ---
+    private void sendSMS(String text) {
+        String ACCOUNT_SID = "AC563f90ef77c3a87ba6b4aa4b6e249774";
+        String AUTH_TOKEN = "b632734b438492fd3e23173cdd0dfef0";
+        try {
+            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+            Message.creator(new PhoneNumber("+21696068308"), new PhoneNumber("+17754598634"), text).create();
+        } catch (Exception e) { System.err.println("Erreur Twilio : " + e.getMessage()); }
+    }
 }

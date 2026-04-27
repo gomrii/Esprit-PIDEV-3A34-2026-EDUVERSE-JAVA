@@ -100,7 +100,10 @@ public class AjouterChapitre {
                 serviceChapitre.add(ch);
 
                 showFeedback("Succès", "Le chapitre '" + ch.getTitle() + "' a été ajouté.", Alert.AlertType.INFORMATION);
+                navigateToTable(event);;
                 resetForm();
+
+
             } catch (SQLException e) {
                 showFeedback("Erreur", "Problème lors de l'ajout : " + e.getMessage(), Alert.AlertType.ERROR);
             }
@@ -114,6 +117,20 @@ public class AjouterChapitre {
         }
         return true;
     }
+    private void navigateToTable(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherChapitre.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+
+
 
     private void showFeedback(String title, String msg, Alert.AlertType type) {
         Alert alert = new Alert(type);
