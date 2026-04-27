@@ -1,5 +1,5 @@
 package controller;
-
+import Services.TranslationService;
 import Entities.Chapitre;
 import Entities.Cours;
 import Services.ServiceChapitre;
@@ -17,6 +17,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
@@ -100,52 +101,72 @@ public class AfficherChapitre {
         footerActions.setVisible(true);
         mediaContainer.getChildren().clear();
 
-        // Conteneur pour les boutons audio
-        HBox audioControls = new HBox(10);
-        audioControls.setAlignment(Pos.CENTER);
-        audioControls.setPadding(new Insets(10));
+        // 1. LE CONTENEUR PRINCIPAL (Vertical)
+        VBox mainTools = new VBox(15);
+        mainTools.setAlignment(Pos.CENTER_LEFT);
+        mainTools.setPadding(new Insets(10));
 
-        // Bouton LIRE / REPRENDRE
+        // 2. LIGNE DU HAUT : CONTRÔLES AUDIO (Play, Pause, Stop)
+        HBox audioBox = new HBox(10);
+        audioBox.setAlignment(Pos.CENTER_LEFT);
+
         Button btnPlay = new Button("▶ Lire");
-        btnPlay.setStyle("-fx-background-color: #27AE60; -fx-text-fill: white; -fx-background-radius: 15; -fx-cursor: hand;");
-
-        // Bouton PAUSE
         Button btnPause = new Button("⏸ Pause");
-        btnPause.setStyle("-fx-background-color: #F39C12; -fx-text-fill: white; -fx-background-radius: 15; -fx-cursor: hand;");
-
-        // Bouton STOP
         Button btnStop = new Button("⏹ Stop");
-        btnStop.setStyle("-fx-background-color: #E74C3C; -fx-text-fill: white; -fx-background-radius: 15; -fx-cursor: hand;");
 
-        // --- LOGIQUE DES BOUTONS ---
+        // Style rapide pour les boutons audio
+        btnPlay.setStyle("-fx-background-color: #27AE60; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand;");
+        btnPause.setStyle("-fx-background-color: #F39C12; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand;");
+        btnStop.setStyle("-fx-background-color: #E74C3C; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand;");
 
+        // Logique Audio
         btnPlay.setOnAction(e -> {
-            if (currentMediaPlayer != null && currentMediaPlayer.getStatus() == javafx.scene.media.MediaPlayer.Status.PAUSED) {
+            if (currentMediaPlayer != null && currentMediaPlayer.getStatus() == MediaPlayer.Status.PAUSED) {
                 currentMediaPlayer.play();
             } else {
-                // Si rien n'est lancé, on génère le son
                 if (currentMediaPlayer != null) currentMediaPlayer.stop();
-
                 TTSService tts = new TTSService();
-                // On récupère le MediaPlayer créé par le service
-                // Note : Il faut modifier ton TTSService pour qu'il retourne le MediaPlayer
-                currentMediaPlayer = tts.lireTexte(ch.getContenu());
-                currentMediaPlayer.play();
+                // On lit le texte actuel (si c'est traduit, il lira la traduction !)
+                currentMediaPlayer = tts.lireTexte(chapterContentArea.getText());
+                if (currentMediaPlayer != null) currentMediaPlayer.play();
             }
         });
 
-        btnPause.setOnAction(e -> {
-            if (currentMediaPlayer != null) currentMediaPlayer.pause();
-        });
+        btnPause.setOnAction(e -> { if (currentMediaPlayer != null) currentMediaPlayer.pause(); });
+        btnStop.setOnAction(e -> { if (currentMediaPlayer != null) currentMediaPlayer.stop(); });
 
-        btnStop.setOnAction(e -> {
-            if (currentMediaPlayer != null) {
-                currentMediaPlayer.stop();
+        audioBox.getChildren().addAll(btnPlay, btnPause, btnStop);
+
+        // 3. LIGNE DU BAS : TRADUCTION
+        HBox translationBox = new HBox(10);
+        translationBox.setAlignment(Pos.CENTER_LEFT);
+
+        Label lblTrad = new Label("Traduire en : ");
+        ComboBox<String> langSelector = new ComboBox<>();
+        langSelector.getItems().addAll("Français", "English", "العربية", "Español");
+        langSelector.setStyle("-fx-background-radius: 10;");
+
+        langSelector.setOnAction(e -> {
+            String code = switch (langSelector.getValue()) {
+                case "English" -> "en";
+                case "العربية" -> "ar";
+                case "Español" -> "es";
+                default -> "fr";
+            };
+
+            if (code.equals("fr")) {
+                chapterContentArea.setText(ch.getContenu());
+            } else {
+                TranslationService ts = new TranslationService();
+                chapterContentArea.setText(ts.traduire(ch.getContenu(), code));
             }
         });
 
-        audioControls.getChildren().addAll(btnPlay, btnPause, btnStop);
-        mediaContainer.getChildren().add(audioControls);
+        translationBox.getChildren().addAll(lblTrad, langSelector);
+
+        // 4. ASSEMBLAGE
+        mainTools.getChildren().addAll(audioBox, translationBox);
+        mediaContainer.getChildren().add(mainTools);
     }
     @FXML
     private void handleDelete() {
