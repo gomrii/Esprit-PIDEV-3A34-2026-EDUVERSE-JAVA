@@ -31,11 +31,11 @@ public class ServiceHistorique {
     // Ajoute ceci dans ta classe ServiceHistorique
     public List<Historique> getHistorique() {
         List<Historique> list = new ArrayList<>();
-        // On fait une jointure pour récupérer le titre du cours en même temps
+        // Jointure pour récupérer le titre du cours correspondant à l'ID
         String req = "SELECT h.id, h.id_cours, h.date_consultation, c.title " +
                 "FROM historique h " +
                 "JOIN cours c ON h.id_cours = c.id " +
-                "ORDER BY h.date_consultation DESC"; // Le plus récent en premier
+                "ORDER BY h.date_consultation DESC";
         try {
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(req);
@@ -45,11 +45,11 @@ public class ServiceHistorique {
                         rs.getInt("id_cours"),
                         rs.getTimestamp("date_consultation")
                 );
-
+                h.setTitreCours(rs.getString("title"));
                 list.add(h);
             }
         } catch (SQLException e) {
-            System.err.println("Erreur récupération historique : " + e.getMessage());
+            e.printStackTrace();
         }
         return list;
     }
