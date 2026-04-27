@@ -3,6 +3,7 @@ package controller;
 import Entities.Cours;
 import Services.QRCodeService;
 import Services.ServiceCours;
+import Services.ServiceHistorique;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -161,6 +162,9 @@ public class AffichierCoursStudent {
         btn.setMaxWidth(Double.MAX_VALUE);
         btn.setStyle("-fx-background-color: #3C3362; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-weight: bold;");
         btn.setOnAction(event -> {try {
+
+            ServiceHistorique sh = new ServiceHistorique();
+            sh.ajouterAuHistorique(c.getId());
             // 1. Charger le fichier FXML de la page des chapitres
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherChapitreStudent.fxml"));
             Parent root = loader.load();
