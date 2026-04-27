@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #F8F9FA;" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RecommandationController">
+    <HBox prefHeight="80.0" style="-fx-background-color: #3F3D56; -fx-padding: 20;">
+        <Label text="ESPACE RECOMMANDATIONS" textFill="WHITE" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+    </HBox>
+    <HBox spacing="20" VBox.vgrow="ALWAYS" style="-fx-padding: 20;">
+        <VBox prefWidth="250.0" spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 15;">
+            <Label text="VOTRE PROFIL" style="-fx-font-weight: bold;"/>
+            <Label text="Candidat #1" style="-fx-font-size: 14;"/>
+            <Separator/>
+            <Label text="COURS TERMINÉS" style="-fx-font-weight: bold;"/>
+            <VBox fx:id="listeHistorique" spacing="5"/>
+        </VBox>
+        <VBox spacing="15" HBox.hgrow="ALWAYS">
+            <Label text="SUGGESTIONS POUR VOUS" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+                <VBox fx:id="containerCards" spacing="15"/>
+            </ScrollPane>
+        </VBox>
+    </HBox>
+</VBox>
