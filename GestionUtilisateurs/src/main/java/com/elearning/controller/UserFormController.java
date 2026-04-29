@@ -1,14 +1,24 @@
 package com.elearning.controller;
 
 import com.elearning.entity.User;
+import com.elearning.service.AvatarService;
+import com.elearning.service.EmailValidationService;
 import com.elearning.service.UserService;
+import com.elearning.util.PasswordGenerator;
+import com.elearning.util.PasswordStrengthChecker;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.Circle;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -34,10 +44,10 @@ public class UserFormController implements Initializable {
     @FXML private TextField      phoneField;
     @FXML private TextArea       bioArea;
     @FXML private Label          titreLabel;
-    @FXML private Label          passwordSection;   // cachée en mode modification
+    @FXML private Label          passwordSection;
     @FXML private Button         btnSauvegarder;
 
-    // Labels d'erreur inline (un par champ)
+    // Labels d'erreur inline
     @FXML private Label errNom;
     @FXML private Label errEmail;
     @FXML private Label errPassword;
@@ -45,24 +55,51 @@ public class UserFormController implements Initializable {
     @FXML private Label errPhone;
     @FXML private Label errGlobal;
 
+    // Nouveaux champs : Avatar
+    @FXML private ImageView avatarImageView;
+    @FXML private Label     labelAvatarStatus;
+    @FXML private Button    btnGenererAvatar;
+
+    // Nouveau champ : badge validation email
+    @FXML private Label labelEmailBadge;
+
+    // Nouveaux champs : force mot de passe
+    @FXML private ProgressBar passwordStrengthBar;
+    @FXML private Label       passwordStrengthLabel;
+
     // -------------------------------------------------------
     // État interne
     // -------------------------------------------------------
-    private User userAModifier;         // null = mode création
-    private final UserService userService = new UserService();
-    private Runnable onSaveCallback;    // callback appelé après sauvegarde réussie
+    private User userAModifier;
+    private final UserService          userService          = new UserService();
+    private final AvatarService        avatarService        = new AvatarService();
+    private final EmailValidationService emailValService    = new EmailValidationService();
+    private Runnable onSaveCallback;
+    private String   cheminAvatarLocal;   // chemin du fichier avatar local
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Remplir la ComboBox des rôles
         roleCombo.setItems(FXCollections.observableArrayList(
                 User.ROLE_ADMIN, User.ROLE_ENSEIGNANT, User.ROLE_ETUDIANT));
         roleCombo.setValue(User.ROLE_ETUDIANT);
 
-        // Validation en temps réel sur le champ email
+        // Clip circulaire sur l'ImageView avatar
+        if (avatarImageView != null) {
+            Circle clip = new Circle(45, 45, 45);
+            avatarImageView.setClip(clip);
+            // Image par défaut
+            avatarImageView.setImage(avatarService.chargerImage(null));
+        }
+
+        // Badge email masqué par défaut
+        if (labelEmailBadge != null) { labelEmailBadge.setVisible(false); labelEmailBadge.setManaged(false); }
+
+        // Validation email en temps réel (au focus-out)
         emailField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
-            if (!isNowFocused) {
+            if (!isNowFocused && !emailField.getText().isBlank()) {
                 validerEmailEnTempsReel();
+                // Validation Abstract API en background
+                lancerValidationEmailAPI(emailField.getText().trim());
             }
         });
 
@@ -73,6 +110,20 @@ public class UserFormController implements Initializable {
                 errPassword.setVisible(true);
             } else {
                 errPassword.setVisible(false);
+            }
+        });
+
+        // Indicateur de force du mot de passe
+        passwordField.textProperty().addListener((obs, old, nouveau) -> {
+            PasswordStrengthChecker.PasswordStrengthResult result =
+                    PasswordStrengthChecker.analyser(nouveau);
+            if (passwordStrengthBar != null) {
+                passwordStrengthBar.setProgress(result.getProgress());
+                passwordStrengthBar.setStyle("-fx-accent: " + result.getCouleur() + ";");
+            }
+            if (passwordStrengthLabel != null) {
+                passwordStrengthLabel.setText(result.getLibelle());
+                passwordStrengthLabel.setStyle("-fx-text-fill: " + result.getCouleur() + ";");
             }
         });
     }
@@ -137,11 +188,19 @@ public class UserFormController implements Initializable {
         try {
             if (userAModifier == null) {
                 // === CRÉATION ===
-                userService.creerUser(nom, email, password, role, phone, bio);
+                User cree = userService.creerUser(nom, email, password, role, phone, bio);
+                // Sauvegarder le chemin de l'avatar si généré
+                if (cheminAvatarLocal != null && !cheminAvatarLocal.isBlank()) {
+                    cree.setPicture(cheminAvatarLocal);
+                    new com.elearning.dao.UserDAO().modifierUser(cree);
+                }
                 afficherSuccesEtFermer("Utilisateur créé avec succès !");
 
             } else {
                 // === MODIFICATION ===
+                if (cheminAvatarLocal != null && !cheminAvatarLocal.isBlank()) {
+                    userAModifier.setPicture(cheminAvatarLocal);
+                }
                 userService.modifierUser(userAModifier, nom, email, role, phone, bio);
 
                 // Changer le mot de passe si un nouveau est saisi
@@ -151,11 +210,7 @@ public class UserFormController implements Initializable {
                         errPassword.setVisible(true);
                         return;
                     }
-                    // Le Service hashe avant d'envoyer au DAO
-                    // (ici on appelle directement le DAO via UserService)
                     String hashed = userService.hasherMotDePasse(password);
-                    // On réutilise la connexion via UserDAO interne du service
-                    // Pour simplifier, on réouvre via UserDAO directement
                     new com.elearning.dao.UserDAO().changerMotDePasse(userAModifier.getId(), hashed);
                 }
 
@@ -184,6 +239,107 @@ public class UserFormController implements Initializable {
         } else {
             errEmail.setVisible(false);
         }
+    }
+
+    // -------------------------------------------------------
+    // Génération d'avatar DiceBear
+    // -------------------------------------------------------
+
+    @FXML
+    private void handleGenererAvatar(ActionEvent event) {
+        if (btnGenererAvatar != null) btnGenererAvatar.setDisable(true);
+        if (labelAvatarStatus != null) labelAvatarStatus.setText("⏳ Génération en cours...");
+
+        Task<String> task = new Task<>() {
+            @Override
+            protected String call() throws Exception {
+                String nom = nomField.getText().isBlank() ? "user" : nomField.getText();
+                int uid = userAModifier != null ? userAModifier.getId() : 0;
+                return avatarService.genererAvatar(nom, uid);
+            }
+        };
+
+        task.setOnSucceeded(e -> Platform.runLater(() -> {
+            cheminAvatarLocal = task.getValue();
+            if (avatarImageView != null)
+                avatarImageView.setImage(avatarService.chargerImage(cheminAvatarLocal));
+            if (labelAvatarStatus != null) labelAvatarStatus.setText("✅ Avatar généré !");
+            if (btnGenererAvatar != null) btnGenererAvatar.setDisable(false);
+        }));
+
+        task.setOnFailed(e -> Platform.runLater(() -> {
+            if (labelAvatarStatus != null)
+                labelAvatarStatus.setText("⚠ API indisponible — avatar par défaut utilisé");
+            if (btnGenererAvatar != null) btnGenererAvatar.setDisable(false);
+        }));
+
+        new Thread(task).start();
+    }
+
+    @FXML
+    private void handleChoisirImage(ActionEvent event) {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Choisir une photo de profil");
+        chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg"));
+        File file = chooser.showOpenDialog(nomField.getScene().getWindow());
+        if (file != null) {
+            cheminAvatarLocal = file.getAbsolutePath();
+            if (avatarImageView != null)
+                avatarImageView.setImage(new javafx.scene.image.Image(file.toURI().toString()));
+            if (labelAvatarStatus != null) labelAvatarStatus.setText("✅ Image sélectionnée");
+        }
+    }
+
+    @FXML
+    private void handleGenererMotDePasse(ActionEvent event) {
+        String motDePasseGenere = PasswordGenerator.genererMotDePasseFort();
+        passwordField.setText(motDePasseGenere);
+        confirmPasswordField.setText(motDePasseGenere);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Mot de passe généré");
+        alert.setHeaderText(null);
+        alert.setContentText("Voici le nouveau mot de passe (copiez-le) : \n\n" + motDePasseGenere);
+        alert.showAndWait();
+    }
+
+    // -------------------------------------------------------
+    // Validation email via Abstract API (background)
+    // -------------------------------------------------------
+
+    private void lancerValidationEmailAPI(String email) {
+        if (labelEmailBadge == null) return;
+        labelEmailBadge.setText("🌐 Vérification...");
+        labelEmailBadge.setStyle("-fx-text-fill: #95a5a6;");
+        labelEmailBadge.setVisible(true);
+        labelEmailBadge.setManaged(true);
+
+        Task<EmailValidationService.ResultatValidation> task = new Task<>() {
+            @Override
+            protected EmailValidationService.ResultatValidation call() throws Exception {
+                return emailValService.validerEmail(email);
+            }
+        };
+
+        task.setOnSucceeded(e -> Platform.runLater(() -> {
+            if (labelEmailBadge == null) return;
+            switch (task.getValue()) {
+                case VALIDE    -> { labelEmailBadge.setText("✅ Email valide");     labelEmailBadge.setStyle("-fx-text-fill: #27ae60;"); }
+                case RISQUE    -> { labelEmailBadge.setText("⚠️ Email risqué");     labelEmailBadge.setStyle("-fx-text-fill: #e67e22;"); }
+                case INVALIDE  -> { labelEmailBadge.setText("❌ Email invalide");   labelEmailBadge.setStyle("-fx-text-fill: #e74c3c;"); }
+                case ERREUR_API-> { labelEmailBadge.setText("🌐 Hors-ligne");       labelEmailBadge.setStyle("-fx-text-fill: #95a5a6;"); }
+            }
+        }));
+
+        task.setOnFailed(e -> Platform.runLater(() -> {
+            if (labelEmailBadge != null) {
+                labelEmailBadge.setText("🌐 Hors-ligne");
+                labelEmailBadge.setStyle("-fx-text-fill: #95a5a6;");
+            }
+        }));
+
+        new Thread(task).start();
     }
 
     // -------------------------------------------------------

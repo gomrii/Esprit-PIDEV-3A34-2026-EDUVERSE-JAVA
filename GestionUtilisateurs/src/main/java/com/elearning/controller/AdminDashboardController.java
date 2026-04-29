@@ -30,6 +30,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import com.elearning.entity.AIRecommendation;
+import com.elearning.service.AIRecommendationService;
+import com.elearning.dao.AIRecommendationDAO;
+import javafx.concurrent.Task;
+import javafx.scene.layout.VBox;
+import javafx.application.Platform;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
 /**
  * AdminDashboardController — Contrôleur principal du tableau de bord Admin.
  *
@@ -69,6 +81,14 @@ public class AdminDashboardController implements Initializable {
     @FXML private Label blockedLabel;
     @FXML private Label labelNomAdmin;
 
+    // -------------------------------------------------------
+    // Recommandations IA
+    // -------------------------------------------------------
+    @FXML private VBox panneauIA;
+    @FXML private ProgressIndicator iaLoadingIndicator;
+    @FXML private Label iaStatusLabel;
+    @FXML private VBox recommandationsContainer;
+
     // Services injectés manuellement (pas d'IoC container en Java pur)
     private final UserService userService = new UserService();
     private final com.elearning.service.PdfService pdfService = new com.elearning.service.PdfService();
@@ -104,6 +124,69 @@ public class AdminDashboardController implements Initializable {
         roleFilter.valueProperty().addListener((obs, oldVal, newVal)  -> chargerUtilisateurs());
         sortColumn.valueProperty().addListener((obs, oldVal, newVal)  -> chargerUtilisateurs());
         sortDirection.valueProperty().addListener((obs, oldVal, newVal) -> chargerUtilisateurs());
+
+        // 7. Charger les recommandations IA
+        chargerRecommandationsIA();
+    }
+
+    // -------------------------------------------------------
+    // Recommandations IA
+    // -------------------------------------------------------
+    private void chargerRecommandationsIA() {
+        Task<List<AIRecommendation>> task = new Task<>() {
+            @Override
+            protected List<AIRecommendation> call() throws Exception {
+                return new AIRecommendationService().analyserEtRecommander();
+            }
+        };
+
+        task.setOnSucceeded(e -> Platform.runLater(() -> {
+            List<AIRecommendation> recs = task.getValue();
+            afficherRecommandations(recs);
+        }));
+
+        task.setOnFailed(e -> Platform.runLater(() -> {
+            if (iaLoadingIndicator != null) iaLoadingIndicator.setVisible(false);
+            if (iaStatusLabel != null) iaStatusLabel.setText("IA indisponible (vérifiez la clé API)");
+        }));
+
+        new Thread(task).start();
+    }
+
+    private void afficherRecommandations(List<AIRecommendation> recs) {
+        if (iaLoadingIndicator != null) iaLoadingIndicator.setVisible(false);
+        if (iaStatusLabel != null) iaStatusLabel.setText(recs.isEmpty() ? "Aucune recommandation." : recs.size() + " recommandations générées");
+        if (recommandationsContainer == null) return;
+        
+        recommandationsContainer.getChildren().clear();
+        AIRecommendationDAO dao = new AIRecommendationDAO();
+
+        for (AIRecommendation rec : recs) {
+            VBox card = new VBox(5);
+            String styleClass = "rec-card-" + (rec.getPriorite() != null ? rec.getPriorite().toLowerCase() : "faible");
+            card.getStyleClass().add(styleClass);
+
+            Label lblTitre = new Label(rec.getTitre());
+            lblTitre.setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
+
+            Label lblDesc = new Label(rec.getDescription());
+            lblDesc.setWrapText(true);
+            lblDesc.setStyle("-fx-font-size: 11px; -fx-text-fill: #34495e;");
+
+            Label lblAction = new Label("💡 " + rec.getActionSuggeree());
+            lblAction.setWrapText(true);
+            lblAction.setStyle("-fx-font-size: 11px; -fx-text-fill: #2c3e50; -fx-font-style: italic;");
+
+            Button btnLu = new Button("✓ Marquer lue");
+            btnLu.setStyle("-fx-font-size: 10px; -fx-cursor: hand;");
+            btnLu.setOnAction(e -> {
+                dao.marquerCommeLue(rec.getId());
+                recommandationsContainer.getChildren().remove(card);
+            });
+
+            card.getChildren().addAll(lblTitre, lblDesc, lblAction, btnLu);
+            recommandationsContainer.getChildren().add(card);
+        }
     }
 
 
@@ -165,13 +248,21 @@ public class AdminDashboardController implements Initializable {
             private final Button btnModifier  = new Button("✏ Modifier");
             private final Button btnSupprimer = new Button("🗑 Supprimer");
             private final Button btnBloquer   = new Button("🔒");
-            private final HBox   boite        = new HBox(5, btnModifier, btnBloquer, btnSupprimer);
+            private final Button btnFaceId    = new Button("📸 Face ID");
+            private final HBox   boite        = new HBox(5, btnModifier, btnFaceId, btnBloquer, btnSupprimer);
 
             {
                 // Styles
                 btnModifier.getStyleClass().add("btn-modifier");
                 btnSupprimer.getStyleClass().add("btn-supprimer");
                 btnBloquer.getStyleClass().add("btn-bloquer");
+                btnFaceId.getStyleClass().add("btn-faceid");
+
+                // === Bouton FACE ID ===
+                btnFaceId.setOnAction(e -> {
+                    User user = getTableView().getItems().get(getIndex());
+                    ouvrirEnregistrementFaceId(user);
+                });
 
                 // === Bouton MODIFIER ===
                 btnModifier.setOnAction(e -> {
@@ -217,11 +308,37 @@ public class AdminDashboardController implements Initializable {
                     setGraphic(null);
                 } else {
                     User user = getTableView().getItems().get(getIndex());
-                    btnBloquer.setText(user.isBlocked() ? "🔓 Débloquer" : "🔒 Bloquer");
+                    boolean isBruteForceLocked = user.getLockedUntil() != null && user.getLockedUntil().isAfter(java.time.LocalDateTime.now());
+                    if (isBruteForceLocked) {
+                        btnBloquer.setText("🔓 Débloquer (Brute Force)");
+                        btnBloquer.setStyle("-fx-text-fill: orange;");
+                    } else {
+                        btnBloquer.setText(user.isBlocked() ? "🔓 Débloquer" : "🔒 Bloquer");
+                        btnBloquer.setStyle("");
+                    }
                     setGraphic(boite);
                 }
             }
         });
+    }
+
+    private void ouvrirEnregistrementFaceId(User user) {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                getClass().getResource("/com/elearning/gui/FaceIdSimulatorView.fxml"));
+            Stage modal = new Stage();
+            modal.setTitle("📸 Enregistrement Face ID — " + user.getFullName());
+            modal.setScene(new Scene(loader.load(), 460, 400));
+            modal.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            modal.getScene().getStylesheets().add(
+                getClass().getResource("/com/elearning/css/style.css").toExternalForm());
+
+            FaceIdSimulatorController ctrl = loader.getController();
+            ctrl.demarrerScan(user.getEmail(), null);
+            modal.show();
+        } catch (Exception e) {
+            afficherErreur("Impossible d'ouvrir Face ID : " + e.getMessage());
+        }
     }
 
     // -------------------------------------------------------
@@ -346,8 +463,12 @@ public class AdminDashboardController implements Initializable {
 
         if (fichier != null) {
             try {
+                // Fix 2 : Respecter le filtre de rôle actif au moment de l'export
+                String roleActif = roleFilter.getValue() != null
+                        && !roleFilter.getValue().equals("Tous")
+                        ? roleFilter.getValue() : "";
                 List<User> users = userService.rechercherUsers(
-                    searchField.getText(), "", "id", "ASC");
+                    searchField.getText(), roleActif, "id", "ASC");
                 pdfService.exporterListeUtilisateurs(users, fichier.getAbsolutePath());
                 afficherSucces("✅ PDF exporté avec succès : " + fichier.getName());
             } catch (Exception e) {
@@ -374,6 +495,29 @@ public class AdminDashboardController implements Initializable {
                     getClass().getResource("/com/elearning/css/style.css").toExternalForm());
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    // -------------------------------------------------------
+    // Bouton Assistant IA
+    // -------------------------------------------------------
+
+    @FXML
+    private void handleOuvrirIA(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/elearning/gui/AIAssistantView.fxml"));
+            Parent root = loader.load();
+
+            javafx.stage.Stage modal = new javafx.stage.Stage();
+            modal.setTitle("🤖 Assistant IA Eduverse");
+            modal.setScene(new Scene(root, 520, 650));
+            modal.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            modal.getScene().getStylesheets().add(
+                    getClass().getResource("/com/elearning/css/style.css").toExternalForm());
+            modal.show();
+        } catch (IOException e) {
+            afficherErreur("❌ Impossible d'ouvrir l'assistant IA : " + e.getMessage());
         }
     }
 

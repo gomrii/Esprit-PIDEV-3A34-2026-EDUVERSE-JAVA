@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.elearning.controller.FaceIdSimulatorController"
+      alignment="CENTER" spacing="16"
+      style="-fx-background-color: #1e272e; -fx-padding: 24;"
+      prefWidth="420" prefHeight="540">
+
+    <!-- Titre -->
+    <Label text="Face ID" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+    <Label text="Regardez la caméra pour vous identifier"
+           style="-fx-font-size: 12px; -fx-text-fill: #bdc3c7;" wrapText="true" textAlignment="CENTER"/>
+
+    <!-- Vue webcam circulaire -->
+    <StackPane>
+        <Circle radius="110" fill="#2f3640" stroke="#3498db" strokeWidth="3"/>
+        <!-- Flux webcam -->
+        <ImageView fx:id="webcamView"
+                   fitWidth="200" fitHeight="200"
+                   style="-fx-background-radius: 100;"
+                   preserveRatio="true"
+                   smooth="true">
+            <clip>
+                <Circle radius="100" centerX="100" centerY="100"/>
+            </clip>
+        </ImageView>
+        <!-- Icône fallback (cachée si webcam actif) -->
+        <Label fx:id="faceIconLabel" text="👤"
+               style="-fx-font-size: 70px; -fx-text-fill: #3498db;"
+               visible="false"/>
+    </StackPane>
+
+    <!-- Statut -->
+    <Label fx:id="statusLabel" text="🎥 Initialisation..."
+           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #f1c40f;"
+           wrapText="true" textAlignment="CENTER" maxWidth="360"/>
+
+    <!-- Barre de progression du scan -->
+    <ProgressBar fx:id="scanProgressBar" prefWidth="300" prefHeight="8"
+                 progress="0.0"
+                 style="-fx-accent: #3498db;"/>
+                 
+    <!-- Label pour afficher "Capture X/15" -->
+    <Label fx:id="countLabel" style="-fx-text-fill: #bdc3c7; -fx-font-size: 11px;"/>
+
+    <!-- Bouton Annuler -->
+    <Button fx:id="btnAnnuler" text="✖ Annuler" onAction="#handleAnnuler"
+            style="-fx-background-color: transparent; -fx-text-fill: #e74c3c;
+                   -fx-border-color: #e74c3c; -fx-border-radius: 5;
+                   -fx-padding: 7 22; -fx-cursor: hand; -fx-font-size: 13px;"/>
+
+</VBox>

@@ -40,15 +40,30 @@ public class User {
     private LocalDateTime createdAt; // created_at
 
     // -------------------------------------------------------
+    // Champs 2FA (two-factor authentication)
+    // -------------------------------------------------------
+    private boolean       isTwoFactorEnabled;    // is_two_factor_enabled
+    private String        twoFactorCode;         // code OTP 6 chiffres (nullable)
+    private LocalDateTime twoFactorExpiresAt;    // expiration du code OTP (nullable)
+
+    // -------------------------------------------------------
+    // Champs sécurité / verrouillage de compte
+    // -------------------------------------------------------
+    private int           loginAttempts;         // login_attempts
+    private LocalDateTime lockedUntil;           // locked_until (nullable)
+
+    // -------------------------------------------------------
     // Constructeur VIDE — nécessaire pour JavaFX TableView
     // et pour les lectures JDBC (on set les champs un par un)
     // -------------------------------------------------------
     public User() {
-        this.statut     = STATUT_EN_ATTENTE;
-        this.role       = ROLE_ETUDIANT;
-        this.isApproved = false;
-        this.isBlocked  = false;
-        this.createdAt  = LocalDateTime.now();
+        this.statut             = STATUT_EN_ATTENTE;
+        this.role               = ROLE_ETUDIANT;
+        this.isApproved         = false;
+        this.isBlocked          = false;
+        this.createdAt          = LocalDateTime.now();
+        this.isTwoFactorEnabled = false;
+        this.loginAttempts      = 0;
     }
 
     /**
@@ -110,6 +125,23 @@ public class User {
 
     public LocalDateTime getCreatedAt()         { return createdAt; }
     public void setCreatedAt(LocalDateTime dt)  { this.createdAt = dt; }
+
+    // 2FA
+    public boolean isTwoFactorEnabled()                          { return isTwoFactorEnabled; }
+    public void setTwoFactorEnabled(boolean enabled)             { this.isTwoFactorEnabled = enabled; }
+
+    public String getTwoFactorCode()                             { return twoFactorCode; }
+    public void setTwoFactorCode(String code)                    { this.twoFactorCode = code; }
+
+    public LocalDateTime getTwoFactorExpiresAt()                 { return twoFactorExpiresAt; }
+    public void setTwoFactorExpiresAt(LocalDateTime dt)          { this.twoFactorExpiresAt = dt; }
+
+    // Verrouillage
+    public int getLoginAttempts()                                { return loginAttempts; }
+    public void setLoginAttempts(int attempts)                   { this.loginAttempts = attempts; }
+
+    public LocalDateTime getLockedUntil()                        { return lockedUntil; }
+    public void setLockedUntil(LocalDateTime dt)                 { this.lockedUntil = dt; }
 
     // -------------------------------------------------------
     // toString() — utile pour le débogage

@@ -2,6 +2,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 
@@ -84,21 +85,56 @@
                                styleClass="login-field" maxWidth="Infinity"/>
             </VBox>
 
-            <!-- Bouton connexion -->
-            <Button fx:id="loginButton" text="→  Se connecter"
+            <!-- Bouton connexion classique -->
+            <Button fx:id="loginButton" text="⌨️ Se connecter"
                     styleClass="login-btn" maxWidth="Infinity"
                     onAction="#handleLogin"/>
+
+            <Separator/>
+            <Label text="— ou —" style="-fx-text-fill: #95a5a6; -fx-font-size: 11px;"
+                   maxWidth="Infinity" alignment="CENTER"/>
+                   
+            <Button text="👤 Se connecter par Face ID"
+                    onAction="#handleFaceIdLogin"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: #2c3e50; -fx-text-fill: white;
+                           -fx-background-radius: 8; -fx-padding: 9 18 9 18;
+                           -fx-font-size: 13px; -fx-cursor: hand;"/>
+            <Label text="💡 Saisissez votre email ci-dessus puis cliquez sur Face ID"
+                   style="-fx-font-size: 10px; -fx-text-fill: #95a5a6;"
+                   maxWidth="Infinity" alignment="CENTER"/>
+
+        <VBox spacing="6">
+                <Label text="VÉRIFICATION ANTI-BOT" styleClass="login-field-label"/>
+                <Label fx:id="captchaInstruction" text="Pointez la flèche vers le haut" style="-fx-text-fill: #2c3e50; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Canvas fx:id="captchaCanvas" width="220" height="60"
+                            style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 4, 0, 0, 2); -fx-background-radius: 8;"/>
+                    <Button text="🔁" onAction="#handleRefreshCaptcha"
+                            style="-fx-background-color: #ecf0f1; -fx-background-radius: 8; -fx-cursor: hand;"
+                            prefWidth="36" prefHeight="36"/>
+                </HBox>
+                <Slider fx:id="captchaSlider" min="-180" max="180" value="0" blockIncrement="10"
+                        style="-fx-padding: 10 0 10 0; -fx-cursor: hand;"/>
+                <Label fx:id="errCaptcha" text=""
+                       style="-fx-text-fill: #e74c3c; -fx-font-size: 12px;"
+                       visible="false" managed="false" wrapText="true"/>
+            </VBox>
 
             <!-- Badge démo -->
             <Label text="💡  Démo : admin@elearning.tn  /  Admin123!"
                    styleClass="demo-badge" maxWidth="Infinity"
                    alignment="CENTER" textAlignment="CENTER"/>
 
-            <!-- Inscription -->
+            <!-- Inscription + Mot de passe oublié -->
             <HBox alignment="CENTER" spacing="5">
                 <Label text="Pas encore de compte ?" style="-fx-text-fill: #7f8c8d;"/>
-                <Hyperlink text="S'inscrire" onAction="#allerVersInscription" 
+                <Hyperlink text="S'inscrire" onAction="#allerVersInscription"
                            style="-fx-text-fill: #3498db; -fx-font-weight: bold; -fx-underline: true;"/>
+            </HBox>
+            <HBox alignment="CENTER">
+                <Hyperlink text="🔑 Mot de passe oublié ?" onAction="#handleMotDePasseOublie"
+                           style="-fx-text-fill: #e67e22; -fx-font-size: 12px;"/>
             </HBox>
 
         </VBox>

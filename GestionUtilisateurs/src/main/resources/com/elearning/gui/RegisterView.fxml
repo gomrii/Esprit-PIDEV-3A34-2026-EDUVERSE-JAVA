@@ -3,6 +3,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.canvas.Canvas?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.elearning.controller.RegisterController"
@@ -68,13 +69,28 @@
             </VBox>
 
             <VBox spacing="6">
-                <Label text="ADRESSE E-MAIL" styleClass="login-field-label"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Label text="ADRESSE E-MAIL" styleClass="login-field-label"/>
+                    <Label fx:id="labelEmailBadge" text="🌐 Vérification..."
+                           style="-fx-font-size: 10px; -fx-background-color: #ecf0f1; -fx-padding: 2 6; -fx-background-radius: 4; -fx-text-fill: #95a5a6;"
+                           visible="false" managed="false"/>
+                </HBox>
                 <TextField fx:id="emailField" promptText="votre@email.tn" styleClass="login-field" maxWidth="Infinity"/>
             </VBox>
 
             <VBox spacing="6">
-                <Label text="MOT DE PASSE" styleClass="login-field-label"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Label text="MOT DE PASSE" styleClass="login-field-label"/>
+                    <Button text="Générer" onAction="#handleGenererMotDePasse" style="-fx-font-size: 10px; -fx-background-color: #ecf0f1; -fx-padding: 2 6; -fx-cursor: hand;"/>
+                </HBox>
                 <PasswordField fx:id="passwordField" promptText="••••••••" styleClass="login-field" maxWidth="Infinity"/>
+                <!-- Indicateur de force -->
+                <ProgressBar fx:id="passwordStrengthBar"
+                             maxWidth="Infinity" prefHeight="6"
+                             progress="0"
+                             style="-fx-accent: #e74c3c;"/>
+                <Label fx:id="passwordStrengthLabel" text=""
+                       style="-fx-font-size: 11px; -fx-font-weight: bold;"/>
             </VBox>
 
             <VBox spacing="6">
@@ -88,6 +104,22 @@
                 <RadioButton fx:id="radioEtudiant" text="Étudiant" userData="ETUDIANT"/>
                 <RadioButton fx:id="radioEnseignant" text="Enseignant" userData="ENSEIGNANT"/>
             </HBox>
+
+            <!-- CAPTCHA mathématique -->
+            <VBox spacing="6">
+                <Label text="VÉRIFICATION ANTI-BOT" styleClass="login-field-label"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Canvas fx:id="captchaCanvas" width="220" height="60"
+                            style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 4, 0, 0, 2); -fx-background-radius: 8;"/>
+                    <TextField fx:id="captchaField"
+                               promptText="Réponse"
+                               styleClass="login-field"
+                               prefWidth="100"/>
+                </HBox>
+                <Label fx:id="errCaptcha" text=""
+                       style="-fx-text-fill: #e74c3c; -fx-font-size: 12px;"
+                       visible="false" managed="false" wrapText="true"/>
+            </VBox>
 
             <Button fx:id="btnRegister" text="📝  S'inscrire"
                     styleClass="login-btn" maxWidth="Infinity"

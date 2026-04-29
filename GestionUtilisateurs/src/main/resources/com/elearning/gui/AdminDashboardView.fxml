@@ -88,6 +88,18 @@
                 </VBox>
             </HBox>
 
+            <!-- Panneau Recommandations IA -->
+            <VBox fx:id="panneauIA" styleClass="ia-panel" spacing="8">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="🤖 Recommandations IA" styleClass="ia-panel-title"/>
+                    <ProgressIndicator fx:id="iaLoadingIndicator" prefSize="18" visible="true"/>
+                    <Label fx:id="iaStatusLabel" text="Analyse en cours..."
+                           style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;"/>
+                </HBox>
+                <!-- Les recommandations seront ajoutées dynamiquement ici -->
+                <VBox fx:id="recommandationsContainer" spacing="6"/>
+            </VBox>
+
             <!-- Barre d'outils : recherche + filtres + actions -->
             <HBox spacing="15" alignment="CENTER_LEFT" styleClass="toolbar-panel" style="-fx-padding: 12 20 12 20;">
                 <TextField fx:id="searchField" promptText="🔍 Rechercher par nom ou email..." styleClass="search-field" HBox.hgrow="ALWAYS"/>
@@ -103,6 +115,7 @@
                 <Button text="➕ Ajouter" styleClass="btn-primary" onAction="#handleAjouter"/>
                 <Button text="✅ Approuver" styleClass="btn-success" onAction="#handleApprouver"/>
                 <Button text="📄 Export PDF" styleClass="btn-pdf" onAction="#handleExportPdf"/>
+                <Button text="🤖 Assistant IA" style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-cursor: hand;" onAction="#handleOuvrirIA"/>
             </HBox>
 
             <!-- ==== Tableau des utilisateurs ==== -->

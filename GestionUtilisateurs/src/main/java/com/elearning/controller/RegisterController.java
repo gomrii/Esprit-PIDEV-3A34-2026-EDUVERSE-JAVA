@@ -1,82 +1,185 @@
 package com.elearning.controller;
 
 import com.elearning.entity.User;
+import com.elearning.service.EmailValidationService;
 import com.elearning.service.UserService;
+import com.elearning.util.CaptchaGenerator;
+import com.elearning.util.PasswordGenerator;
+import com.elearning.util.PasswordStrengthChecker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.concurrent.Task;
+import javafx.application.Platform;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class RegisterController {
+public class RegisterController implements Initializable {
 
-    @FXML private TextField fullNameField;
-    @FXML private TextField emailField;
-    @FXML private PasswordField passwordField;
-    @FXML private PasswordField confirmPasswordField;
-    
+    @FXML private TextField      fullNameField;
+    @FXML private TextField      emailField;
+    @FXML private PasswordField  passwordField;
+    @FXML private PasswordField  confirmPasswordField;
+
     @FXML private RadioButton radioEtudiant;
     @FXML private RadioButton radioEnseignant;
-    @FXML private HBox roleHBox;
+    @FXML private HBox        roleHBox;
 
-    @FXML private Label errorLabel;
-    @FXML private Label successLabel;
+    @FXML private Label  errorLabel;
+    @FXML private Label  successLabel;
     @FXML private Button btnRegister;
 
-    private final UserService userService;
-    private ToggleGroup roleGroup;  // Créé programmatiquement
+    // Nouveaux champs CAPTCHA
+    @FXML private Canvas    captchaCanvas;
+    @FXML private TextField captchaField;
+    @FXML private Label     errCaptcha;
+
+    // Nouveaux champs force MDP
+    @FXML private ProgressBar passwordStrengthBar;
+    @FXML private Label       passwordStrengthLabel;
+
+    @FXML private Label       labelEmailBadge;
+
+    private final UserService      userService;
+    private final CaptchaGenerator captchaGen;
+    private final EmailValidationService emailValService;
+    private ToggleGroup roleGroup;
 
     public RegisterController() {
         this.userService = new UserService();
+        this.captchaGen  = new CaptchaGenerator();
+        this.emailValService = new EmailValidationService();
     }
 
     @FXML
-    public void initialize() {
-        // Créer le ToggleGroup programmatiquement
+    public void initialize(URL url, ResourceBundle rb) {
         roleGroup = new ToggleGroup();
         radioEtudiant.setToggleGroup(roleGroup);
         radioEnseignant.setToggleGroup(roleGroup);
-        radioEtudiant.setSelected(true);  // Sélectionner l'étudiant par défaut
-        
-        // Cache les messages au démarrage
-        errorLabel.setVisible(false);
-        errorLabel.setManaged(false);
-        successLabel.setVisible(false);
-        successLabel.setManaged(false);
+        radioEtudiant.setSelected(true);
+
+        errorLabel.setVisible(false);   errorLabel.setManaged(false);
+        successLabel.setVisible(false); successLabel.setManaged(false);
+        if (errCaptcha != null) { errCaptcha.setVisible(false); errCaptcha.setManaged(false); }
+
+        // Générer le CAPTCHA
+        if (captchaCanvas != null) captchaGen.genererEtDessiner(captchaCanvas);
+
+        // Validation email en temps réel
+        if (emailField != null) {
+            emailField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+                if (!newVal && !emailField.getText().isBlank()) {
+                    lancerValidationEmailAPI(emailField.getText().trim());
+                }
+            });
+        }
+
+        // Indicateur de force du mot de passe
+        if (passwordField != null) {
+            passwordField.textProperty().addListener((obs, old, nouveau) -> {
+                PasswordStrengthChecker.PasswordStrengthResult result =
+                        PasswordStrengthChecker.analyser(nouveau);
+                if (passwordStrengthBar != null) {
+                    passwordStrengthBar.setProgress(result.getProgress());
+                    passwordStrengthBar.setStyle("-fx-accent: " + result.getCouleur() + ";");
+                }
+                if (passwordStrengthLabel != null) {
+                    passwordStrengthLabel.setText(result.getLibelle());
+                    passwordStrengthLabel.setStyle("-fx-text-fill: " + result.getCouleur() + ";");
+                }
+                // Bloquer soumission si mot de passe trop faible (< 3)
+                if (btnRegister != null) btnRegister.setDisable(result.getScore() < 3);
+            });
+        }
     }
 
 
+    private void lancerValidationEmailAPI(String email) {
+        if (labelEmailBadge == null) return;
+        labelEmailBadge.setText("🌐 Vérification...");
+        labelEmailBadge.setStyle("-fx-text-fill: #95a5a6; -fx-background-color: #ecf0f1; -fx-padding: 2 6; -fx-background-radius: 4;");
+        labelEmailBadge.setVisible(true);
+        labelEmailBadge.setManaged(true);
+
+        Task<EmailValidationService.ResultatValidation> task = new Task<>() {
+            @Override
+            protected EmailValidationService.ResultatValidation call() throws Exception {
+                return emailValService.validerEmail(email);
+            }
+        };
+
+        task.setOnSucceeded(e -> Platform.runLater(() -> {
+            switch (task.getValue()) {
+                case VALIDE    -> { labelEmailBadge.setText("✅ Email valide");     labelEmailBadge.setStyle("-fx-text-fill: #27ae60; -fx-background-color: #ecf0f1; -fx-padding: 2 6; -fx-background-radius: 4;"); }
+                case RISQUE    -> { labelEmailBadge.setText("⚠️ Email risqué");     labelEmailBadge.setStyle("-fx-text-fill: #e67e22; -fx-background-color: #ecf0f1; -fx-padding: 2 6; -fx-background-radius: 4;"); }
+                case INVALIDE  -> { labelEmailBadge.setText("❌ Email invalide");   labelEmailBadge.setStyle("-fx-text-fill: #e74c3c; -fx-background-color: #ecf0f1; -fx-padding: 2 6; -fx-background-radius: 4;"); }
+                case ERREUR_API-> { labelEmailBadge.setText("🌐 Hors-ligne");       labelEmailBadge.setStyle("-fx-text-fill: #95a5a6; -fx-background-color: #ecf0f1; -fx-padding: 2 6; -fx-background-radius: 4;"); }
+            }
+        }));
+
+        task.setOnFailed(e -> Platform.runLater(() -> {
+            labelEmailBadge.setText("🌐 Hors-ligne");
+            labelEmailBadge.setStyle("-fx-text-fill: #95a5a6; -fx-background-color: #ecf0f1; -fx-padding: 2 6; -fx-background-radius: 4;");
+        }));
+
+        new Thread(task).start();
+    }
+
+    @FXML
+    private void handleGenererMotDePasse(ActionEvent event) {
+        String motDePasseGenere = PasswordGenerator.genererMotDePasseFort();
+        passwordField.setText(motDePasseGenere);
+        confirmPasswordField.setText(motDePasseGenere);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Mot de passe généré");
+        alert.setHeaderText(null);
+        alert.setContentText("Voici votre nouveau mot de passe (copiez-le) : \n\n" + motDePasseGenere);
+        alert.showAndWait();
+    }
 
     @FXML
     private void handleRegister(ActionEvent event) {
-        // Nettoyer les messages précédents
-        errorLabel.setVisible(false);
-        errorLabel.setManaged(false);
-        successLabel.setVisible(false);
-        successLabel.setManaged(false);
-        
-        // Retirer les bordures rouges
+        errorLabel.setVisible(false);   errorLabel.setManaged(false);
+        successLabel.setVisible(false); successLabel.setManaged(false);
+
         fullNameField.setStyle("");
         emailField.setStyle("");
         passwordField.setStyle("");
         confirmPasswordField.setStyle("");
 
-        String fullName = fullNameField.getText();
-        String email = emailField.getText();
-        String password = passwordField.getText();
+        // 1. Vérifier le CAPTCHA
+        if (captchaCanvas != null && captchaField != null) {
+            if (!captchaGen.verifier(captchaField.getText())) {
+                if (errCaptcha != null) {
+                    errCaptcha.setText("❌ Réponse CAPTCHA incorrecte. Réessayez.");
+                    errCaptcha.setVisible(true); errCaptcha.setManaged(true);
+                }
+                captchaGen.genererEtDessiner(captchaCanvas);
+                captchaField.clear();
+                return;
+            }
+            if (errCaptcha != null) { errCaptcha.setVisible(false); errCaptcha.setManaged(false); }
+        }
+
+        String fullName       = fullNameField.getText();
+        String email          = emailField.getText();
+        String password       = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
-        
-        // Récupération du rôle
+
         RadioButton selectedRadio = (RadioButton) roleGroup.getSelectedToggle();
         String role = (selectedRadio != null) ? selectedRadio.getUserData().toString() : User.ROLE_ETUDIANT;
 
-        // Validation locale simple (confirmation mot de passe)
         if (!password.equals(confirmPassword)) {
             afficherErreur("Les mots de passe ne correspondent pas.");
             passwordField.setStyle("-fx-border-color: red;");

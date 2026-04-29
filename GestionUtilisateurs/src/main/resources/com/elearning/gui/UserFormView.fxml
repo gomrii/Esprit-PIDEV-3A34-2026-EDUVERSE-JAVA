@@ -2,6 +2,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
 
 <!--
   UserFormView.fxml — Formulaire d'ajout/modification d'utilisateur
@@ -24,6 +25,23 @@
         <VBox spacing="14" styleClass="form-body">
             <padding><Insets top="20" right="25" bottom="10" left="25"/></padding>
 
+            <!-- Section Avatar -->
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <ImageView fx:id="avatarImageView" fitWidth="90" fitHeight="90" />
+                <VBox spacing="5" alignment="CENTER_LEFT">
+                    <Label text="Photo de profil" styleClass="field-label"/>
+                    <HBox spacing="8">
+                        <Button fx:id="btnGenererAvatar" text="🎲 Générer (DiceBear)"
+                                onAction="#handleGenererAvatar" styleClass="btn-secondary"/>
+                        <Button text="📁 Parcourir" onAction="#handleChoisirImage"
+                                styleClass="btn-outline"/>
+                    </HBox>
+                    <Label fx:id="labelAvatarStatus" text="Aucune image sélectionnée"
+                           style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;"/>
+                </VBox>
+            </HBox>
+            <Region prefHeight="1" style="-fx-background-color: #ecf0f1;"/>
+
             <!-- Nom complet -->
             <VBox spacing="3">
                 <Label text="Nom complet *" styleClass="field-label"/>
@@ -33,7 +51,11 @@
 
             <!-- Email -->
             <VBox spacing="3">
-                <Label text="Adresse e-mail *" styleClass="field-label"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Label text="Adresse e-mail *" styleClass="field-label"/>
+                    <Label fx:id="labelEmailBadge" text="🌐 Vérification..."
+                           style="-fx-font-size: 10px; -fx-background-color: #ecf0f1; -fx-padding: 2 6; -fx-background-radius: 4;"/>
+                </HBox>
                 <TextField fx:id="emailField" promptText="ahmed@elearning.tn" styleClass="text-field"/>
                 <Label fx:id="errEmail" styleClass="error-inline" visible="false" managed="false"/>
             </VBox>
@@ -64,9 +86,18 @@
                    styleClass="section-separator"/>
 
             <VBox spacing="3">
-                <Label text="Mot de passe *" styleClass="field-label"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Label text="Mot de passe *" styleClass="field-label"/>
+                    <Button text="Générer" onAction="#handleGenererMotDePasse" style="-fx-font-size: 10px; -fx-background-color: #ecf0f1; -fx-padding: 2 6; -fx-cursor: hand;"/>
+                </HBox>
                 <PasswordField fx:id="passwordField" promptText="Min 8 cars, 1 MAJ, 1 chiffre, 1 spécial"
                                styleClass="text-field"/>
+                <!-- Indicateur de force -->
+                <ProgressBar fx:id="passwordStrengthBar"
+                             maxWidth="Infinity" prefHeight="6"
+                             progress="0" style="-fx-accent: #e74c3c;"/>
+                <Label fx:id="passwordStrengthLabel" text=""
+                       style="-fx-font-size: 11px; -fx-font-weight: bold;"/>
                 <Label fx:id="errPassword" styleClass="error-inline" visible="false" managed="false"/>
             </VBox>
 
