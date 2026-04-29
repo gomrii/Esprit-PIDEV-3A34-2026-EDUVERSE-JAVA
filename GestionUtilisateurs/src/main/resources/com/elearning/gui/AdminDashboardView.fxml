@@ -92,7 +92,7 @@
             <VBox fx:id="panneauIA" styleClass="ia-panel" spacing="8">
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <Label text="🤖 Recommandations IA" styleClass="ia-panel-title"/>
-                    <ProgressIndicator fx:id="iaLoadingIndicator" prefSize="18" visible="true"/>
+                    <ProgressIndicator fx:id="iaLoadingIndicator" prefWidth="25" prefHeight="25" visible="true"/>
                     <Label fx:id="iaStatusLabel" text="Analyse en cours..."
                            style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;"/>
                 </HBox>
