@@ -29,18 +29,29 @@ public class AjouterClubController {
                 "ACTIVE", "INACTIVE", "PENDING"
         ));
         cbStatus.setValue("ACTIVE");
+        setupValidationListeners();
+    }
+
+    private void setupValidationListeners() {
+        tfName.textProperty().addListener((obs, oldVal, newVal) -> clearErrorStyle(tfName));
+        taDescription.textProperty().addListener((obs, oldVal, newVal) -> clearErrorStyle(taDescription));
+        cbStatus.valueProperty().addListener((obs, oldVal, newVal) -> clearErrorStyle(cbStatus));
     }
 
     @FXML
     private void addClub(ActionEvent ev) {
-        if (!validateForm()) return;
+        if (!validateClub()) return;
+        
+        if (Utils.MyDb.getInstance().getConn() == null) {
+            showAlert(Alert.AlertType.ERROR, "Erreur BDD", "La connexion à la base de données a échoué.");
+            return;
+        }
 
         try {
             String name = tfName.getText().trim();
             String description = taDescription.getText().trim();
             String status = cbStatus.getValue();
 
-            // creatorId = 1 par défaut pour le test
             Club club = new Club(name, description, status, 1);
             serviceClub.add(club);
 
@@ -53,32 +64,50 @@ public class AjouterClubController {
 
     @FXML
     private void goBack(ActionEvent event) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/ClubMenu.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 800, 600));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        MainDashboardController.getInstance().loadView("AfficherClub.fxml", "Gestion des Clubs");
     }
 
-    private boolean validateForm() {
+    private boolean validateClub() {
         StringBuilder errors = new StringBuilder();
-        if (tfName.getText().trim().isEmpty()) errors.append("- Le nom est requis\n");
-        if (taDescription.getText().trim().isEmpty()) errors.append("- La description est requise\n");
-        if (cbStatus.getValue() == null) errors.append("- Le statut est requis\n");
+        boolean isValid = true;
 
-        if (errors.length() > 0) {
-            showAlert(Alert.AlertType.WARNING, "Erreurs de validation", errors.toString());
-            return false;
+        if (tfName.getText().trim().length() < 3) {
+            errors.append("- Nom : minimum 3 caractères.\n");
+            setErrorStyle(tfName);
+            isValid = false;
         }
-        return true;
+
+        if (taDescription.getText().trim().isEmpty()) {
+            errors.append("- Description : ne peut pas être vide.\n");
+            setErrorStyle(taDescription);
+            isValid = false;
+        }
+
+        if (cbStatus.getValue() == null || cbStatus.getValue().isEmpty()) {
+            errors.append("- Statut : veuillez sélectionner un statut.\n");
+            setErrorStyle(cbStatus);
+            isValid = false;
+        }
+
+        if (!isValid) {
+            showAlert(Alert.AlertType.WARNING, "Contrôle de saisie", errors.toString());
+        }
+
+        return isValid;
+    }
+
+    private void setErrorStyle(Control control) {
+        control.getStyleClass().add("error-field");
+    }
+
+    private void clearErrorStyle(Control control) {
+        control.getStyleClass().remove("error-field");
     }
 
     private void showAlert(Alert.AlertType type, String title, String msg) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
+        alert.setHeaderText(null);
         alert.setContentText(msg);
         alert.showAndWait();
     }

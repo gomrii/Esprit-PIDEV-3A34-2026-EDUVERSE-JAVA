@@ -1,51 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.Region?>
 
-<VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="15.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AjouterEventController">
-    <padding>
-        <Insets bottom="20.0" left="40.0" right="40.0" top="20.0" />
-    </padding>
+<VBox alignment="CENTER" prefHeight="700.0" prefWidth="800.0" spacing="0" 
+      styleClass="main-content" stylesheets="@css/style.css"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="Controllers.AjouterEventController">
 
-    <Label text="Ajouter un Nouvel Événement">
-        <font>
-            <Font name="System Bold" size="24.0" />
-        </font>
-    </Label>
+    <!-- Container du formulaire -->
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+        <VBox alignment="CENTER">
+            <padding> <Insets top="20" bottom="20" left="20" right="20" /> </padding>
+            <VBox styleClass="form-container" maxWidth="550" spacing="20">
+                
+                <!-- En-tête -->
+                <VBox styleClass="form-header" spacing="10">
+                    <padding><Insets top="20" right="30" bottom="20" left="30"/></padding>
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <Button onAction="#goBack" text="⬅" styleClass="btn-secondary" style="-fx-padding: 5 10;"/>
+                        <Label text="Ajouter un Nouvel Événement" styleClass="form-title"/>
+                    </HBox>
+                </VBox>
 
-    <GridPane hgap="10" vgap="15" alignment="CENTER">
-        <Label text="Titre:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <TextField fx:id="tfTitle" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="300"/>
+                <!-- Corps du formulaire -->
+                <VBox styleClass="form-body" spacing="16">
+                    <padding><Insets top="10" right="30" bottom="20" left="30"/></padding>
 
-        <Label text="Date:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <DatePicker fx:id="dpEventDate" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="300" />
+                    <VBox spacing="4">
+                        <Label text="Titre" styleClass="field-label"/>
+                        <TextField fx:id="tfTitle" promptText="Ex: Hackathon 2026" styleClass="text-field"/>
+                    </VBox>
 
-        <Label text="Lieu:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <TextField fx:id="tfLocation" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="300" />
+                    <HBox spacing="15">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Date" styleClass="field-label"/>
+                            <DatePicker fx:id="dpEventDate" promptText="Sélectionner la date" styleClass="date-picker" prefWidth="250" />
+                        </VBox>
 
-        <Label text="Statut:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-        <ComboBox fx:id="cbStatus" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="300" />
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Lieu" styleClass="field-label"/>
+                            <HBox spacing="5" alignment="CENTER_LEFT">
+                                <TextField fx:id="tfLocation" promptText="Ex: Amphi A" styleClass="text-field" HBox.hgrow="ALWAYS"/>
+                                <Button onAction="#openMapPicker" text="📍" 
+                                        styleClass="btn-secondary" 
+                                        style="-fx-padding: 8 10; -fx-font-size: 15; -fx-cursor: hand;">
+                                    <tooltip>
+                                        <Tooltip text="Choisir sur la carte" />
+                                    </tooltip>
+                                </Button>
+                            </HBox>
+                        </VBox>
+                    </HBox>
 
-        <Label text="ID du Club:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-        <TextField fx:id="tfClubId" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="300" />
+                    <HBox spacing="15">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Statut" styleClass="field-label"/>
+                            <ComboBox fx:id="cbStatus" promptText="Sélectionner" styleClass="combo-field" prefWidth="250" />
+                        </VBox>
 
-        <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.valignment="TOP" />
-        <TextArea fx:id="taDescription" GridPane.columnIndex="1" GridPane.rowIndex="5" prefHeight="100.0" prefWidth="300" />
-    </GridPane>
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="ID du Club (Optionnel)" styleClass="field-label"/>
+                            <TextField fx:id="tfClubId" promptText="Ex: 5" styleClass="text-field" prefWidth="250"/>
+                        </VBox>
+                    </HBox>
 
-    <HBox alignment="CENTER" spacing="20.0">
-        <Button mnemonicParsing="false" onAction="#addEvent" prefHeight="35.0" prefWidth="150.0" style="-fx-base: #4CAF50;" text="Ajouter" textFill="WHITE">
-         <font><Font name="System Bold" size="14.0" /></font></Button>
-        <Button mnemonicParsing="false" onAction="#goBack" prefHeight="35.0" prefWidth="150.0" text="Retour à l'accueil" />
-    </HBox>
+                    <VBox spacing="4">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label text="Description" styleClass="field-label"/>
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Button fx:id="btnGenerateAI" text="✨ Générer par IA" onAction="#generateAIDescription" 
+                                    style="-fx-background-color: #f0f7ff; -fx-text-fill: #0066cc; -fx-font-weight: bold; -fx-padding: 3 10; -fx-background-radius: 15; -fx-border-color: #0066cc; -fx-border-radius: 15; -fx-cursor: hand;"/>
+                        </HBox>
+                        <TextArea fx:id="taDescription" promptText="Détails de l'événement..." styleClass="text-area" prefHeight="100" wrapText="true"/>
+                    </VBox>
+                </VBox>
+
+                <!-- Footer -->
+                <HBox styleClass="form-footer" alignment="CENTER_RIGHT" spacing="15">
+                    <padding><Insets top="15" right="30" bottom="20" left="30"/></padding>
+                    <Button text="Annuler" styleClass="btn-secondary" onAction="#goBack"/>
+                    <Button text="Enregistrer" styleClass="btn-success" onAction="#addEvent"/>
+                </HBox>
+
+            </VBox>
+        </VBox>
+    </ScrollPane>
 </VBox>

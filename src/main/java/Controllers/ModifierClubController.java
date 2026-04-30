@@ -3,16 +3,12 @@ package Controllers;
 import Entities.Club;
 import Services.ServiceClub;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -20,11 +16,6 @@ import java.sql.SQLException;
 
 public class ModifierClubController {
 
-    @FXML private TableView<Club> tvClubs;
-    @FXML private TableColumn<Club, Integer> colId;
-    @FXML private TableColumn<Club, String> colName;
-    
-    @FXML private VBox formModifier;
     @FXML private TextField tfName;
     @FXML private TextArea taDescription;
     @FXML private ComboBox<String> cbStatus;
@@ -34,32 +25,23 @@ public class ModifierClubController {
 
     @FXML
     public void initialize() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         cbStatus.setItems(FXCollections.observableArrayList("ACTIVE", "INACTIVE", "PENDING"));
-
-        formModifier.setDisable(true);
-        loadClubs();
-
-        tvClubs.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                fillForm(newVal);
-            }
-        });
+        setupValidationListeners();
     }
 
-    private void loadClubs() {
-        try {
-            ObservableList<Club> clubList = FXCollections.observableArrayList(serviceClub.display());
-            tvClubs.setItems(clubList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    private void setupValidationListeners() {
+        tfName.textProperty().addListener((obs, oldVal, newVal) -> clearErrorStyle(tfName));
+        taDescription.textProperty().addListener((obs, oldVal, newVal) -> clearErrorStyle(taDescription));
+        cbStatus.valueProperty().addListener((obs, oldVal, newVal) -> clearErrorStyle(cbStatus));
     }
 
-    private void fillForm(Club club) {
-        formModifier.setDisable(false);
-        selectedClubId = club.getId();
+    /**
+     * Called from AfficherClubController to pass the club to modify.
+     */
+    public void setClub(Club club) {
+        if (club == null) return;
+        
+        this.selectedClubId = club.getId();
         tfName.setText(club.getName());
         taDescription.setText(club.getDescription());
         cbStatus.setValue(club.getStatus());
@@ -68,6 +50,12 @@ public class ModifierClubController {
     @FXML
     private void updateClub(ActionEvent ev) {
         if (selectedClubId == -1) return;
+        if (!validateClub()) return;
+
+        if (Utils.MyDb.getInstance().getConn() == null) {
+            showAlert(Alert.AlertType.ERROR, "Erreur BDD", "La connexion à la base de données a échoué.");
+            return;
+        }
 
         try {
             Club club = new Club();
@@ -78,28 +66,61 @@ public class ModifierClubController {
 
             serviceClub.update(club);
             
-            Alert a = new Alert(Alert.AlertType.INFORMATION, "Club modifié !");
-            a.showAndWait();
-            
-            formModifier.setDisable(true);
-            selectedClubId = -1;
-            loadClubs();
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Club mis à jour avec succès !");
+            goBack(ev);
 
         } catch (SQLException e) {
-            Alert a = new Alert(Alert.AlertType.ERROR, "Erreur SQL: " + e.getMessage());
-            a.showAndWait();
+            showAlert(Alert.AlertType.ERROR, "Erreur SQL", e.getMessage());
         }
+    }
+
+    private boolean validateClub() {
+        StringBuilder errors = new StringBuilder();
+        boolean isValid = true;
+
+        if (tfName.getText().trim().length() < 3) {
+            errors.append("- Nom : minimum 3 caractères.\n");
+            setErrorStyle(tfName);
+            isValid = false;
+        }
+
+        if (taDescription.getText().trim().isEmpty()) {
+            errors.append("- Description : ne peut pas être vide.\n");
+            setErrorStyle(taDescription);
+            isValid = false;
+        }
+
+        if (cbStatus.getValue() == null || cbStatus.getValue().isEmpty()) {
+            errors.append("- Statut : veuillez sélectionner un statut.\n");
+            setErrorStyle(cbStatus);
+            isValid = false;
+        }
+
+        if (!isValid) {
+            showAlert(Alert.AlertType.WARNING, "Contrôle de saisie", errors.toString());
+        }
+
+        return isValid;
+    }
+
+    private void setErrorStyle(Control control) {
+        control.getStyleClass().add("error-field");
+    }
+
+    private void clearErrorStyle(Control control) {
+        control.getStyleClass().remove("error-field");
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String msg) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 
     @FXML
     private void goBack(ActionEvent event) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/ClubMenu.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 800, 600));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        MainDashboardController.getInstance().loadView("AfficherClub.fxml", "Gestion des Clubs");
     }
 }

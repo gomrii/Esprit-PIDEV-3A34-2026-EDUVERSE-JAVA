@@ -1,31 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="25.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.HomeController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
+<VBox alignment="TOP_CENTER" prefHeight="700.0" prefWidth="900.0" spacing="30.0" 
+      styleClass="main-content" stylesheets="@css/style.css"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="Controllers.HomeController">
+    <padding> <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" /> </padding>
 
-    <Label text="Tableau de Bord - EduVerse" textFill="#2c3e50">
-        <font>
-            <Font name="System Bold" size="30.0" />
-        </font>
-    </Label>
+    <!-- Welcome Section -->
+    <VBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Bienvenue sur EduVerse" styleClass="page-title" style="-fx-font-size: 32px;"/>
+        <Label text="Explorez vos clubs et gérez vos événements académiques en toute simplicité." styleClass="login-subtitle" style="-fx-font-size: 16px;"/>
+    </VBox>
 
-    <Button mnemonicParsing="false" onAction="#goToEventMenu" prefHeight="50.0" prefWidth="250.0" style="-fx-base: #3498db;" text="Gérer les Événements" textFill="WHITE">
-        <font><Font name="System Bold" size="16.0" /></font>
-    </Button>
+    <Separator />
 
-    <Button mnemonicParsing="false" onAction="#goToClubMenu" prefHeight="50.0" prefWidth="250.0" style="-fx-base: #2ecc71;" text="Gérer les Clubs" textFill="WHITE">
-        <font><Font name="System Bold" size="16.0" /></font>
-    </Button>
+    <!-- Summary Cards / Stats -->
+    <HBox spacing="25" alignment="CENTER">
+        <VBox styleClass="stat-card, stat-blue" spacing="10" alignment="CENTER" prefWidth="250">
+            <Label text="08" styleClass="stat-number"/>
+            <Label text="Clubs Actifs" styleClass="stat-label"/>
+        </VBox>
+        <VBox styleClass="stat-card, stat-purple" spacing="10" alignment="CENTER" prefWidth="250">
+            <Label text="12" styleClass="stat-number"/>
+            <Label text="Événements cette semaine" styleClass="stat-label"/>
+        </VBox>
+        <VBox styleClass="stat-card, stat-green" spacing="10" alignment="CENTER" prefWidth="250">
+            <Label text="250" styleClass="stat-number"/>
+            <Label text="Participants Totaux" styleClass="stat-label"/>
+        </VBox>
+    </HBox>
 
-    <Button mnemonicParsing="false" onAction="#quitApp" prefHeight="40.0" prefWidth="150.0" style="-fx-base: #e74c3c;" text="Quitter" textFill="WHITE">
-        <font><Font name="System Bold" size="14.0" /></font>
-    </Button>
+    <!-- Quick Actions Section -->
+    <VBox spacing="20" alignment="CENTER_LEFT">
+        <Label text="Actions Rapides" styleClass="form-title" style="-fx-font-size: 20px;"/>
+        
+        <HBox spacing="20">
+            <Button mnemonicParsing="false" onAction="#goToClubMenu" prefHeight="100.0" prefWidth="200.0" 
+                    styleClass="btn-primary" style="-fx-font-size: 16px; -fx-background-color: #4f46e5;" text="👥 Gérer les Clubs"/>
+            <Button mnemonicParsing="false" onAction="#goToEventMenu" prefHeight="100.0" prefWidth="200.0" 
+                    styleClass="btn-primary" style="-fx-font-size: 16px; -fx-background-color: #8b5cf6;" text="📅 Gérer les Événements"/>
+            <Button mnemonicParsing="false" onAction="#quitApp" prefHeight="100.0" prefWidth="200.0" 
+                    styleClass="btn-secondary" style="-fx-font-size: 16px; -fx-text-fill: #ef4444; -fx-border-color: #ef4444;" text="🚪 Quitter"/>
+        </HBox>
+    </VBox>
+
 </VBox>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sélecteur de Lieu - OpenStreetMap</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        /* CSS optimisé pour une intégration parfaite (y compris WebView JavaFX) */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1; /* Derrière le panneau de contrôle */
+        }
+
+        /* Panneau de contrôle contenant l'input et le bouton */
+        .control-panel {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000; /* Au-dessus de la carte */
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            gap: 10px;
+            width: 450px;
+            max-width: 90vw;
+            box-sizing: border-box;
+        }
+
+        input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+            /* On l'empêche d'être édité manuellement pour forcer le clic sur la carte */
+            pointer-events: none; 
+            background-color: #f9fafb;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #10b981;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            background-color: #059669;
+        }
+
+        button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .btn-cancel {
+            background-color: #ef4444;
+        }
+
+        .btn-cancel:hover {
+            background-color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 3 & 4. Input "lieu" et Bouton "Confirmer" -->
+    <div class="control-panel">
+        <input type="text" id="lieu" placeholder="Cliquez sur la carte pour choisir un lieu..." readonly />
+        <button id="btnConfirmer" onclick="confirmerLieu()" disabled>Confirmer</button>
+        <button class="btn-cancel" onclick="annulerLieu()">Annuler</button>
+    </div>
+
+    <!-- Conteneur de la carte -->
+    <div id="map"></div>
+
+    <script>
+        // 1. Initialisation de la carte centrée sur Tunis
+        var map = L.map('map').setView([36.8065, 10.1815], 13);
+
+        // Ajout des tuiles gratuites OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Variable pour s'assurer qu'on n'a qu'un seul marqueur
+        var marker = null;
+        var selectedAddress = "";
+
+        // 2. Gestionnaire de clic sur la carte
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+
+            // 5. Remplacer l'ancien marqueur (un seul marqueur à la fois)
+            if (marker) {
+                marker.setLatLng([lat, lng]);
+            } else {
+                marker = L.marker([lat, lng]).addTo(map);
+            }
+
+            // Indiquer le chargement dans l'input
+            document.getElementById('lieu').value = "Recherche de l'adresse...";
+
+            // Appel à l'API gratuite Nominatim (Reverse Geocoding sans clé API)
+            var url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    // Si une adresse est trouvée
+                    if (data && data.display_name) {
+                        // Remplir l'input field
+                        document.getElementById('lieu').value = data.display_name;
+                        selectedAddress = data.display_name;
+                        // Mettre à jour la popup du marqueur
+                        marker.bindPopup("<b>Lieu sélectionné:</b><br>" + data.display_name).openPopup();
+                        document.getElementById('btnConfirmer').disabled = false;
+                    } else {
+                        // Si aucune route n'est trouvée (ex: en pleine mer)
+                        var fallbackAddress = `Coordonnées : ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                        document.getElementById('lieu').value = fallbackAddress;
+                        selectedAddress = fallbackAddress;
+                        document.getElementById('btnConfirmer').disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error("Erreur de géocodage:", error);
+                    var fallbackAddress = `Coordonnées : ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                    document.getElementById('lieu').value = fallbackAddress;
+                    selectedAddress = fallbackAddress;
+                    document.getElementById('btnConfirmer').disabled = false;
+                });
+        });
+
+        // 4. Action du bouton Confirmer
+        function confirmerLieu() {
+            var adresse = document.getElementById('lieu').value;
+            
+            if (!adresse || adresse === "Cliquez sur la carte pour choisir un lieu..." || adresse === "Recherche de l'adresse...") {
+                alert("Veuillez d'abord cliquer sur la carte pour choisir un lieu !");
+                return;
+            }
+
+            // Intégration JavaFX : Si le WebView (window.app) existe, envoyer la donnée à Java
+            if (window.app) {
+                window.app.onLocationSelected(adresse);
+            }
+        }
+
+        // Action du bouton Annuler
+        function annulerLieu() {
+            if (window.app) {
+                window.app.onCancel();
+            }
+        }
+    </script>
+</body>
+</html>

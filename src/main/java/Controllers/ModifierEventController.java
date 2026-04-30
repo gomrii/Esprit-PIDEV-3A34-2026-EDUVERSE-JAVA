@@ -3,16 +3,12 @@ package Controllers;
 import Entities.Event;
 import Services.ServiceEvent;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -22,11 +18,6 @@ import java.util.Date;
 
 public class ModifierEventController {
 
-    @FXML private TableView<Event> tvEvents;
-    @FXML private TableColumn<Event, String> colTitle;
-    @FXML private TableColumn<Event, Date> colDate;
-    
-    @FXML private VBox formModifier;
     @FXML private TextField tfTitle;
     @FXML private TextArea taDescription;
     @FXML private DatePicker dpEventDate;
@@ -39,32 +30,25 @@ public class ModifierEventController {
 
     @FXML
     public void initialize() {
-        colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-        colDate.setCellValueFactory(new PropertyValueFactory<>("eventDate"));
         cbStatus.setItems(FXCollections.observableArrayList("upcoming", "ongoing", "completed", "cancelled"));
-
-        formModifier.setDisable(true);
-        loadEvents();
-
-        tvEvents.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                fillForm(newVal);
-            }
-        });
+        setupValidationListeners();
     }
 
-    private void loadEvents() {
-        try {
-            ObservableList<Event> eventList = FXCollections.observableArrayList(serviceEvent.display());
-            tvEvents.setItems(eventList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    private void setupValidationListeners() {
+        tfTitle.textProperty().addListener((obs, oldVal, newVal) -> clearErrorStyle(tfTitle));
+        taDescription.textProperty().addListener((obs, oldVal, newVal) -> clearErrorStyle(taDescription));
+        tfLocation.textProperty().addListener((obs, oldVal, newVal) -> clearErrorStyle(tfLocation));
+        dpEventDate.valueProperty().addListener((obs, oldVal, newVal) -> clearErrorStyle(dpEventDate));
+        cbStatus.valueProperty().addListener((obs, oldVal, newVal) -> clearErrorStyle(cbStatus));
     }
 
-    private void fillForm(Event event) {
-        formModifier.setDisable(false);
-        selectedEventId = event.getId();
+    /**
+     * Called from AfficherEventController to pass the event to modify.
+     */
+    public void setEvent(Event event) {
+        if (event == null) return;
+        
+        this.selectedEventId = event.getId();
         tfTitle.setText(event.getTitle());
         taDescription.setText(event.getDescription());
         tfLocation.setText(event.getLocation());
@@ -72,13 +56,24 @@ public class ModifierEventController {
         tfClubId.setText(String.valueOf(event.getClubId()));
 
         if (event.getEventDate() != null) {
-            dpEventDate.setValue(event.getEventDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            Date eventDate = event.getEventDate();
+            if (eventDate instanceof java.sql.Date) {
+                dpEventDate.setValue(((java.sql.Date) eventDate).toLocalDate());
+            } else {
+                dpEventDate.setValue(eventDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            }
         }
     }
 
     @FXML
     private void updateEvent(ActionEvent ev) {
         if (selectedEventId == -1) return;
+        if (!validateEvent()) return;
+
+        if (Utils.MyDb.getInstance().getConn() == null) {
+            showAlert(Alert.AlertType.ERROR, "Erreur BDD", "La connexion à la base de données a échoué.");
+            return;
+        }
 
         try {
             Event event = new Event();
@@ -87,35 +82,86 @@ public class ModifierEventController {
             event.setDescription(taDescription.getText().trim());
             event.setLocation(tfLocation.getText().trim());
             event.setStatus(cbStatus.getValue());
-            try { event.setClubId(Integer.parseInt(tfClubId.getText().trim())); } catch (Exception e) {}
+            
+            try { 
+                event.setClubId(Integer.parseInt(tfClubId.getText().trim())); 
+            } catch (NumberFormatException e) {
+                setErrorStyle(tfClubId);
+                showAlert(Alert.AlertType.WARNING, "Contrôle de saisie", "L'ID du club doit être un nombre.");
+                return;
+            }
+
             if (dpEventDate.getValue() != null) {
                 event.setEventDate(Date.from(dpEventDate.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
             }
 
             serviceEvent.update(event);
             
-            Alert a = new Alert(Alert.AlertType.INFORMATION, "Événement modifié !");
-            a.showAndWait();
-            
-            formModifier.setDisable(true);
-            selectedEventId = -1;
-            loadEvents();
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Événement mis à jour avec succès !");
+            goBack(ev);
 
         } catch (SQLException e) {
-            Alert a = new Alert(Alert.AlertType.ERROR, "Erreur SQL: " + e.getMessage());
-            a.showAndWait();
+            showAlert(Alert.AlertType.ERROR, "Erreur SQL", e.getMessage());
         }
+    }
+
+    private boolean validateEvent() {
+        StringBuilder errors = new StringBuilder();
+        boolean isValid = true;
+
+        if (tfTitle.getText().trim().length() < 3) {
+            errors.append("- Titre : minimum 3 caractères.\n");
+            setErrorStyle(tfTitle);
+            isValid = false;
+        }
+
+        if (taDescription.getText().trim().length() < 10) {
+            errors.append("- Description : minimum 10 caractères.\n");
+            setErrorStyle(taDescription);
+            isValid = false;
+        }
+
+        if (tfLocation.getText().trim().isEmpty()) {
+            errors.append("- Lieu : ne peut pas être vide.\n");
+            setErrorStyle(tfLocation);
+            isValid = false;
+        }
+
+        if (dpEventDate.getValue() == null) {
+            errors.append("- Date : obligatoire.\n");
+            setErrorStyle(dpEventDate);
+            isValid = false;
+        } else if (dpEventDate.getValue().isBefore(java.time.LocalDate.now())) {
+            errors.append("- Date : doit être dans le futur.\n");
+            setErrorStyle(dpEventDate);
+            isValid = false;
+        }
+
+        if (!isValid) {
+            showAlert(Alert.AlertType.WARNING, "Contrôle de saisie", errors.toString());
+        }
+
+        return isValid;
+    }
+
+    private void setErrorStyle(Control control) {
+        control.getStyleClass().add("error-field");
+    }
+
+    private void clearErrorStyle(Control control) {
+        control.getStyleClass().remove("error-field");
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String msg) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 
     @FXML
     private void goBack(ActionEvent event) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/EventMenu.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 800, 600));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        MainDashboardController.getInstance().loadView("AfficherEvent.fxml", "Gestion des Événements");
     }
 }

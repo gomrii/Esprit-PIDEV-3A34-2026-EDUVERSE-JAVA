@@ -12,25 +12,16 @@ import java.io.IOException;
 public class HomeController {
 
     public void goToEventMenu(ActionEvent event) {
-        navigate(event, "/EventMenu.fxml");
+        MainDashboardController.getInstance().loadView("AfficherEvent.fxml", "Gestion des Événements");
     }
 
     public void goToClubMenu(ActionEvent event) {
-        navigate(event, "/ClubMenu.fxml");
+        MainDashboardController.getInstance().loadView("AfficherClub.fxml", "Gestion des Clubs");
     }
 
     public void quitApp(ActionEvent event) {
         System.exit(0);
     }
 
-    private void navigate(ActionEvent event, String fxmlFile) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxmlFile));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 800, 600));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 }

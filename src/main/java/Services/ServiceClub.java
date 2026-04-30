@@ -10,14 +10,13 @@ import java.util.List;
 
 public class ServiceClub implements IService<Club> {
 
-    private Connection conn;
-
     public ServiceClub() {
-        conn = MyDb.getInstance().getConn();
     }
 
     @Override
     public void add(Club club) throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        if (conn == null) throw new SQLException("Connexion BDD perdue");
         String req = "INSERT INTO club (name, description, status, created_at, updated_at, creator_id) VALUES (?, ?, ?, NOW(), NOW(), ?)";
         PreparedStatement ps = conn.prepareStatement(req, Statement.RETURN_GENERATED_KEYS);
         ps.setString(1, club.getName());
@@ -34,6 +33,8 @@ public class ServiceClub implements IService<Club> {
 
     @Override
     public void update(Club club) throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        if (conn == null) throw new SQLException("Connexion BDD perdue");
         String req = "UPDATE club SET name=?, description=?, status=?, updated_at=NOW() WHERE id=?";
         PreparedStatement ps = conn.prepareStatement(req);
         ps.setString(1, club.getName());
@@ -46,6 +47,8 @@ public class ServiceClub implements IService<Club> {
 
     @Override
     public void delete(Club club) throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        if (conn == null) throw new SQLException("Connexion BDD perdue");
         String req = "DELETE FROM club WHERE id=?";
         PreparedStatement ps = conn.prepareStatement(req);
         ps.setInt(1, club.getId());
@@ -55,6 +58,8 @@ public class ServiceClub implements IService<Club> {
 
     @Override
     public List<Club> display() throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        if (conn == null) throw new SQLException("Connexion BDD perdue");
         String req = "SELECT * FROM club";
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery(req);

@@ -16,7 +16,8 @@ public class MyDb {
             conn = DriverManager.getConnection(PATH, user, pwd);
             System.out.println("Connexion à eduverse établie !");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.err.println("ERREUR DE CONNEXION BDD : " + e.getMessage());
+            // On laisse conn à null, les services devront le gérer.
         }
     }
 
