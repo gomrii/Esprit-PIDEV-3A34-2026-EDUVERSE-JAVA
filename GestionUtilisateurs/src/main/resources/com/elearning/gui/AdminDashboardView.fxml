@@ -131,7 +131,7 @@
                     <TableColumn fx:id="colRole"       text="Rôle"      prefWidth="100"/>
                     <TableColumn fx:id="colStatut"     text="Statut"    prefWidth="100"/>
                     <TableColumn fx:id="colCreatedAt"  text="Créé le"   prefWidth="90"/>
-                    <TableColumn fx:id="colActions"    text="Actions"   prefWidth="260"/>
+                    <TableColumn fx:id="colActions"    text="Actions"   prefWidth="180"/>
                 </columns>
                 <placeholder>
                     <Label text="Aucun utilisateur trouvé." style="-fx-text-fill: #999;"/>

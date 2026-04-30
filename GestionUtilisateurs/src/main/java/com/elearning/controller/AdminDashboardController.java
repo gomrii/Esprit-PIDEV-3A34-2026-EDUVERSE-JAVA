@@ -245,29 +245,35 @@ public class AdminDashboardController implements Initializable {
      */
     private void ajouterColonneActions() {
         colActions.setCellFactory(param -> new TableCell<>() {
-            private final Button btnModifier  = new Button("✏ Modifier");
-            private final Button btnSupprimer = new Button("🗑 Supprimer");
-            private final Button btnBloquer   = new Button("🔒");
-            private final Button btnFaceId    = new Button("📸 Face ID");
-            private final HBox   boite        = new HBox(5, btnModifier, btnFaceId, btnBloquer, btnSupprimer);
+
+            // --- Boutons icônes avec taille fixe ---
+            private final Button btnModifier  = creerBouton("✏️", "btn-action-edit",    "Modifier l'utilisateur");
+            private final Button btnBloquer   = creerBouton("🔒", "btn-action-block",   "Bloquer / Débloquer");
+            private final Button btnFaceId    = creerBouton("📸", "btn-action-faceid",  "Enregistrer le Face ID");
+            private final Button btnSupprimer = creerBouton("🗑️", "btn-action-delete",  "Supprimer l'utilisateur");
+            private final HBox   boite        = new HBox(6, btnModifier, btnBloquer, btnFaceId, btnSupprimer);
 
             {
-                // Styles
-                btnModifier.getStyleClass().add("btn-modifier");
-                btnSupprimer.getStyleClass().add("btn-supprimer");
-                btnBloquer.getStyleClass().add("btn-bloquer");
-                btnFaceId.getStyleClass().add("btn-faceid");
-
-                // === Bouton FACE ID ===
-                btnFaceId.setOnAction(e -> {
-                    User user = getTableView().getItems().get(getIndex());
-                    ouvrirEnregistrementFaceId(user);
-                });
+                boite.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
                 // === Bouton MODIFIER ===
                 btnModifier.setOnAction(e -> {
                     User user = getTableView().getItems().get(getIndex());
                     ouvrirFormulaireModification(user);
+                });
+
+                // === Bouton BLOQUER/DÉBLOQUER ===
+                btnBloquer.setOnAction(e -> {
+                    User user = getTableView().getItems().get(getIndex());
+                    userService.toggleBloquer(user.getId());
+                    chargerUtilisateurs();
+                    updateStats();
+                });
+
+                // === Bouton FACE ID ===
+                btnFaceId.setOnAction(e -> {
+                    User user = getTableView().getItems().get(getIndex());
+                    ouvrirEnregistrementFaceId(user);
                 });
 
                 // === Bouton SUPPRIMER ===
@@ -277,7 +283,6 @@ public class AdminDashboardController implements Initializable {
                     confirm.setTitle("Confirmation");
                     confirm.setHeaderText("Supprimer " + user.getFullName() + " ?");
                     confirm.setContentText("Cette action est irréversible.");
-
                     Optional<ButtonType> result = confirm.showAndWait();
                     if (result.isPresent() && result.get() == ButtonType.OK) {
                         try {
@@ -291,14 +296,6 @@ public class AdminDashboardController implements Initializable {
                         }
                     }
                 });
-
-                // === Bouton BLOQUER/DÉBLOQUER ===
-                btnBloquer.setOnAction(e -> {
-                    User user = getTableView().getItems().get(getIndex());
-                    userService.toggleBloquer(user.getId());
-                    chargerUtilisateurs();
-                    updateStats();
-                });
             }
 
             @Override
@@ -308,18 +305,42 @@ public class AdminDashboardController implements Initializable {
                     setGraphic(null);
                 } else {
                     User user = getTableView().getItems().get(getIndex());
-                    boolean isBruteForceLocked = user.getLockedUntil() != null && user.getLockedUntil().isAfter(java.time.LocalDateTime.now());
-                    if (isBruteForceLocked) {
-                        btnBloquer.setText("🔓 Débloquer (Brute Force)");
-                        btnBloquer.setStyle("-fx-text-fill: orange;");
+                    boolean bruteForceLocked = user.getLockedUntil() != null
+                        && user.getLockedUntil().isAfter(java.time.LocalDateTime.now());
+
+                    // Icône dynamique selon l'état du compte
+                    if (bruteForceLocked) {
+                        btnBloquer.setText("🔓");
+                        javafx.scene.control.Tooltip.install(btnBloquer,
+                            new javafx.scene.control.Tooltip("Débloquer (Brute Force)"));
+                        btnBloquer.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
+                    } else if (user.isBlocked()) {
+                        btnBloquer.setText("🔓");
+                        javafx.scene.control.Tooltip.install(btnBloquer,
+                            new javafx.scene.control.Tooltip("Débloquer l'utilisateur"));
+                        btnBloquer.setStyle("");
                     } else {
-                        btnBloquer.setText(user.isBlocked() ? "🔓 Débloquer" : "🔒 Bloquer");
+                        btnBloquer.setText("🔒");
+                        javafx.scene.control.Tooltip.install(btnBloquer,
+                            new javafx.scene.control.Tooltip("Bloquer l'utilisateur"));
                         btnBloquer.setStyle("");
                     }
                     setGraphic(boite);
                 }
             }
         });
+    }
+
+    /** Crée un bouton icône avec taille fixe et tooltip */
+    private Button creerBouton(String icone, String styleClass, String tooltipText) {
+        Button btn = new Button(icone);
+        btn.getStyleClass().add(styleClass);
+        btn.setPrefWidth(36);
+        btn.setPrefHeight(36);
+        btn.setStyle("-fx-font-size: 14px;");
+        javafx.scene.control.Tooltip tip = new javafx.scene.control.Tooltip(tooltipText);
+        javafx.scene.control.Tooltip.install(btn, tip);
+        return btn;
     }
 
     private void ouvrirEnregistrementFaceId(User user) {

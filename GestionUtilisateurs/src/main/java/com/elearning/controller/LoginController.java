@@ -164,14 +164,17 @@ public class LoginController implements Initializable {
     }
 
     public void validerFaceId(User user) {
-        // En Face ID, on ignore la 2FA pour la fluidité, 
-        // ou on l'applique si on veut une sécurité stricte. On la zappe ici.
         SessionManager.getInstance().connecter(user);
-        
-        // Simuler un ActionEvent pour la navigation
+
+        // Routage selon le rôle — identique au login classique
+        String fxmlPath = switch (user.getRole()) {
+            case User.ROLE_ADMIN      -> "/com/elearning/gui/AdminDashboardView.fxml";
+            case User.ROLE_ENSEIGNANT -> "/com/elearning/gui/EnseignantDashboardView.fxml";
+            default                   -> "/com/elearning/gui/EtudiantDashboardView.fxml";
+        };
+
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/elearning/gui/AdminDashboardView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
             Scene scene = loginButton.getScene();
             scene.setRoot(root);

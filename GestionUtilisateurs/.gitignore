@@ -31,3 +31,9 @@ logs/
 database.properties
 application-local.properties
 config.properties
+
+# Face ID samples
+faces/
+
+# Avatars
+avatars/

@@ -98,13 +98,20 @@ public class FaceIdSimulatorController implements Initializable {
                 @Override
                 public void onError(String message) {
                     Platform.runLater(() -> {
+                        boolean isDuplicate = message.contains("appartient déjà");
+                        String color = isDuplicate ? "#e67e22" : "#e74c3c";
+                        
                         if (statusLabel != null) {
                             statusLabel.setText(message);
-                            statusLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;");
+                            statusLabel.setStyle("-fx-text-fill: " + color + "; -fx-font-weight: bold;");
                         }
                         if (scanProgressBar != null) {
-                            scanProgressBar.setProgress(0);
-                            scanProgressBar.setStyle("-fx-accent: #e74c3c;");
+                            scanProgressBar.setProgress(isDuplicate ? 1.0 : 0);
+                            scanProgressBar.setStyle("-fx-accent: " + color + ";");
+                        }
+                        
+                        if (isDuplicate) {
+                            new Timeline(new KeyFrame(Duration.seconds(3), e -> fermerFenetre())).play();
                         }
                     });
                 }

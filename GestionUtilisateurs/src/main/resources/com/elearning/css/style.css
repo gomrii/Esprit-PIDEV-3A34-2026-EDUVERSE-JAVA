@@ -213,6 +213,8 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 12, 0, 0, 3);
     -fx-pref-width: 160;
     -fx-min-width: 140;
+    -fx-pref-height: 100;
+    -fx-min-height: 90;
 }
 .stat-card:hover {
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 18, 0, 0, 5);
@@ -361,11 +363,12 @@
    ============================================================ */
 .users-table {
     -fx-background-color: white;
-    -fx-background-radius: 10;
+    -fx-background-radius: 12;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 2);
 }
 .users-table .column-header-background {
     -fx-background-color: #f8fafc;
+    -fx-background-radius: 12 12 0 0;
 }
 .users-table .column-header {
     -fx-background-color: transparent;
@@ -466,27 +469,70 @@
     -fx-font-size: 13px;
 }
 
-.btn-faceid {
+/* ============================================================
+   BOUTONS ACTIONS — Icônes dans la TableView
+   ============================================================ */
+.btn-action-edit {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(52,152,219,0.25), 4, 0, 0, 1);
+}
+.btn-action-edit:hover {
+    -fx-background-color: #2980b9;
+    -fx-effect: dropshadow(gaussian, rgba(52,152,219,0.5), 8, 0, 0, 3);
+    -fx-translate-y: -1;
+}
+
+.btn-action-block {
+    -fx-background-color: #e67e22;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(230,126,34,0.25), 4, 0, 0, 1);
+}
+.btn-action-block:hover {
+    -fx-background-color: #d35400;
+    -fx-effect: dropshadow(gaussian, rgba(230,126,34,0.5), 8, 0, 0, 3);
+    -fx-translate-y: -1;
+}
+
+.btn-action-faceid {
     -fx-background-color: #2c3e50;
     -fx-text-fill: white;
-    -fx-font-size: 11px;
-    -fx-background-radius: 5;
-    -fx-padding: 4 10 4 10;
+    -fx-background-radius: 8;
     -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(44,62,80,0.25), 4, 0, 0, 1);
 }
-.btn-faceid:hover {
+.btn-action-faceid:hover {
     -fx-background-color: #1a252f;
+    -fx-effect: dropshadow(gaussian, rgba(44,62,80,0.5), 8, 0, 0, 3);
+    -fx-translate-y: -1;
+}
+
+.btn-action-delete {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(231,76,60,0.25), 4, 0, 0, 1);
+}
+.btn-action-delete:hover {
+    -fx-background-color: #c0392b;
+    -fx-effect: dropshadow(gaussian, rgba(231,76,60,0.5), 8, 0, 0, 3);
+    -fx-translate-y: -1;
 }
 
 
 .ia-panel {
     -fx-background-color: white;
-    -fx-background-radius: 10;
+    -fx-background-radius: 12;
     -fx-padding: 15;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 14, 0, 0, 4);
     -fx-border-color: #e8f4fd;
     -fx-border-width: 1;
-    -fx-border-radius: 10;
+    -fx-border-radius: 12;
 }
 .ia-panel-title {
     -fx-font-size: 14px;
