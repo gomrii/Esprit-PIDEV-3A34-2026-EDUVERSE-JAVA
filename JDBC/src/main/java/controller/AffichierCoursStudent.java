@@ -87,7 +87,31 @@ public class AffichierCoursStudent {
         }
         if (nbCoursLabel != null) nbCoursLabel.setText(list.size() + " cours disponibles");
     }
+    @FXML
+    void goToHistorique(ActionEvent event) {
+        String fxmlPath = "/HistoriqueView.fxml"; // Vérifie bien le nom de ton fichier
+        naviguerVers(fxmlPath, "Mon Historique", event);
+    }
 
+    @FXML
+    void goToRecommandations(ActionEvent event) {
+        String fxmlPath = "/Recommandation.fxml"; // Le fichier FXML que nous avons créé ensemble
+        naviguerVers(fxmlPath, "Mes Recommandations IA", event);
+    }
+
+    // Méthode générique pour éviter la répétition de code
+    private void naviguerVers(String path, String title, ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource(path));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setTitle(title);
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Erreur de navigation vers " + path + " : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
     private VBox createCourseCard(Cours c) {
         VBox card = new VBox(0);
         card.setPrefWidth(280);
@@ -100,14 +124,18 @@ public class AffichierCoursStudent {
 
         // --- 1. ZONE IMAGE AVEC ICÔNE QR ---
         StackPane imageStack = new StackPane();
-
         ImageView img = new ImageView();
         img.setFitWidth(280);
         img.setFitHeight(150);
         img.setPreserveRatio(false);
         img.setSmooth(true);
 
-        // Chargement de l'image (ton code existant)
+        // Arrondir les coins supérieurs de l'image pour coller à la carte
+        Rectangle clip = new Rectangle(280, 150);
+        clip.setArcWidth(30);
+        clip.setArcHeight(30);
+        img.setClip(clip);
+
         String path = c.getImage();
         if (path != null && !path.isEmpty()) {
             try {
@@ -118,16 +146,12 @@ public class AffichierCoursStudent {
             }
         }
 
-        // --- AJOUT DE L'ICÔNE QR SUR L'IMAGE ---
         ImageView qrIcon = new ImageView();
-        // On génère un mini QR visuel pour l'icône
         qrIcon.setImage(Services.QRCodeService.generateQRCode("SCAN", 100, 100));
         qrIcon.setFitWidth(40);
         qrIcon.setFitHeight(40);
         qrIcon.setCursor(Cursor.HAND);
         qrIcon.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0, 0);");
-
-        // Action : Cliquer sur l'icône ouvre la petite fenêtre
         qrIcon.setOnMouseClicked(e -> showQRCodePopup(c));
 
         imageStack.getChildren().addAll(img, qrIcon);
@@ -135,10 +159,10 @@ public class AffichierCoursStudent {
         StackPane.setMargin(qrIcon, new Insets(10));
 
         // --- 2. CONTENEUR D'INFORMATIONS ---
-        VBox info = new VBox(10);
+        VBox info = new VBox(10); // Espacement entre les éléments
         info.setPadding(new Insets(15));
 
-        // Badges
+        // Badges (Niveau & Catégorie)
         HBox badges = new HBox(8);
         Label lvlBadge = new Label(c.getLevel() != null ? c.getLevel() : "Général");
         lvlBadge.setStyle("-fx-background-color: #FEF9E7; -fx-text-fill: #F1C40F; -fx-padding: 4 10; -fx-background-radius: 20; -fx-font-size: 10px; -fx-font-weight: bold;");
@@ -151,82 +175,91 @@ public class AffichierCoursStudent {
         title.setStyle("-fx-font-weight: bold; -fx-font-size: 17px; -fx-text-fill: #2D3436;");
         title.setWrapText(true);
         title.setMinHeight(40);
-        // --- DATE (Publiée en dessous de la description) ---
+
+        // --- DESCRIPTION ---
+        String descText = (c.getDescrption() != null && !c.getDescrption().isEmpty())
+                ? c.getDescrption()
+                : "Aucune description disponible pour ce cours.";
+        Label description = new Label(descText);
+        description.setStyle("-fx-font-size: 12px; -fx-text-fill: #636e72;");
+        description.setWrapText(true);
+        description.setMaxHeight(50); // Limite pour garder la carte compacte
+        description.setEllipsisString("...");
+
+        // --- DATE ---
         String dateStr = (c.getCreated_at() != null) ? c.getCreated_at().toString() : "Date inconnue";
         Label dateLabel = new Label("📅 Publié le : " + dateStr);
         dateLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #95a5a6; -fx-font-style: italic;");
 
-
-        // Bouton Commencer (ton code existant)
+        // Bouton Commencer
         Button btn = new Button("Commencer");
         btn.setMaxWidth(Double.MAX_VALUE);
-        btn.setStyle("-fx-background-color: #3C3362; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-weight: bold;");
-        btn.setOnAction(event -> {try {
-
-            ServiceHistorique sh = new ServiceHistorique();
-            sh.ajouterAuHistorique(c.getId());
-            // 1. Charger le fichier FXML de la page des chapitres
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherChapitreStudent.fxml"));
-            Parent root = loader.load();
-
-            // 2. Récupérer le contrôleur de la page de destination
-            AfficherChapitreStudent controller = loader.getController();
-
-            // 3. Passer les données du cours actuel (l'objet 'c' ou 'cours')
-            controller.setCoursData(c);
-
-            // 4. Changer la scène
-            Stage stage = (Stage) btn.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-
-        } catch (IOException e) {
-            System.err.println("Erreur de chargement : " + e.getMessage());
-            e.printStackTrace();
-        }
+        btn.setCursor(Cursor.HAND);
+        btn.setStyle("-fx-background-color: #3C3362; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-weight: bold; -fx-padding: 8;");
+        btn.setOnAction(event -> {
+            try {
+                ServiceHistorique sh = new ServiceHistorique();
+                sh.ajouterAuHistorique(c.getId());
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherChapitreStudent.fxml"));
+                Parent root = loader.load();
+                AfficherChapitreStudent controller = loader.getController();
+                controller.setCoursData(c);
+                Stage stage = (Stage) btn.getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
 
+        // Ajout de tous les éléments à la section "info" dans l'ordre
+        info.getChildren().addAll(badges, title, description, dateLabel, btn);
 
-
-        info.getChildren().addAll(badges, title, btn);
+        // Assemblage final
         card.getChildren().addAll(imageStack, info);
 
         return card;
     }
 
-    // --- MÉTHODE POUR LA PETITE FENÊTRE (POPUP) ---
     private void showQRCodePopup(Cours c) {
         Stage popupStage = new Stage();
         popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-        popupStage.setTitle("Détails QR - " + c.getTitle());
+        popupStage.setTitle("QR YouTube - " + c.getTitle());
 
         VBox root = new VBox(15);
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(20));
-        root.setStyle("-fx-background-color: white; -fx-border-color: #3C3362; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10;");
+        // Style mis à jour avec une bordure rouge "YouTube"
+        root.setStyle("-fx-background-color: white; -fx-border-color: #FF0000; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10;");
 
-        // Données à afficher lors du scan
-        String qrData = "--- DÉTAILS DU COURS ---\n" +
-                "🆔 ID : " + c.getId() + "\n" +
-                "📌 Titre : " + c.getTitle() + "\n" +
-                "🏷️ Catégorie : " + c.getCategory() + "\n" +
-                "📅 Créé le : " + (c.getCreated_at() != null ? c.getCreated_at() : "N/A") + "\n" +
-                "📖 Description : " + c.getDescrption();
+        // --- PRÉPARATION DU LIEN YOUTUBE ---
+        // On encode le titre pour l'URL (remplace les espaces par +)
+        String searchQuery = c.getTitle().replace(" ", "+");
+        String youtubeLink = "https://www.youtube.com/results?search_query=" + searchQuery;
 
-        // Génération du gros QR Code
+        // --- DONNÉES DU QR CODE ---
+        // Le QR code contient maintenant uniquement l'URL pour une ouverture automatique
+        String qrData = youtubeLink;
+
+        // Génération du QR Code
         ImageView bigQR = new ImageView(Services.QRCodeService.generateQRCode(qrData, 300, 300));
 
-        Label label = new Label("Scannez pour voir les infos");
-        label.setStyle("-fx-font-weight: bold; -fx-text-fill: #3C3362;");
+        // --- INTERFACE ---
+        Label label = new Label("Scannez pour chercher sur YouTube");
+        label.setStyle("-fx-font-weight: bold; -fx-text-fill: #FF0000; -fx-font-size: 14px;");
+
+        Label infoLien = new Label("Recherche : " + c.getTitle());
+        infoLien.setStyle("-fx-text-fill: #7F8C8D; -fx-font-style: italic;");
 
         Button close = new Button("Fermer");
+        close.setStyle("-fx-background-color: #FF0000; -fx-text-fill: white; -fx-cursor: hand; -fx-font-weight: bold;");
         close.setOnAction(e -> popupStage.close());
 
-        root.getChildren().addAll(label, bigQR, close);
+        root.getChildren().addAll(label, bigQR, infoLien, close);
+
         popupStage.setScene(new Scene(root));
         popupStage.show();
     }
-
     @FXML
     void handleSearch(ActionEvent event) {
         filterData();

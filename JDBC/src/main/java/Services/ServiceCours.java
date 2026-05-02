@@ -127,4 +127,15 @@ public class ServiceCours implements IService<Cours> {
         }
         return false;
     }
+    public int getNombreChapitres(int idCours) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM chapitre WHERE id_cours = ?"; // Vérifiez que le nom de la table et de la colonne correspondent à votre BDD
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setInt(1, idCours);
+        ResultSet rs = pstmt.executeQuery();
+
+        if (rs.next()) {
+            return rs.getInt(1);
+        }
+        return 0;
+    }
 }

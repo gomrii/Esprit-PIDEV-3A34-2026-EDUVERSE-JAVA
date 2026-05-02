@@ -3,145 +3,144 @@ package controller;
 import Entities.Chapitre;
 import Entities.Cours;
 import Services.ServiceChapitre;
-import com.itextpdf.text.*;
+import Services.TTSService;
+import Services.TranslationService;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.draw.LineSeparator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-
 public class AfficherChapitreStudent {
 
     @FXML private VBox chaptersListContainer;
     @FXML private Label contentChapterTitle, chapterContentArea;
-    @FXML private HBox mediaContainer;
+    @FXML private VBox mediaContainer; // Changé en VBox pour correspondre à ton dernier FXML
+    @FXML private VBox footerActions;   // Pour afficher le bouton PDF à la fin
 
     private final ServiceChapitre serviceChapitre = new ServiceChapitre();
     private Cours currentCours;
     private Chapitre selectedChapter;
+    private MediaPlayer currentMediaPlayer;
 
-    // --- CETTE MÉTHODE EST LA CLÉ DE L'AFFICHAGE ---
     public void setCoursData(Cours cours) {
         this.currentCours = cours;
-        System.out.println("Cours reçu avec succès : " + cours.getTitle());
-        loadChapters(); // On lance le chargement dès qu'on a le cours
+        loadChapters();
     }
 
     private void loadChapters() {
         if (currentCours == null) return;
-
         try {
             chaptersListContainer.getChildren().clear();
             List<Chapitre> chapitres = serviceChapitre.getChapitresByCoursId(currentCours.getId());
 
-            System.out.println("Nombre de chapitres trouvés en BDD : " + chapitres.size());
-
-            for (Chapitre ch : chapitres) {
-                Button btn = new Button("📖 " + ch.getTitle());
+            for (int i = 0; i < chapitres.size(); i++) {
+                Chapitre ch = chapitres.get(i);
+                Button btn = new Button((i + 1) + ". " + ch.getTitle());
                 btn.setMaxWidth(Double.MAX_VALUE);
-                btn.setStyle("-fx-background-color: white; -fx-border-color: #F1F2F6; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;");
+                btn.setAlignment(Pos.CENTER_LEFT);
+                btn.setStyle("-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-cursor: hand; -fx-padding: 10;");
+
                 btn.setOnAction(e -> showLesson(ch));
                 chaptersListContainer.getChildren().add(btn);
             }
 
-            if (!chapitres.isEmpty()) {
-                showLesson(chapitres.get(0));
-            } else {
-                contentChapterTitle.setText("Aucun chapitre trouvé");
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            if (!chapitres.isEmpty()) showLesson(chapitres.get(0));
+        } catch (SQLException e) { e.printStackTrace(); }
     }
 
     private void showLesson(Chapitre ch) {
-        this.selectedChapter = ch; // Crucial pour le bouton supprimer/modifier
+        this.selectedChapter = ch;
 
+        // Mise à jour du texte
         contentChapterTitle.setText(ch.getTitle());
-        chapterContentArea.setText(ch.getContenu()); // Envoie le texte vers le Label
+        chapterContentArea.setText(ch.getContenu()); // REMPLISSAGE DU TEXTE
 
+        // Rendre les actions visibles
+        footerActions.setVisible(true);
 
+        // Audio & Traduction
+        if (currentMediaPlayer != null) currentMediaPlayer.stop();
+        setupTools(ch);
+    }
 
+    private void setupTools(Chapitre ch) {
         mediaContainer.getChildren().clear();
+        HBox tools = new HBox(15);
+        tools.setAlignment(Pos.CENTER_LEFT);
+
+        Button btnPlay = new Button("▶ Lire la leçon");
+        btnPlay.setStyle("-fx-background-color: #27AE60; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 8 15;");
+        btnPlay.setOnAction(e -> {
+            if (currentMediaPlayer != null) currentMediaPlayer.stop();
+            TTSService tts = new TTSService();
+            currentMediaPlayer = tts.lireTexte(chapterContentArea.getText());
+            if (currentMediaPlayer != null) currentMediaPlayer.play();
+        });
+
+        ComboBox<String> lang = new ComboBox<>();
+        lang.getItems().addAll("Français", "English", "العربية");
+        lang.setPromptText("Traduire");
+        lang.setOnAction(e -> {
+            String code = lang.getValue().equals("English") ? "en" : lang.getValue().equals("العربية") ? "ar" : "fr";
+            if (code.equals("fr")) {
+                chapterContentArea.setText(ch.getContenu());
+            } else {
+                TranslationService ts = new TranslationService();
+                chapterContentArea.setText(ts.traduire(ch.getContenu(), code));
+            }
+        });
+
+        tools.getChildren().addAll(btnPlay, lang);
+        mediaContainer.getChildren().add(tools);
     }
 
     @FXML
     private void handleGeneratePDF(ActionEvent event) {
-        if (selectedChapter == null) {
-            showAlert("Erreur", "Veuillez sélectionner un chapitre.", Alert.AlertType.WARNING);
-            return;
-        }
-
+        if (selectedChapter == null) return;
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialFileName(selectedChapter.getTitle().replaceAll(" ", "_") + ".pdf");
+        fileChooser.setInitialFileName(selectedChapter.getTitle() + ".pdf");
         File file = fileChooser.showSaveDialog(((Node) event.getSource()).getScene().getWindow());
 
         if (file != null) {
-            // Utilisation explicite pour éviter les conflits d'imports
-            com.itextpdf.text.Document document = new com.itextpdf.text.Document(PageSize.A4);
+            Document document = new Document(PageSize.A4);
             try {
                 PdfWriter.getInstance(document, new FileOutputStream(file));
                 document.open();
-
-                // Design du PDF
-                com.itextpdf.text.Font fTitle = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 22);
-                document.add(new Paragraph(selectedChapter.getTitle(), fTitle));
-                document.add(new Chunk(new LineSeparator()));
-                document.add(new Paragraph("\n" + selectedChapter.getContenu()));
-
+                document.add(new Paragraph(selectedChapter.getTitle(), FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20)));
+                document.add(new Paragraph("\n" + chapterContentArea.getText()));
                 document.close();
-                showAlert("Succès", "PDF généré !", Alert.AlertType.INFORMATION);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            } catch (Exception e) { e.printStackTrace(); }
         }
-    }
-
-    private void showAlert(String title, String content, Alert.AlertType type) {
-        Alert a = new Alert(type);
-        a.setTitle(title);
-        a.setContentText(content);
-        a.show();
     }
 
     @FXML
-    public void handleBack(ActionEvent actionEvent) {
+    public void handleBack(ActionEvent event) {
         try {
-            // Chargement du fichier FXML de la vue étudiant
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichierCoursStudent.fxml"));
-            Parent root = loader.load();
-
-            // Récupération de la scène actuelle à partir de l'événement
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-
-            // Changement de la scène
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-
-        } catch (IOException e) {
-            // Affichage d'une erreur si le fichier FXML est introuvable
-            System.err.println("Erreur de navigation : " + e.getMessage());
-            e.printStackTrace();
-        }
+            if (currentMediaPlayer != null) currentMediaPlayer.stop();
+            Parent root = FXMLLoader.load(getClass().getResource("/AffichierCoursStudent.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (IOException e) { e.printStackTrace(); }
     }
 }

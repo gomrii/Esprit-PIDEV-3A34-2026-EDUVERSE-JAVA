@@ -41,6 +41,9 @@ public class Cours {
 
     }
 
+    public Cours(int id, String title, String category, String descrption, String s, String level) {
+    }
+
     public Integer getId() {
         return id;
     }
