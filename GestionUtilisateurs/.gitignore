@@ -37,3 +37,8 @@ faces/
 
 # Avatars
 avatars/
+
+# Backups SQL
+eduverse_java_backup.sql
+*.sql.bak
+*_backup.sql

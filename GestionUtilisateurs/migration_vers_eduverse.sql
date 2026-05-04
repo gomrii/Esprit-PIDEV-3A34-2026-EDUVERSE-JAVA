@@ -8,6 +8,7 @@ USE eduverse;
 
 -- Colonnes ajoutées par Java (ignorées si déjà présentes)
 ALTER TABLE `user`
+  ADD COLUMN IF NOT EXISTS `statut`                 VARCHAR(50)  NULL DEFAULT 'ACTIF',
   ADD COLUMN IF NOT EXISTS `is_two_factor_enabled`  TINYINT(1)   NOT NULL DEFAULT 0,
   ADD COLUMN IF NOT EXISTS `two_factor_code`         VARCHAR(6)       NULL,
   ADD COLUMN IF NOT EXISTS `two_factor_expires_at`   DATETIME         NULL,

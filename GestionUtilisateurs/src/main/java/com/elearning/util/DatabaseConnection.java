@@ -20,10 +20,10 @@ public class DatabaseConnection {
     // Paramètres de connexion — à adapter selon votre config
     // -------------------------------------------------------
     // BDD de développement (phase Java)
-    private static final String URL      = "jdbc:mysql://localhost:3307/eduverse-java?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+    // private static final String URL      = "jdbc:mysql://localhost:3307/eduverse-java?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
     
     // ⬇ Décommenter cette ligne et commenter celle du dessus pour la migration finale
-    // private static final String URL = "jdbc:mysql://localhost:3307/eduverse?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+    private static final String URL = "jdbc:mysql://localhost:3307/eduverse?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
     
     private static final String USER     = "root";
     private static final String PASSWORD = "";           // Mettez votre mot de passe MySQL ici
