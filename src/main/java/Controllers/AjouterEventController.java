@@ -18,6 +18,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import Services.GeminiService;
+import Utils.Session;
 
 public class AjouterEventController {
 
@@ -26,7 +27,7 @@ public class AjouterEventController {
     @FXML private DatePicker dpEventDate;
     @FXML private TextField tfLocation;
     @FXML private ComboBox<String> cbStatus;
-    @FXML private TextField tfClubId;
+    @FXML private ComboBox<Entities.Club> cbClubId;
     @FXML private Button btnGenerateAI;
 
     private final ServiceEvent serviceEvent = new ServiceEvent();
@@ -34,9 +35,17 @@ public class AjouterEventController {
     @FXML
     public void initialize() {
         cbStatus.setItems(FXCollections.observableArrayList(
-                "upcoming", "ongoing", "completed", "cancelled"
+                "APPROVED", "PENDING", "REJECTED"
         ));
-        cbStatus.setValue("upcoming");
+        cbStatus.setValue("APPROVED");
+
+        // Masquer le choix du statut pour les étudiants
+        if (!"ADMIN".equals(Session.role)) {
+            cbStatus.setVisible(false);
+        }
+
+        // Charger les clubs
+        loadClubs();
 
         // Real-time cleanup of error styles
         setupValidationListeners();
@@ -48,6 +57,30 @@ public class AjouterEventController {
         tfLocation.textProperty().addListener((obs, oldVal, newVal) -> clearErrorStyle(tfLocation));
         dpEventDate.valueProperty().addListener((obs, oldVal, newVal) -> clearErrorStyle(dpEventDate));
         cbStatus.valueProperty().addListener((obs, oldVal, newVal) -> clearErrorStyle(cbStatus));
+        cbClubId.valueProperty().addListener((obs, oldVal, newVal) -> clearErrorStyle(cbClubId));
+    }
+
+    private void loadClubs() {
+        try {
+            Services.ServiceClub sc = new Services.ServiceClub();
+            java.util.List<Entities.Club> clubs;
+            if ("ADMIN".equals(Session.role)) {
+                clubs = sc.display();
+            } else {
+                clubs = sc.getClubsByCreator(Session.userId);
+            }
+            cbClubId.setItems(FXCollections.observableArrayList(clubs));
+            
+            // Custom display for the ComboBox
+            cbClubId.setConverter(new javafx.util.StringConverter<Entities.Club>() {
+                @Override public String toString(Entities.Club club) {
+                    return club == null ? "" : club.getName() + " (ID: " + club.getId() + ")";
+                }
+                @Override public Entities.Club fromString(String string) { return null; }
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -64,20 +97,33 @@ public class AjouterEventController {
             String description = taDescription.getText().trim();
             String location = tfLocation.getText().trim();
             String status = cbStatus.getValue();
-            int clubId = Integer.parseInt(tfClubId.getText().trim());
+            
+            Entities.Club selectedClub = cbClubId.getValue();
+            if (selectedClub == null) {
+                setErrorStyle(cbClubId);
+                showAlert(Alert.AlertType.WARNING, "Contrôle de saisie", "Veuillez sélectionner un club.");
+                return;
+            }
+            int clubId = selectedClub.getId();
 
             Date eventDate = Date.from(dpEventDate.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-            Event event = new Event(title, description, eventDate, location, status, clubId, 1);
+            // --- WORKFLOW DE VALIDATION ---
+            if (!"ADMIN".equals(Session.role)) {
+                status = "PENDING";
+            }
+
+            Event event = new Event(title, description, eventDate, location, status, clubId, Session.userId);
             serviceEvent.add(event);
 
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Événement ajouté avec succès !");
+            if ("ETUDIANT".equals(Session.role)) {
+                showAlert(Alert.AlertType.INFORMATION, "Demande Envoyée", "Votre événement est en attente de validation par l'administrateur.");
+            } else {
+                showAlert(Alert.AlertType.INFORMATION, "Succès", "Événement ajouté avec succès !");
+            }
             goBack(ev);
         } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur SQL", "Assurez-vous que l'ID Club existe.\n" + e.getMessage());
-        } catch (NumberFormatException e) {
-            setErrorStyle(tfClubId);
-            showAlert(Alert.AlertType.WARNING, "Contrôle de saisie", "L'ID du club doit être un nombre.");
+            showAlert(Alert.AlertType.ERROR, "Erreur SQL", e.getMessage());
         }
     }
 

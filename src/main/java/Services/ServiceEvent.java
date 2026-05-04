@@ -82,4 +82,55 @@ public class ServiceEvent implements IService<Event> {
         }
         return events;
     }
+
+    public List<Event> displayApproved() throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        if (conn == null) throw new SQLException("Connexion BDD perdue");
+        String req = "SELECT * FROM event WHERE status = 'APPROVED'";
+        return getEventsFromQuery(req);
+    }
+
+    public List<Event> getPendingEvents() throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        if (conn == null) throw new SQLException("Connexion BDD perdue");
+        String req = "SELECT * FROM event WHERE status = 'PENDING'";
+        return getEventsFromQuery(req);
+    }
+
+    public List<Event> getEventsByCreator(int creatorId) throws SQLException {
+        String req = "SELECT * FROM event WHERE creator_id = " + creatorId;
+        return getEventsFromQuery(req);
+    }
+
+    public void updateStatus(int id, String newStatus) throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        if (conn == null) throw new SQLException("Connexion BDD perdue");
+        String req = "UPDATE event SET status=?, updated_at=NOW() WHERE id=?";
+        PreparedStatement ps = conn.prepareStatement(req);
+        ps.setString(1, newStatus);
+        ps.setInt(2, id);
+        ps.executeUpdate();
+    }
+
+    private List<Event> getEventsFromQuery(String query) throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery(query);
+        List<Event> events = new ArrayList<>();
+        while (rs.next()) {
+            Event e = new Event();
+            e.setId(rs.getInt("id"));
+            e.setTitle(rs.getString("title"));
+            e.setDescription(rs.getString("description"));
+            e.setEventDate(rs.getDate("event_date"));
+            e.setLocation(rs.getString("location"));
+            e.setStatus(rs.getString("status"));
+            e.setCreatedAt(rs.getDate("created_at"));
+            e.setUpdatedAt(rs.getDate("updated_at"));
+            e.setClubId(rs.getInt("club_id"));
+            e.setCreatorId(rs.getInt("creator_id"));
+            events.add(e);
+        }
+        return events;
+    }
 }

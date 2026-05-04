@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
@@ -8,50 +9,42 @@
             stylesheets="@css/style.css"
             prefWidth="1200" prefHeight="800">
 
-    <!-- ===================== SIDEBAR GAUCHE ===================== -->
+    <!-- ===================== SIDEBAR ENSEIGNANT ===================== -->
     <left>
-        <VBox styleClass="sidebar" spacing="0" prefWidth="250">
-
-            <!-- Logo -->
+        <VBox styleClass="sidebar" spacing="0" prefWidth="250" style="-fx-background-color: #064e3b;">
             <VBox styleClass="sidebar-header" alignment="CENTER" spacing="10">
                 <padding><Insets top="30" bottom="30"/></padding>
-                <!-- Place pour ImageView -->
-                <Label text="🎓 EduVerse" styleClass="sidebar-logo"/>
-                <Label fx:id="roleLabel" text="Session" styleClass="sidebar-username"/>
+                <Label text="👨‍🏫 EduVerse" styleClass="sidebar-logo"/>
+                <Label fx:id="roleLabel" text="Enseignant Session" styleClass="sidebar-username" style="-fx-text-fill: #d1fae5;"/>
             </VBox>
 
-            <!-- Menu -->
             <VBox styleClass="sidebar-menu" spacing="8">
                 <padding><Insets top="10" right="15" bottom="10" left="15"/></padding>
-                <Label text="📊 Dashboard" styleClass="sidebar-item" onMouseClicked="#goToDash"/>
-                <Label text="👥 Clubs"    styleClass="sidebar-item" onMouseClicked="#goToClubs"/>
-                <Label text="📅 Événements"  styleClass="sidebar-item" onMouseClicked="#goToEvents"/>
-                <Label fx:id="menuDemandes" text="📩 Demandes" styleClass="sidebar-item" onMouseClicked="#goToDemandes"/>
+                <Label text="📈 Suivi" styleClass="sidebar-item" onMouseClicked="#goToDash"/>
+                <Label text="📝 Notes" styleClass="sidebar-item"/>
+                <Label text="📅 Mes Événements" styleClass="sidebar-item" onMouseClicked="#goToEvents"/>
+                <Label text="🏛️ Mes Clubs" styleClass="sidebar-item" onMouseClicked="#goToClubs"/>
             </VBox>
 
-            <!-- Déconnexion -->
             <VBox VBox.vgrow="ALWAYS" alignment="BOTTOM_CENTER">
                 <padding><Insets bottom="30" left="15" right="15"/></padding>
                 <Button text="🚪 Déconnexion" styleClass="btn-logout"
                         maxWidth="Infinity" onAction="#handleLogout"/>
             </VBox>
-
         </VBox>
     </left>
 
     <!-- ===================== CONTENU PRINCIPAL ===================== -->
     <center>
-        <VBox styleClass="main-content">
-            <!-- Header du contenu -->
-            <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: transparent;">
+        <VBox styleClass="main-content" style="-fx-background-color: #f0fdf4;">
+            <HBox spacing="20" alignment="CENTER_LEFT">
                 <padding><Insets top="30" right="30" bottom="20" left="30"/></padding>
-                <Label fx:id="pageTitleLabel" text="Gestion des Clubs" styleClass="page-title"/>
+                <Label fx:id="pageTitleLabel" text="Espace Enseignant" styleClass="page-title"/>
             </HBox>
 
-            <!-- Container dynamique -->
             <StackPane fx:id="contentArea" VBox.vgrow="ALWAYS">
                 <padding><Insets top="0" right="30" bottom="30" left="30"/></padding>
-                <!-- Le FXML (AfficherEvent, AfficherClub...) sera injecté ici -->
+                <!-- Contenu injecté ici -->
             </StackPane>
         </VBox>
     </center>

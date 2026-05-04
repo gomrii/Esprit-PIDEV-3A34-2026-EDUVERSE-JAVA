@@ -62,7 +62,13 @@ public class ModifierClubController {
             club.setId(selectedClubId);
             club.setName(tfName.getText().trim());
             club.setDescription(taDescription.getText().trim());
-            club.setStatus(cbStatus.getValue());
+            
+            String status = cbStatus.getValue();
+            if (!"ADMIN".equals(Utils.Session.role)) {
+                // Si ce n'est pas un admin, on force le statut à PENDING (doit être re-validé)
+                status = "PENDING";
+            }
+            club.setStatus(status);
 
             serviceClub.update(club);
             

@@ -101,6 +101,26 @@
 .card-orange { -fx-border-color: #f59e0b; -fx-border-width: 0 0 4 0; }
 .card-red    { -fx-border-color: #ef4444; -fx-border-width: 0 0 4 0; }
 
+.user-card {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 15, 0, 0, 5);
+    -fx-transition: 0.3s;
+}
+
+.user-card:hover {
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+    -fx-effect: dropshadow(gaussian, rgba(79,70,229,0.15), 20, 0, 0, 8);
+}
+
+.status-badge {
+    -fx-background-radius: 12;
+    -fx-padding: 4 10;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
 /* ============================================================
    CHAMPS DE FORMULAIRE
    ============================================================ */
@@ -344,4 +364,136 @@
     -fx-border-color: #f3f4f6;
     -fx-border-radius: 16;
     -fx-border-width: 1;
+}
+
+/* ============================================================
+   ROLE SELECTION & DASHBOARDS
+   ============================================================ */
+.main-container {
+    -fx-background-color: linear-gradient(to bottom right, #f8fafc, #f1f5f9);
+}
+
+.title-label {
+    -fx-text-fill: #1e293b;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 0, 0, 0, 1);
+}
+
+.role-button {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 15 30;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+    -fx-text-fill: white;
+}
+
+.role-button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.admin-button {
+    -fx-background-color: linear-gradient(to right, #4f46e5, #6366f1);
+    -fx-effect: dropshadow(gaussian, rgba(79,70,229,0.4), 10, 0, 0, 5);
+}
+
+.student-button {
+    -fx-background-color: linear-gradient(to right, #0ea5e9, #38bdf8);
+    -fx-effect: dropshadow(gaussian, rgba(14,165,233,0.4), 10, 0, 0, 5);
+}
+
+.teacher-button {
+    -fx-background-color: linear-gradient(to right, #10b981, #34d399);
+    -fx-effect: dropshadow(gaussian, rgba(16,185,129,0.4), 10, 0, 0, 5);
+}
+
+.dashboard-container {
+    -fx-background-color: white;
+}
+
+.admin-bg { -fx-background-color: #f5f3ff; }
+.student-bg { -fx-background-color: #f0f9ff; }
+.teacher-bg { -fx-background-color: #f0fdf4; }
+
+.dashboard-title {
+    -fx-font-size: 32px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #1e293b;
+}
+
+.back-button {
+    -fx-background-color: #64748b;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.back-button:hover {
+    -fx-background-color: #475569;
+}
+
+/* ============================================================
+   TAB PANE PREMIUM
+   ============================================================ */
+.tab-pane {
+    -fx-tab-min-width: 120px;
+    -fx-tab-max-width: 200px;
+}
+
+.tab-pane .tab-header-area {
+    -fx-padding: 0 0 10 0;
+}
+
+.tab-pane .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.tab {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.tab .tab-label {
+    -fx-text-fill: #64748b;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.tab:selected {
+    -fx-background-color: transparent;
+    -fx-border-color: #4f46e5;
+    -fx-border-width: 0 0 3 0;
+}
+
+.tab:selected .tab-label {
+    -fx-text-fill: #4f46e5;
+}
+
+.tab:hover:not(:selected) {
+    -fx-background-color: #f1f5f9;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 6;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #cbd5e1;
+    -fx-background-radius: 3;
 }

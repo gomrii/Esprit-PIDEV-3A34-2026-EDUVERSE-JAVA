@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import Utils.Session;
 
 public class AjouterClubController {
 
@@ -26,9 +27,15 @@ public class AjouterClubController {
     @FXML
     public void initialize() {
         cbStatus.setItems(FXCollections.observableArrayList(
-                "ACTIVE", "INACTIVE", "PENDING"
+                "APPROVED", "REJECTED"
         ));
-        cbStatus.setValue("ACTIVE");
+        cbStatus.setValue("APPROVED");
+        
+        // Seul l'admin peut choisir le statut directement
+        if (!"ADMIN".equals(Session.role)) {
+            cbStatus.setVisible(false);
+        }
+        
         setupValidationListeners();
     }
 
@@ -52,10 +59,21 @@ public class AjouterClubController {
             String description = taDescription.getText().trim();
             String status = cbStatus.getValue();
 
-            Club club = new Club(name, description, status, 1);
+            // Création avec statut PENDING si non-admin
+            Club club = new Club(name, description, status, Session.userId);
+            if (!"ADMIN".equals(Session.role)) {
+                club.setStatus("PENDING");
+            }
+
             serviceClub.add(club);
 
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Club ajouté avec succès !");
+            if (!"ADMIN".equals(Session.role)) {
+                showAlert(Alert.AlertType.INFORMATION, "Demande Envoyée", "Votre demande de création de club est en attente de validation.");
+                // Mise à jour du label de rôle dans le dashboard
+                MainDashboardController.getInstance().updateRoleLabel();
+            } else {
+                showAlert(Alert.AlertType.INFORMATION, "Succès", "Club créé avec succès !");
+            }
             goBack(ev);
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur SQL", "Impossible d'ajouter le club.\n" + e.getMessage());

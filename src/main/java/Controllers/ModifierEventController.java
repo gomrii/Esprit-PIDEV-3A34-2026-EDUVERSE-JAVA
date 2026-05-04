@@ -81,7 +81,12 @@ public class ModifierEventController {
             event.setTitle(tfTitle.getText().trim());
             event.setDescription(taDescription.getText().trim());
             event.setLocation(tfLocation.getText().trim());
-            event.setStatus(cbStatus.getValue());
+            
+            String status = cbStatus.getValue();
+            if (!"ADMIN".equals(Utils.Session.role)) {
+                status = "PENDING";
+            }
+            event.setStatus(status);
             
             try { 
                 event.setClubId(Integer.parseInt(tfClubId.getText().trim())); 

@@ -64,8 +64,8 @@
                         </VBox>
 
                         <VBox spacing="4" HBox.hgrow="ALWAYS">
-                            <Label text="ID du Club (Optionnel)" styleClass="field-label"/>
-                            <TextField fx:id="tfClubId" promptText="Ex: 5" styleClass="text-field" prefWidth="250"/>
+                            <Label text="Club" styleClass="field-label"/>
+                            <ComboBox fx:id="cbClubId" promptText="Sélectionner le club" styleClass="combo-field" prefWidth="250" />
                         </VBox>
                     </HBox>
 

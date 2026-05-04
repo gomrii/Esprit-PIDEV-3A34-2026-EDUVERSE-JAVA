@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+
+<VBox spacing="20" styleClass="main-content" stylesheets="@css/style.css" 
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="Controllers.ClubDetailsController">
+    <padding>
+        <Insets top="30" right="30" bottom="30" left="30" />
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Button onAction="#goBack" text="⬅" styleClass="btn-secondary" style="-fx-padding: 8 15;" />
+        <Label fx:id="clubNameLabel" text="Détails du Club" styleClass="page-title" />
+    </HBox>
+
+    <HBox spacing="30" alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
+        <!-- Section Info -->
+        <VBox spacing="0" prefWidth="400" styleClass="user-card" style="-fx-padding: 0; -fx-overflow: hidden;">
+            <VBox alignment="CENTER" prefHeight="80" style="-fx-background-color: linear-gradient(to right, #0ea5e9, #38bdf8); -fx-background-radius: 16 16 0 0;">
+                <Label text="À PROPOS" style="-fx-text-fill: white; -fx-font-weight: 900; -fx-font-size: 16; -fx-letter-spacing: 1;" />
+            </VBox>
+            
+            <VBox spacing="20" style="-fx-padding: 30;">
+                <VBox spacing="8">
+                    <Label text="📝 DESCRIPTION" style="-fx-text-fill: #64748b; -fx-font-size: 11; -fx-font-weight: bold;"/>
+                    <Label fx:id="descriptionLabel" text="..." wrapText="true" style="-fx-font-size: 15; -fx-text-fill: #1e293b; -fx-line-spacing: 4;"/>
+                </VBox>
+
+                <Separator style="-fx-opacity: 0.5;"/>
+
+                <HBox spacing="20">
+                    <VBox spacing="8" HBox.hgrow="ALWAYS">
+                        <Label text="👑 CRÉATEUR" style="-fx-text-fill: #64748b; -fx-font-size: 11; -fx-font-weight: bold;"/>
+                        <Label fx:id="creatorLabel" text="ID: ..." style="-fx-font-size: 14; -fx-font-weight: 600; -fx-text-fill: #1e293b;"/>
+                    </VBox>
+                    <VBox spacing="8">
+                        <Label text="🏷 STATUT" style="-fx-text-fill: #64748b; -fx-font-size: 11; -fx-font-weight: bold;"/>
+                        <Label fx:id="statusLabel" text="APPROVED" styleClass="status-badge" />
+                    </VBox>
+                </HBox>
+
+                <Region prefHeight="30"/>
+                
+                <Button fx:id="btnJoin" text="🤝 REJOINDRE LE CLUB" maxWidth="Infinity" 
+                        styleClass="btn-primary" onAction="#handleJoin" style="-fx-font-size: 14; -fx-padding: 15;" />
+            </VBox>
+        </VBox>
+
+        <!-- Section Membres -->
+        <VBox spacing="0" prefWidth="450" styleClass="user-card" style="-fx-padding: 0; -fx-overflow: hidden;">
+            <VBox alignment="CENTER" prefHeight="80" style="-fx-background-color: linear-gradient(to right, #10b981, #34d399); -fx-background-radius: 16 16 0 0;">
+                <Label text="MEMBRES ACTIFS" style="-fx-text-fill: white; -fx-font-weight: 900; -fx-font-size: 16; -fx-letter-spacing: 1;" />
+            </VBox>
+            
+            <VBox spacing="15" style="-fx-padding: 20;" VBox.vgrow="ALWAYS">
+                <ListView fx:id="membersListView" VBox.vgrow="ALWAYS" 
+                          style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 10;" />
+            </VBox>
+        </VBox>
+    </HBox>
+
+</VBox>

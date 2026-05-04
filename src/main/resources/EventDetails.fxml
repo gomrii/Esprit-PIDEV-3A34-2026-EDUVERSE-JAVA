@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20" styleClass="main-content" stylesheets="@css/style.css" 
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="Controllers.EventDetailsController">
+    <padding>
+        <Insets top="30" right="30" bottom="30" left="30" />
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Button onAction="#goBack" text="⬅" styleClass="btn-secondary" style="-fx-padding: 8 15;" />
+        <Label fx:id="eventTitleLabel" text="Détails de l'Événement" styleClass="page-title" />
+    </HBox>
+
+    <StackPane VBox.vgrow="ALWAYS">
+        <VBox alignment="TOP_CENTER" maxWidth="700" spacing="0" styleClass="user-card" style="-fx-padding: 0; -fx-overflow: hidden;">
+            <!-- Header Banner -->
+            <VBox alignment="CENTER" prefHeight="100" style="-fx-background-color: linear-gradient(to right, #4f46e5, #6366f1); -fx-background-radius: 16 16 0 0;">
+                <Label fx:id="headerTitle" text="INFORMATIONS" style="-fx-text-fill: white; -fx-font-weight: 900; -fx-font-size: 20; -fx-letter-spacing: 2;" />
+            </VBox>
+
+            <VBox spacing="25" style="-fx-padding: 40;">
+                <GridPane hgap="30" vgap="25">
+                    <columnConstraints>
+                        <ColumnConstraints prefWidth="120" />
+                        <ColumnConstraints hgrow="ALWAYS" />
+                    </columnConstraints>
+
+                    <HBox alignment="CENTER_LEFT" spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                        <Label text="📅" style="-fx-font-size: 20;" />
+                        <Label text="Date" style="-fx-font-weight: bold; -fx-text-fill: #64748b; -fx-font-size: 14;" />
+                    </HBox>
+                    <Label fx:id="dateLabel" text="..." style="-fx-font-size: 16; -fx-font-weight: 600; -fx-text-fill: #1e293b;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <HBox alignment="CENTER_LEFT" spacing="10" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                        <Label text="📍" style="-fx-font-size: 20;" />
+                        <Label text="Lieu" style="-fx-font-weight: bold; -fx-text-fill: #64748b; -fx-font-size: 14;" />
+                    </HBox>
+                    <Label fx:id="locationLabel" text="..." style="-fx-font-size: 16; -fx-font-weight: 600; -fx-text-fill: #1e293b;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                    <HBox alignment="CENTER_LEFT" spacing="10" GridPane.rowIndex="2" GridPane.columnIndex="0">
+                        <Label text="✨" style="-fx-font-size: 20;" />
+                        <Label text="Statut" style="-fx-font-weight: bold; -fx-text-fill: #64748b; -fx-font-size: 14;" />
+                    </HBox>
+                    <Label fx:id="statusLabel" text="..." styleClass="status-badge" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                    <HBox alignment="TOP_LEFT" spacing="10" GridPane.rowIndex="3" GridPane.columnIndex="0">
+                        <Label text="📝" style="-fx-font-size: 20;" />
+                        <Label text="Description" style="-fx-font-weight: bold; -fx-text-fill: #64748b; -fx-font-size: 14;" />
+                    </HBox>
+                    <Label fx:id="descriptionLabel" text="..." wrapText="true" style="-fx-font-size: 15; -fx-text-fill: #334155; -fx-line-spacing: 6; -fx-max-width: 450;" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                </GridPane>
+            </VBox>
+        </VBox>
+    </StackPane>
+
+</VBox>

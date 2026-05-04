@@ -16,7 +16,6 @@ public class ServiceClub implements IService<Club> {
     @Override
     public void add(Club club) throws SQLException {
         Connection conn = MyDb.getInstance().getConn();
-        if (conn == null) throw new SQLException("Connexion BDD perdue");
         String req = "INSERT INTO club (name, description, status, created_at, updated_at, creator_id) VALUES (?, ?, ?, NOW(), NOW(), ?)";
         PreparedStatement ps = conn.prepareStatement(req, Statement.RETURN_GENERATED_KEYS);
         ps.setString(1, club.getName());
@@ -58,11 +57,93 @@ public class ServiceClub implements IService<Club> {
 
     @Override
     public List<Club> display() throws SQLException {
+        String req = "SELECT * FROM club";
+        return getClubsFromQuery(req);
+    }
+
+    public List<Club> displayApproved() throws SQLException {
+        String req = "SELECT * FROM club WHERE status = 'APPROVED'";
+        return getClubsFromQuery(req);
+    }
+
+    public List<Club> getPendingClubs() throws SQLException {
+        String req = "SELECT * FROM club WHERE status = 'PENDING'";
+        return getClubsFromQuery(req);
+    }
+
+    public List<Club> getClubsByCreator(int creatorId) throws SQLException {
+        String req = "SELECT * FROM club WHERE creator_id = " + creatorId;
+        return getClubsFromQuery(req);
+    }
+
+    public void validateClub(int id, String status) throws SQLException {
         Connection conn = MyDb.getInstance().getConn();
         if (conn == null) throw new SQLException("Connexion BDD perdue");
-        String req = "SELECT * FROM club";
+        String req = "UPDATE club SET status=?, updated_at=NOW() WHERE id=?";
+        PreparedStatement ps = conn.prepareStatement(req);
+        ps.setString(1, status);
+        ps.setInt(2, id);
+        ps.executeUpdate();
+    }
+
+    public List<String> getClubMembers(int clubId) throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        String req = "SELECT u.username FROM users u JOIN club_membership m ON u.id = m.user_id WHERE m.club_id = ?";
+        PreparedStatement ps = conn.prepareStatement(req);
+        ps.setInt(1, clubId);
+        ResultSet rs = ps.executeQuery();
+        List<String> members = new ArrayList<>();
+        while (rs.next()) {
+            members.add(rs.getString("username"));
+        }
+        return members;
+    }
+
+    public void requestJoinClub(int userId, int clubId) throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        String req = "INSERT INTO club_membership (user_id, club_id, status, joined_at) VALUES (?, ?, 'PENDING', NOW())";
+        PreparedStatement ps = conn.prepareStatement(req);
+        ps.setInt(1, userId);
+        ps.setInt(2, clubId);
+        ps.executeUpdate();
+    }
+
+    public List<String[]> getPendingJoinRequests() throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        // Jointure pour avoir le nom de l'utilisateur et du club
+        String req = "SELECT m.user_id, m.club_id, u.username, c.name as club_name " +
+                     "FROM club_membership m " +
+                     "JOIN users u ON m.user_id = u.id " +
+                     "JOIN club c ON m.club_id = c.id " +
+                     "WHERE m.status = 'PENDING'";
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery(req);
+        List<String[]> requests = new ArrayList<>();
+        while (rs.next()) {
+            requests.add(new String[]{
+                rs.getString("user_id"), 
+                rs.getString("club_id"), 
+                rs.getString("username"), 
+                rs.getString("club_name")
+            });
+        }
+        return requests;
+    }
+
+    public void updateMembershipStatus(int userId, int clubId, String status) throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        String req = "UPDATE club_membership SET status = ? WHERE user_id = ? AND club_id = ?";
+        PreparedStatement ps = conn.prepareStatement(req);
+        ps.setString(1, status);
+        ps.setInt(2, userId);
+        ps.setInt(3, clubId);
+        ps.executeUpdate();
+    }
+
+    private List<Club> getClubsFromQuery(String query) throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery(query);
         List<Club> clubs = new ArrayList<>();
         while (rs.next()) {
             Club c = new Club();
