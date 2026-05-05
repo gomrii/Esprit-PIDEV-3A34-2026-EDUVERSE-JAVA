@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.TeacherQuestionListController" styleClass="app-shell">
+
+<center>
+        <VBox styleClass="main-content dashboard-surface">
+            <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+            <HBox styleClass="dashboard-topbar">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label styleClass="page-eyebrow" text="Espace Enseignant"/>
+                    <Label fx:id="quizTitleLabel" styleClass="page-title" text="Questions du quiz"/>
+                    <Label styleClass="page-subtitle" text="Ajoutez, relisez et organisez les questions de vos quiz dans un espace de travail bien structure." wrapText="true"/>
+                </VBox>
+                <VBox styleClass="profile-chip">
+                    <Label styleClass="profile-chip-title" text="Edition pedagogique"/>
+                    <Label styleClass="profile-chip-subtitle" text="Questions du quiz"/>
+                </VBox>
+            </HBox>
+
+            <VBox styleClass="toolbar-shell">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <HBox styleClass="search-shell" HBox.hgrow="ALWAYS">
+                        <SVGPath content="M15.5,14H14.71L14.43,13.73C15.41,12.59 16,11.11 16,9.5C16,5.91 13.09,3 9.5,3C5.91,3 3,5.91 3,9.5C3,13.09 5.91,16 9.5,16C11.11,16 12.59,15.41 13.73,14.43L14,14.71V15.5L19,20.49L20.49,19L15.5,14M9.5,14C7.01,14 5,11.99 5,9.5C5,7.01 7.01,5 9.5,5C11.99,5 14,7.01 14,9.5C14,11.99 11.99,14 9.5,14Z" styleClass="search-glyph-shape"/>
+                        <TextField fx:id="searchTF" promptText="Rechercher une question par mot cle ou identifiant..." styleClass="search-field" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <ChoiceBox fx:id="sortChoice" prefWidth="180"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button onAction="#handleRefresh" styleClass="btn-secondary" text="Actualiser"/>
+                    <Button onAction="#handleAdd" styleClass="btn-primary" text="Ajouter une question"/>
+                </HBox>
+            </VBox>
+
+            <Label fx:id="summaryLabel" styleClass="list-summary" text="0 question affichee"/>
+
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="content-scroll" VBox.vgrow="ALWAYS">
+                <content>
+                    <VBox fx:id="cardsContainer" spacing="16" styleClass="card-list">
+                        <padding><Insets bottom="12"/></padding>
+                    </VBox>
+                </content>
+            </ScrollPane>
+        </VBox>
+    </center>
+</BorderPane>
+
+

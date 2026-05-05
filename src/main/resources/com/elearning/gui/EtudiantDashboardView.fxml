@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.elearning.controller.SimpleViewController"
+      spacing="22"
+      styleClass="main-content,role-dashboard-page"
+      stylesheets="@../css/style.css">
+
+    <padding>
+        <Insets top="24" right="24" bottom="24" left="24"/>
+    </padding>
+
+    <VBox spacing="8" styleClass="role-dashboard-hero">
+        <Label text="Dashboard Etudiant" styleClass="page-title"/>
+        <Label fx:id="welcomeLabel" text="Bienvenue !" styleClass="role-dashboard-subtitle"/>
+        <Label text="Consultez vos quiz, vos resultats et vos contenus de formation dans un espace plus lisible."
+               wrapText="true"
+               styleClass="role-dashboard-description"/>
+    </VBox>
+
+    <FlowPane hgap="16" vgap="16" prefWrapLength="980" styleClass="role-dashboard-grid">
+        <VBox styleClass="stat-card,role-dashboard-card" spacing="8">
+            <Label text="Formations" styleClass="role-dashboard-card-title"/>
+            <Label text="Accedez rapidement a votre catalogue de cours et suivez votre progression."
+                   wrapText="true"
+                   styleClass="role-dashboard-card-text"/>
+        </VBox>
+        <VBox styleClass="stat-card,role-dashboard-card" spacing="8">
+            <Label text="Quiz" styleClass="role-dashboard-card-title"/>
+            <Label text="Lancez vos quiz, continuez vos sessions et consultez les resultats en un clic."
+                   wrapText="true"
+                   styleClass="role-dashboard-card-text"/>
+        </VBox>
+        <VBox styleClass="stat-card,role-dashboard-card" spacing="8">
+            <Label text="Resultats" styleClass="role-dashboard-card-title"/>
+            <Label text="Suivez vos scores, vos tentatives et vos progres sur l'ensemble des evaluations."
+                   wrapText="true"
+                   styleClass="role-dashboard-card-text"/>
+        </VBox>
+    </FlowPane>
+</VBox>

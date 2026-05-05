@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.StudentQuizResultController" styleClass="app-shell">
+
+<center>
+        <VBox styleClass="main-content dashboard-surface">
+            <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+            <HBox styleClass="dashboard-topbar">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label styleClass="page-eyebrow" text="Resultat de session"/>
+                    <Label styleClass="page-title" text="Resultat du quiz"/>
+                    <Label styleClass="page-subtitle" text="Consultez votre performance finale, telechargez votre recapitulatif et revenez a la liste des quiz." wrapText="true"/>
+                </VBox>
+                <VBox styleClass="profile-chip profile-chip-wide">
+                    <Label styleClass="profile-chip-title" text="Statut"/>
+                    <Label styleClass="profile-chip-subtitle result-status-text" text="Session terminee"/>
+                </VBox>
+            </HBox>
+
+            <VBox spacing="18" styleClass="result-card" VBox.vgrow="ALWAYS">
+                <VBox alignment="CENTER" spacing="8" styleClass="result-hero">
+                    <Label fx:id="quizTitleLabel" styleClass="result-title" text="Resultat du quiz"/>
+                    <Label fx:id="summaryLabel" styleClass="result-summary" text="Quiz soumis." wrapText="true"/>
+                </VBox>
+
+                <FlowPane hgap="14" vgap="14" styleClass="result-metrics-grid">
+                    <VBox spacing="6" styleClass="result-metric-card result-metric-primary">
+                        <Label styleClass="result-metric-label" text="Score final"/>
+                        <Label fx:id="scoreLabel" styleClass="result-score" text="Score final : 0 / 0"/>
+                    </VBox>
+                    <VBox spacing="6" styleClass="result-metric-card">
+                        <Label styleClass="result-metric-label" text="Pourcentage"/>
+                        <Label fx:id="percentageLabel" styleClass="result-meta result-metric-value" text="Pourcentage : 0%"/>
+                    </VBox>
+                    <VBox spacing="6" styleClass="result-metric-card">
+                        <Label styleClass="result-metric-label" text="Participation"/>
+                        <Label fx:id="answeredLabel" styleClass="result-meta result-metric-value" text="Questions repondues : 0 / 0"/>
+                    </VBox>
+                </FlowPane>
+
+                <HBox alignment="CENTER" spacing="12" styleClass="result-actions">
+                    <Button onAction="#handleDownloadPdf" styleClass="btn-primary" text="Telecharger PDF"/>
+                    <Button onAction="#handleBack" styleClass="btn-secondary" text="Retour a la liste"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>
+

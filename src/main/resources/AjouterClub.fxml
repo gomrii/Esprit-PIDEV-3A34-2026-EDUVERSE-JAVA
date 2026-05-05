@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="0" 
+      styleClass="main-content" stylesheets="@css/style.css"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="Controllers.AjouterClubController">
+
+    <!-- Container du formulaire -->
+    <VBox styleClass="form-container" maxWidth="500" spacing="20">
+        
+        <!-- En-tête -->
+        <VBox styleClass="form-header" spacing="10">
+            <padding><Insets top="20" right="30" bottom="20" left="30"/></padding>
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Button onAction="#goBack" text="⬅" styleClass="btn-secondary" style="-fx-padding: 5 10;"/>
+                <Label text="Ajouter un Nouveau Club" styleClass="form-title"/>
+            </HBox>
+        </VBox>
+
+        <!-- Corps du formulaire -->
+        <VBox styleClass="form-body" spacing="16">
+            <padding><Insets top="10" right="30" bottom="20" left="30"/></padding>
+
+            <VBox spacing="4">
+                <Label text="Nom du Club" styleClass="field-label"/>
+                <TextField fx:id="tfName" promptText="Ex: Club de Robotique" styleClass="text-field"/>
+            </VBox>
+
+            <VBox fx:id="statusContainer" spacing="4">
+                <Label text="Statut" styleClass="field-label"/>
+                <ComboBox fx:id="cbStatus" promptText="Sélectionner le statut" styleClass="combo-field" prefWidth="440" maxWidth="Infinity"/>
+            </VBox>
+
+            <VBox spacing="4">
+                <Label text="Description" styleClass="field-label"/>
+                <TextArea fx:id="taDescription" promptText="Décrivez les objectifs du club..." styleClass="text-area" prefHeight="100"/>
+            </VBox>
+        </VBox>
+
+        <!-- Footer -->
+        <HBox styleClass="form-footer" alignment="CENTER_RIGHT" spacing="15">
+            <padding><Insets top="15" right="30" bottom="20" left="30"/></padding>
+            <Button text="Annuler" styleClass="btn-secondary" onAction="#goBack"/>
+            <Button text="Enregistrer" styleClass="btn-success" onAction="#addClub"/>
+        </HBox>
+
+    </VBox>
+</VBox>

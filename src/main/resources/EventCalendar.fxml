@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" prefHeight="700.0" prefWidth="900.0" spacing="20.0" 
+      styleClass="main-content" stylesheets="@css/style.css" 
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="Controllers.EventCalendarController">
+    
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <!-- Header avec navigation -->
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Button onAction="#goBack" text="⬅" styleClass="btn-secondary" style="-fx-padding: 5 10;"/>
+        <Label fx:id="lblMonthYear" text="Avril 2026" styleClass="calendar-header-label"/>
+        <HBox HBox.hgrow="ALWAYS" />
+        <HBox spacing="10">
+            <Button onAction="#prevMonth" text="‹" styleClass="btn-secondary" style="-fx-font-size: 18; -fx-padding: 5 15;"/>
+            <Button onAction="#nextMonth" text="›" styleClass="btn-secondary" style="-fx-font-size: 18; -fx-padding: 5 15;"/>
+        </HBox>
+    </HBox>
+
+    <!-- Calendrier Container -->
+    <VBox styleClass="calendar-container" VBox.vgrow="ALWAYS" spacing="10">
+        
+        <!-- Jours de la semaine -->
+        <GridPane fx:id="gridWeekdays" alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" halignment="CENTER" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" halignment="CENTER" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" halignment="CENTER" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" halignment="CENTER" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" halignment="CENTER" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" halignment="CENTER" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" halignment="CENTER" />
+            </columnConstraints>
+            <children>
+                <Label text="LUN" styleClass="weekday-header" GridPane.columnIndex="0" />
+                <Label text="MAR" styleClass="weekday-header" GridPane.columnIndex="1" />
+                <Label text="MER" styleClass="weekday-header" GridPane.columnIndex="2" />
+                <Label text="JEU" styleClass="weekday-header" GridPane.columnIndex="3" />
+                <Label text="VEN" styleClass="weekday-header" GridPane.columnIndex="4" />
+                <Label text="SAM" styleClass="weekday-header" GridPane.columnIndex="5" />
+                <Label text="DIM" styleClass="weekday-header" GridPane.columnIndex="6" />
+            </children>
+        </GridPane>
+
+        <Separator />
+
+        <!-- Grille des jours -->
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" VBox.vgrow="ALWAYS">
+            <GridPane fx:id="calendarGrid" hgap="10" vgap="10" alignment="CENTER">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
+                </columnConstraints>
+            </GridPane>
+        </ScrollPane>
+
+    </VBox>
+
+</VBox>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.elearning.controller.SimpleViewController"
+      spacing="22"
+      styleClass="main-content,role-dashboard-page"
+      stylesheets="@../css/style.css">
+
+    <padding>
+        <Insets top="24" right="24" bottom="24" left="24"/>
+    </padding>
+
+    <VBox spacing="8" styleClass="role-dashboard-hero">
+        <Label text="Dashboard Enseignant" styleClass="page-title"/>
+        <Label fx:id="welcomeLabel" text="Bienvenue !" styleClass="role-dashboard-subtitle"/>
+        <Label text="Retrouvez vos cours, vos quiz et les activites pedagogiques depuis un tableau de bord plus propre."
+               wrapText="true"
+               styleClass="role-dashboard-description"/>
+    </VBox>
+
+    <FlowPane hgap="16" vgap="16" prefWrapLength="980" styleClass="role-dashboard-grid">
+        <VBox styleClass="stat-card,role-dashboard-card" spacing="8">
+            <Label text="Cours" styleClass="role-dashboard-card-title"/>
+            <Label text="Organisez vos supports, suivez les modules actifs et preparez vos prochaines sessions."
+                   wrapText="true"
+                   styleClass="role-dashboard-card-text"/>
+        </VBox>
+        <VBox styleClass="stat-card,role-dashboard-card" spacing="8">
+            <Label text="Quiz" styleClass="role-dashboard-card-title"/>
+            <Label text="Accedez rapidement a vos quiz, aux questions et aux statistiques de suivi."
+                   wrapText="true"
+                   styleClass="role-dashboard-card-text"/>
+        </VBox>
+        <VBox styleClass="stat-card,role-dashboard-card" spacing="8">
+            <Label text="Etudiants" styleClass="role-dashboard-card-title"/>
+            <Label text="Gardez une vue claire sur les participations, les resultats et les besoins d'accompagnement."
+                   wrapText="true"
+                   styleClass="role-dashboard-card-text"/>
+        </VBox>
+    </FlowPane>
+</VBox>

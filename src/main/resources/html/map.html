@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sélecteur de Lieu - OpenStreetMap</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        /* CSS robuste pour JavaFX WebView */
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* Panneau de contrôle */
+        .control-panel {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            gap: 10px;
+            width: 480px;
+            max-width: 90vw;
+            box-sizing: border-box;
+        }
+
+        input {
+            flex-grow: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            outline: none;
+            background-color: #f9fafb;
+            color: #374151;
+            pointer-events: none; /* Désactivé pour forcer le clic sur la carte */
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #10b981;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #059669;
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            background-color: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .btn-cancel {
+            background-color: #ef4444;
+        }
+
+        .btn-cancel:hover {
+            background-color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="control-panel">
+        <input type="text" id="lieu" placeholder="Cliquez sur la carte pour choisir un lieu..." readonly />
+        <button id="btnConfirmer" onclick="confirmerLieu()" disabled>Confirmer</button>
+        <button class="btn-cancel" onclick="annulerLieu()">Annuler</button>
+    </div>
+
+    <div id="map"></div>
+
+    <script>
+        // 1. Initialisation de la carte
+        var map = L.map('map', {
+            zoomControl: true,
+            attributionControl: true
+        }).setView([36.8065, 10.1815], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // --- FIX POUR JAVAFX WEBVIEW ---
+        // Force la carte à recalculer sa taille après un court délai
+        // Cela règle le problème des tuiles cassées ou mal alignées
+        window.onload = function() {
+            setTimeout(function() {
+                map.invalidateSize();
+                console.log("Map size invalidated for WebView rendering fix.");
+            }, 500);
+        };
+
+        var marker = null;
+        var selectedAddress = "";
+
+        // Gestionnaire de clic
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+
+            if (marker) {
+                marker.setLatLng([lat, lng]);
+            } else {
+                marker = L.marker([lat, lng]).addTo(map);
+            }
+
+            document.getElementById('lieu').value = "Recherche de l'adresse...";
+
+            var url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.display_name) {
+                        selectedAddress = data.display_name;
+                        document.getElementById('lieu').value = selectedAddress;
+                        marker.bindPopup("<b>Lieu sélectionné:</b><br>" + selectedAddress).openPopup();
+                        document.getElementById('btnConfirmer').disabled = false;
+                    } else {
+                        selectedAddress = `Coordonnées : ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                        document.getElementById('lieu').value = selectedAddress;
+                        document.getElementById('btnConfirmer').disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error("Erreur de géocodage:", error);
+                    selectedAddress = `Coordonnées : ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                    document.getElementById('lieu').value = selectedAddress;
+                    document.getElementById('btnConfirmer').disabled = false;
+                });
+        });
+
+        function confirmerLieu() {
+            if (window.app && selectedAddress) {
+                window.app.onLocationSelected(selectedAddress);
+            }
+        }
+
+        function annulerLieu() {
+            if (window.app) {
+                window.app.onCancel();
+            }
+        }
+    </script>
+</body>
+</html>

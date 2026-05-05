@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.HomeController" styleClass="login-container">
+    <center>
+        <VBox alignment="TOP_CENTER" spacing="22" styleClass="main-content">
+            <padding><Insets top="36" right="36" bottom="36" left="36"/></padding>
+
+            <HBox alignment="CENTER_LEFT" spacing="28" styleClass="home-hero">
+                <ImageView fitHeight="110" preserveRatio="true">
+                    <image><Image url="@eduverse-logo.png"/></image>
+                </ImageView>
+                <VBox spacing="8" HBox.hgrow="ALWAYS">
+                    <Label styleClass="page-eyebrow" text="Plateforme EduVerse"/>
+                    <Label fx:id="pageTitleLabel" styleClass="home-hero-title" text="Dashboard Quiz moderne"/>
+                    <Label fx:id="pageSubtitleLabel" styleClass="home-hero-text" text="Accedez a votre espace metier dans une interface claire, structuree et coherente pour toute la gestion des quiz, questions, reponses et resultats." wrapText="true"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="18" alignment="CENTER">
+                <VBox fx:id="teacherCard" styleClass="role-card" HBox.hgrow="ALWAYS">
+                    <Label styleClass="role-card-title" text="Espace Enseignant"/>
+                    <Label styleClass="role-card-text" text="Creation, generation IA, suivi de validation et gestion du contenu pedagogique." wrapText="true"/>
+                    <Button onAction="#openTeacherSpace" styleClass="btn-primary" text="Ouvrir l'espace"/>
+                </VBox>
+                <VBox fx:id="adminCard" styleClass="role-card" HBox.hgrow="ALWAYS">
+                    <Label styleClass="role-card-title" text="Espace Admin"/>
+                    <Label styleClass="role-card-text" text="Pilotage global, moderation, validation et supervision complete de la plateforme." wrapText="true"/>
+                    <Button onAction="#openAdminSpace" styleClass="btn-secondary" text="Ouvrir l'espace"/>
+                </VBox>
+                <VBox fx:id="studentCard" styleClass="role-card" HBox.hgrow="ALWAYS">
+                    <Label styleClass="role-card-title" text="Espace Etudiant"/>
+                    <Label styleClass="role-card-text" text="Consultation des quiz valides, passages, resultats et progression personnelle." wrapText="true"/>
+                    <Button onAction="#openStudentSpace" styleClass="btn-success" text="Ouvrir l'espace"/>
+                </VBox>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>
