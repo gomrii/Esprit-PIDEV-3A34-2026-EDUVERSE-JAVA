@@ -105,17 +105,18 @@
                 <RadioButton fx:id="radioEnseignant" text="Enseignant" userData="ENSEIGNANT"/>
             </HBox>
 
-            <!-- CAPTCHA mathématique -->
             <VBox spacing="6">
                 <Label text="VÉRIFICATION ANTI-BOT" styleClass="login-field-label"/>
+                <Label fx:id="captchaInstruction" text="Pointez la flèche vers le haut" style="-fx-text-fill: #2c3e50; -fx-font-size: 13px; -fx-font-weight: bold;"/>
                 <HBox spacing="8" alignment="CENTER_LEFT">
                     <Canvas fx:id="captchaCanvas" width="220" height="60"
                             style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 4, 0, 0, 2); -fx-background-radius: 8;"/>
-                    <TextField fx:id="captchaField"
-                               promptText="Réponse"
-                               styleClass="login-field"
-                               prefWidth="100"/>
+                    <Button text="🔁" onAction="#handleRefreshCaptcha"
+                            style="-fx-background-color: #ecf0f1; -fx-background-radius: 8; -fx-cursor: hand;"
+                            prefWidth="36" prefHeight="36"/>
                 </HBox>
+                <Slider fx:id="captchaSlider" min="-180" max="180" value="0" blockIncrement="10"
+                        style="-fx-padding: 10 0 10 0; -fx-cursor: hand;"/>
                 <Label fx:id="errCaptcha" text=""
                        style="-fx-text-fill: #e74c3c; -fx-font-size: 12px;"
                        visible="false" managed="false" wrapText="true"/>

@@ -41,8 +41,9 @@ public class RegisterController implements Initializable {
 
     // Nouveaux champs CAPTCHA
     @FXML private Canvas    captchaCanvas;
-    @FXML private TextField captchaField;
+    @FXML private javafx.scene.control.Slider captchaSlider;
     @FXML private Label     errCaptcha;
+    @FXML private Label     captchaInstruction;
 
     // Nouveaux champs force MDP
     @FXML private ProgressBar passwordStrengthBar;
@@ -73,7 +74,17 @@ public class RegisterController implements Initializable {
         if (errCaptcha != null) { errCaptcha.setVisible(false); errCaptcha.setManaged(false); }
 
         // Générer le CAPTCHA
-        if (captchaCanvas != null) captchaGen.genererEtDessiner(captchaCanvas);
+        if (captchaCanvas != null) {
+            captchaGen.genererEtDessiner(captchaCanvas);
+            if (captchaInstruction != null) {
+                captchaInstruction.setText(captchaGen.getReponseAttendueTexte());
+            }
+        }
+        if (captchaSlider != null) {
+            captchaSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+                captchaGen.dessinerRotation(captchaCanvas, newVal.doubleValue());
+            });
+        }
 
         // Validation email en temps réel
         if (emailField != null) {
@@ -136,6 +147,14 @@ public class RegisterController implements Initializable {
     }
 
     @FXML
+    private void handleRefreshCaptcha(ActionEvent event) {
+        if (captchaCanvas != null) captchaGen.genererEtDessiner(captchaCanvas);
+        if (captchaSlider != null) captchaSlider.setValue(0);
+        if (captchaInstruction != null) captchaInstruction.setText(captchaGen.getReponseAttendueTexte());
+        if (errCaptcha    != null) { errCaptcha.setVisible(false); errCaptcha.setManaged(false); }
+    }
+
+    @FXML
     private void handleGenererMotDePasse(ActionEvent event) {
         String motDePasseGenere = PasswordGenerator.genererMotDePasseFort();
         passwordField.setText(motDePasseGenere);
@@ -159,14 +178,15 @@ public class RegisterController implements Initializable {
         confirmPasswordField.setStyle("");
 
         // 1. Vérifier le CAPTCHA
-        if (captchaCanvas != null && captchaField != null) {
-            if (!captchaGen.verifier(captchaField.getText())) {
+        if (captchaCanvas != null && captchaSlider != null) {
+            if (!captchaGen.verifier(String.valueOf(captchaSlider.getValue()))) {
                 if (errCaptcha != null) {
-                    errCaptcha.setText("❌ Réponse CAPTCHA incorrecte. Réessayez.");
+                    errCaptcha.setText("❌ Veuillez redresser l'image correctement.");
                     errCaptcha.setVisible(true); errCaptcha.setManaged(true);
                 }
                 captchaGen.genererEtDessiner(captchaCanvas);
-                captchaField.clear();
+                captchaSlider.setValue(0);
+                if (captchaInstruction != null) captchaInstruction.setText(captchaGen.getReponseAttendueTexte());
                 return;
             }
             if (errCaptcha != null) { errCaptcha.setVisible(false); errCaptcha.setManaged(false); }
