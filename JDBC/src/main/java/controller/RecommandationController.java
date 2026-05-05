@@ -84,16 +84,9 @@ public class RecommandationController {
         info.getChildren().addAll(title, badge, desc);
         HBox.setHgrow(info, Priority.ALWAYS);
 
-        // Bouton
-        Button btn = new Button("Voir le cours");
-        btn.setStyle("-fx-background-color: #5D4B8E; -fx-text-fill: white; -fx-background-radius: 25; " +
-                "-fx-padding: 12 30; -fx-font-weight: bold; -fx-cursor: hand;");
+        // On n'ajoute que la VBox info à la HBox card
+        card.getChildren().addAll(info);
 
-        // Hover effect par code
-        btn.setOnMouseEntered(e -> btn.setStyle("-fx-background-color: #2D1B4E; -fx-text-fill: white; -fx-background-radius: 25; -fx-padding: 12 30; -fx-font-weight: bold;"));
-        btn.setOnMouseExited(e -> btn.setStyle("-fx-background-color: #5D4B8E; -fx-text-fill: white; -fx-background-radius: 25; -fx-padding: 12 30; -fx-font-weight: bold;"));
-
-        card.getChildren().addAll(info, btn);
         return card;
     }
 

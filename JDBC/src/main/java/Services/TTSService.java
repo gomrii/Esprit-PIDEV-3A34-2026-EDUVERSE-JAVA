@@ -9,7 +9,7 @@ import java.net.URLEncoder;
 public class TTSService {
 
     // Remplace par ta clé VoiceRSS
-    private static final String API_KEY = "";
+    private static final String API_KEY = "2277e596aafc43ccb8198d317407ea30";
 
         public MediaPlayer lireTexte(String texte) {
             try {

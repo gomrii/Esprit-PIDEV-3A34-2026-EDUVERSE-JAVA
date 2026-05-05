@@ -287,10 +287,10 @@ public class AffichierCoursAdmin {
     }
     // --- UTILITAIRES ---
     private void sendSMS(String text) {
-        String ACCOUNT_SID = "";
+        String ACCOUNT_SID = "AC563f90ef77c3a87ba6b4aa4b6e249774";
 
 
-        String AUTH_TOKEN = "";
+        String AUTH_TOKEN = "9a2a0b1d57e618b7d3b26260362aef67";
         try {
             Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
             Message.creator(new PhoneNumber("+21696068308"), new PhoneNumber("+17754598634"), text).create();

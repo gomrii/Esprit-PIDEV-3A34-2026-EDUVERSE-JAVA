@@ -10,7 +10,7 @@ import java.net.http.HttpResponse;
 public class GeminiService {
 
     // REMPLACE PAR TA CLÉ (Celle de ton compte Gmail perso, pas @esprit.tn)
-    private final String API_KEY = "";
+    private final String API_KEY = "AIzaSyBzjCnsQgc2kxv3ZGGOImn2cIsP2JEcaa0";
 
     private final String API_URL =
             "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash-lite:generateContent?key=" + API_KEY;
