@@ -31,7 +31,7 @@
                 <TextField fx:id="tfName" promptText="Ex: Club de Robotique" styleClass="text-field"/>
             </VBox>
 
-            <VBox spacing="4">
+            <VBox fx:id="statusContainer" spacing="4">
                 <Label text="Statut" styleClass="field-label"/>
                 <ComboBox fx:id="cbStatus" promptText="Sélectionner le statut" styleClass="combo-field" prefWidth="440" maxWidth="Infinity"/>
             </VBox>

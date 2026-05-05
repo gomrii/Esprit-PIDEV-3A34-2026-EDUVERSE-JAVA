@@ -10,7 +10,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Alert;
 import Utils.Session;
 import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
+import Utils.MyDb;
+import javafx.scene.layout.FlowPane;
+import javafx.geometry.Insets;
 
 public class ClubDetailsController {
 
@@ -18,7 +24,8 @@ public class ClubDetailsController {
     @FXML private Label descriptionLabel;
     @FXML private Label creatorLabel;
     @FXML private Label statusLabel;
-    @FXML private ListView<String> membersListView;
+    @FXML private FlowPane membersFlowPane; // Remplace ListView si possible, sinon on utilise le FlowPane dynamiquement
+    @FXML private ListView<Label> membersListView; // Mise à jour pour afficher des Labels (Chips)
     @FXML private Button btnJoin;
 
     private final ServiceClub serviceClub = new ServiceClub();
@@ -40,17 +47,60 @@ public class ClubDetailsController {
     }
 
     private void loadMembers(int clubId) {
+        membersListView.getItems().clear();
         try {
-            List<String> members = serviceClub.getClubMembers(clubId);
-            if (members.isEmpty()) {
-                membersListView.getItems().add("Aucun membre pour le moment.");
-            } else {
-                membersListView.getItems().addAll(members);
+            // 1. Récupérer uniquement les user_id (sans JOIN)
+            List<Integer> userIds = serviceClub.getClubMemberIds(clubId);
+            
+            if (userIds.isEmpty()) {
+                membersListView.getItems().add(new Label("Aucun membre pour le moment."));
+                return;
+            }
+            
+            // 2. Pour chaque user_id, on récupère son nom et rôle, puis on crée un "Chip"
+            for (Integer userId : userIds) {
+                String texteMembre = getNomMembre(userId);
+                
+                Label chipLabel = new Label(texteMembre);
+                chipLabel.setPadding(new Insets(5, 12, 5, 12));
+                
+                // Style Chips UI en fonction du rôle
+                if (texteMembre.contains("ADMIN")) {
+                    chipLabel.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-background-radius: 15px; -fx-font-weight: bold;");
+                } else if (texteMembre.contains("ENSEIGNANT")) {
+                    chipLabel.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-background-radius: 15px; -fx-font-weight: bold;");
+                } else {
+                    chipLabel.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 15px; -fx-font-weight: bold;");
+                }
+                
+                membersListView.getItems().add(chipLabel);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            membersListView.getItems().add("Erreur lors du chargement des membres.");
+            membersListView.getItems().add(new Label("Erreur lors du chargement des membres."));
         }
+    }
+
+    private String getNomMembre(int userId) {
+        String resultat = "Inconnu";
+        String query = "SELECT full_name, role FROM user WHERE id = ?"; 
+        
+        try (Connection cnx = MyDb.getInstance().getConn(); 
+             PreparedStatement pst = cnx.prepareStatement(query)) {
+             
+            pst.setInt(1, userId);
+            ResultSet rs = pst.executeQuery();
+            
+            if (rs.next()) {
+                String name = rs.getString("full_name");
+                String role = rs.getString("role");
+                System.out.println("Membre ID " + userId + " -> " + name);
+                resultat = name + " (" + role + ")";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultat;
     }
 
     @FXML
@@ -62,7 +112,8 @@ public class ClubDetailsController {
     private void handleJoin(ActionEvent event) {
         if (currentClub == null) return;
         try {
-            serviceClub.requestJoinClub(1, currentClub.getId());
+            // Remplacement du 1 codé en dur par l'ID de l'utilisateur connecté
+            serviceClub.requestJoinClub(Session.userId, currentClub.getId());
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Succès");
             alert.setContentText("Votre demande d'adhésion a été envoyée !");

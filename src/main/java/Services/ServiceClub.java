@@ -88,7 +88,7 @@ public class ServiceClub implements IService<Club> {
 
     public List<String> getClubMembers(int clubId) throws SQLException {
         Connection conn = MyDb.getInstance().getConn();
-        String req = "SELECT u.username FROM users u JOIN club_membership m ON u.id = m.user_id WHERE m.club_id = ?";
+        String req = "SELECT u.full_name as username FROM user u JOIN club_membership m ON u.id = m.user_id WHERE m.club_id = ?";
         PreparedStatement ps = conn.prepareStatement(req);
         ps.setInt(1, clubId);
         ResultSet rs = ps.executeQuery();
@@ -97,6 +97,20 @@ public class ServiceClub implements IService<Club> {
             members.add(rs.getString("username"));
         }
         return members;
+    }
+
+    public List<Integer> getClubMemberIds(int clubId) throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        // Requête simple SANS JOIN pour récupérer uniquement les IDs (uniquement les membres approuvés)
+        String req = "SELECT user_id FROM club_membership WHERE club_id = ? AND status = 'APPROVED'";
+        PreparedStatement ps = conn.prepareStatement(req);
+        ps.setInt(1, clubId);
+        ResultSet rs = ps.executeQuery();
+        List<Integer> memberIds = new ArrayList<>();
+        while (rs.next()) {
+            memberIds.add(rs.getInt("user_id"));
+        }
+        return memberIds;
     }
 
     public void requestJoinClub(int userId, int clubId) throws SQLException {
@@ -110,10 +124,10 @@ public class ServiceClub implements IService<Club> {
 
     public List<String[]> getPendingJoinRequests() throws SQLException {
         Connection conn = MyDb.getInstance().getConn();
-        // Jointure pour avoir le nom de l'utilisateur et du club
-        String req = "SELECT m.user_id, m.club_id, u.username, c.name as club_name " +
+        // Jointure pour avoir le nom de l'utilisateur et du club depuis la vraie table "user"
+        String req = "SELECT m.user_id, m.club_id, u.full_name as username, c.name as club_name " +
                      "FROM club_membership m " +
-                     "JOIN users u ON m.user_id = u.id " +
+                     "JOIN user u ON m.user_id = u.id " +
                      "JOIN club c ON m.club_id = c.id " +
                      "WHERE m.status = 'PENDING'";
         Statement st = conn.createStatement();

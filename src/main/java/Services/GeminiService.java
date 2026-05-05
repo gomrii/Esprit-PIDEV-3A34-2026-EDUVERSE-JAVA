@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 
 public class GeminiService {
 
-    private static final String API_KEY = "VOTRE_CLE_GROQ_ICI";
+    private static final String API_KEY = "VOTRE_CLE_API_GROQ_ICI";
     
     private static final String URL = "https://api.groq.com/openai/v1/chat/completions";
 

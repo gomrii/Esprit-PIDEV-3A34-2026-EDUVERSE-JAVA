@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="200" height="200" rx="40" fill="#ffffff" />
+  
+  <!-- Book Base -->
+  <path d="M30 110 Q 60 130 100 110 Q 140 130 170 110 L 170 160 Q 140 180 100 150 Q 60 180 30 160 Z" fill="#3498db" />
+  
+  <!-- Book Lines / Pages -->
+  <path d="M30 120 Q 60 140 100 120" fill="none" stroke="#ffffff" stroke-width="4" />
+  <path d="M170 120 Q 140 140 100 120" fill="none" stroke="#ffffff" stroke-width="4" />
+  
+  <!-- Book Center Spine -->
+  <line x1="100" y1="110" x2="100" y2="150" stroke="#ffffff" stroke-width="6" />
+  
+  <!-- Graduation Cap Top -->
+  <path d="M100 30 L 160 60 L 100 90 L 40 60 Z" fill="#f39c12" />
+  
+  <!-- Cap Tassel -->
+  <line x1="100" y1="60" x2="150" y2="100" stroke="#f39c12" stroke-width="4" />
+  <circle cx="150" cy="100" r="8" fill="#f39c12" />
+</svg>

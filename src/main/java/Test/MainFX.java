@@ -11,7 +11,7 @@ public class MainFX extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         // Charger le fichier FXML depuis les resources
-        Parent root = FXMLLoader.load(getClass().getResource("/RoleSelection.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/com/elearning/gui/LoginView.fxml"));
 
         Scene scene = new Scene(root, 1200, 800);
         primaryStage.setTitle("EduVerse - Sélection du Rôle");

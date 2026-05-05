@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class AjouterClubController {
     @FXML private TextField tfName;
     @FXML private TextArea taDescription;
     @FXML private ComboBox<String> cbStatus;
+    @FXML private VBox statusContainer;
 
     private final ServiceClub serviceClub = new ServiceClub();
 
@@ -33,7 +35,8 @@ public class AjouterClubController {
         
         // Seul l'admin peut choisir le statut directement
         if (!"ADMIN".equals(Session.role)) {
-            cbStatus.setVisible(false);
+            statusContainer.setVisible(false);
+            statusContainer.setManaged(false); 
         }
         
         setupValidationListeners();
@@ -101,10 +104,12 @@ public class AjouterClubController {
             isValid = false;
         }
 
-        if (cbStatus.getValue() == null || cbStatus.getValue().isEmpty()) {
-            errors.append("- Statut : veuillez sélectionner un statut.\n");
-            setErrorStyle(cbStatus);
-            isValid = false;
+        if ("ADMIN".equals(Session.role)) {
+            if (cbStatus.getValue() == null || cbStatus.getValue().isEmpty()) {
+                errors.append("- Statut : veuillez sélectionner un statut.\n");
+                setErrorStyle(cbStatus);
+                isValid = false;
+            }
         }
 
         if (!isValid) {
