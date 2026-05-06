@@ -1,110 +1,134 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
 
 <ScrollPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.elearning.controller.FormationFormController"
-            fitToWidth="true">
-    <VBox spacing="12" styleClass="main-content" style="-fx-padding: 16;">
-        <Label fx:id="titleLabel" text="Add Formation" styleClass="page-title"/>
+            fitToWidth="true" style="-fx-background-color: #f4f7f6;" stylesheets="@css/style.css">
+    
+    <VBox spacing="20" style="-fx-padding: 30;">
+        
+        <!-- Header -->
+        <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);">
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Button text="⬅ Retour" onAction="#handleCancel" styleClass="btn-secondary" style="-fx-padding: 8 12;"/>
+                <VBox spacing="3" HBox.hgrow="ALWAYS">
+                    <Label fx:id="titleLabel" text="Créer une Formation" styleClass="page-title"/>
+                    <Label text="Remplissez les informations ci-dessous" style="-fx-text-fill: #64748b; -fx-font-size: 13px;"/>
+                </VBox>
+            </HBox>
+        </VBox>
 
         <!-- Formation Details Section -->
-        <TitledPane text="Formation Details" expanded="true" collapsible="false">
-            <VBox spacing="12" style="-fx-padding: 12;">
-                <GridPane hgap="10" vgap="10">
-                    <columnConstraints>
-                        <ColumnConstraints percentWidth="28"/>
-                        <ColumnConstraints percentWidth="72"/>
-                    </columnConstraints>
+        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);">
+            <Label text="📋 Détails de la Formation" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+            <Separator style="-fx-padding: 5 0;"/>
+            
+            <GridPane hgap="20" vgap="15">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="30"/>
+                    <ColumnConstraints percentWidth="70"/>
+                </columnConstraints>
 
-                    <Label text="Title" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                    <TextField fx:id="titleField" promptText="Formation title" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                <!-- Title -->
+                <Label text="Titre" style="-fx-font-weight: bold; -fx-text-fill: #333;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="titleField" promptText="Ex: Développement Web Avancé" style="-fx-font-size: 13px; -fx-padding: 10;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-                    <Label text="Description" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                    <VBox spacing="8" GridPane.rowIndex="1" GridPane.columnIndex="1">
-                        <TextArea fx:id="descriptionField" prefRowCount="3" wrapText="true" VBox.vgrow="ALWAYS"/>
-                        <Button fx:id="generateDescriptionButton" text="🤖 Generate with AI" onAction="#handleGenerateDescription" styleClass="btn-secondary"/>
-                    </VBox>
+                <!-- Description -->
+                <Label text="Description" style="-fx-font-weight: bold; -fx-text-fill: #333;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <VBox spacing="8" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                    <TextArea fx:id="descriptionField" prefRowCount="3" wrapText="true" promptText="Description concise de la formation..." style="-fx-font-size: 13px; -fx-padding: 10; -fx-control-inner-background: #f9f9f9;"/>
+                    <Button fx:id="generateDescriptionButton" text="🤖 Générer avec IA" onAction="#handleGenerateDescription" styleClass="btn-secondary" style="-fx-padding: 8 12;" maxWidth="150"/>
+                </VBox>
 
-                    <Label text="Content" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                    <TextArea fx:id="contentField" prefRowCount="5" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                <!-- Content -->
+                <Label text="Contenu" style="-fx-font-weight: bold; -fx-text-fill: #333;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextArea fx:id="contentField" prefRowCount="5" wrapText="true" promptText="Contenu détaillé du cours..." style="-fx-font-size: 13px; -fx-padding: 10; -fx-control-inner-background: #f9f9f9;" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-                    <Label text="Price" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                    <TextField fx:id="priceField" promptText="e.g. 99.90" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                <!-- Price -->
+                <Label text="Prix (€)" style="-fx-font-weight: bold; -fx-text-fill: #333;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <TextField fx:id="priceField" promptText="Ex: 99.99" style="-fx-font-size: 13px; -fx-padding: 10;" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
-                    <Label text="Duration" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-                    <TextField fx:id="durationField" promptText="Hours" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                <!-- Duration -->
+                <Label text="Durée (heures)" style="-fx-font-weight: bold; -fx-text-fill: #333;" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <TextField fx:id="durationField" promptText="Ex: 40" style="-fx-font-size: 13px; -fx-padding: 10;" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
-                    <Label text="Level" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-                    <ComboBox fx:id="levelCombo" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                <!-- Level -->
+                <Label text="Niveau" style="-fx-font-weight: bold; -fx-text-fill: #333;" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                <ComboBox fx:id="levelCombo" promptText="Sélectionnez un niveau" style="-fx-font-size: 13px; -fx-padding: 10;" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
 
-                    <Label text="Support PDF" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-                    <HBox spacing="8" GridPane.rowIndex="6" GridPane.columnIndex="1">
-                        <TextField fx:id="supportFileField" promptText="Select a PDF file" HBox.hgrow="ALWAYS"/>
-                        <Button text="Browse PDF" onAction="#handleBrowseSupportPdf"/>
-                    </HBox>
-
-                    <HBox spacing="16" GridPane.rowIndex="7" GridPane.columnIndex="1">
-                        <CheckBox fx:id="approvedCheck" text="Approved"/>
-                        <CheckBox fx:id="archivedCheck" text="Archived"/>
-                    </HBox>
-                </GridPane>
-            </VBox>
-        </TitledPane>
-
-        <!-- Ressources Section -->
-        <TitledPane text="Ressources (Add learning materials like videos, documentation, etc.)" expanded="true" collapsible="false">
-            <VBox spacing="12" style="-fx-padding: 12;">
-                <!-- Ressource Input Form -->
-                <GridPane hgap="10" vgap="10">
-                    <columnConstraints>
-                        <ColumnConstraints percentWidth="25"/>
-                        <ColumnConstraints percentWidth="75"/>
-                    </columnConstraints>
-
-                    <Label text="Title" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                    <TextField fx:id="ressourceTitleField" promptText="Ressource title" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-
-                    <Label text="Description" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                    <TextArea fx:id="ressourceDescriptionField" prefRowCount="2" wrapText="true" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-
-                    <Label text="URL/Link" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                    <TextField fx:id="ressourceUrlField" promptText="https://example.com/resource" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-
-                    <Label text="Type" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                    <ComboBox fx:id="ressourceTypeCombo" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-
-                    <Label text="File Path" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-                    <TextField fx:id="ressourceFilePathField" promptText="/path/to/file.pdf" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-
-                    <Label text="Cost" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-                    <TextField fx:id="ressourceCostField" promptText="e.g. 29.99 (optional)" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
-                </GridPane>
-
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Button fx:id="addRessourceButton" text="+ Add Ressource" onAction="#handleAddRessource" styleClass="btn-primary"/>
+                <!-- Support PDF -->
+                <Label text="Fichier Support" style="-fx-font-weight: bold; -fx-text-fill: #333;" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+                <HBox spacing="8" GridPane.rowIndex="6" GridPane.columnIndex="1">
+                    <TextField fx:id="supportFileField" promptText="Sélectionnez un fichier PDF" style="-fx-font-size: 13px; -fx-padding: 10;" HBox.hgrow="ALWAYS"/>
+                    <Button text="📁 Parcourir" onAction="#handleBrowseSupportPdf" styleClass="btn-secondary" style="-fx-padding: 10 15;"/>
                 </HBox>
 
-                <!-- Ressources Table -->
-                <Label text="Added Ressources:" styleClass="subtitle"/>
-                <TableView fx:id="ressourcesTable" prefHeight="200">
-                    <columns>
-                        <TableColumn fx:id="ressourceTitleColumn" text="Title" prefWidth="200"/>
-                        <TableColumn fx:id="ressourceTypeColumn" text="Type" prefWidth="150"/>
-                    </columns>
-                </TableView>
-
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Button fx:id="removeRessourceButton" text="- Remove Selected" onAction="#handleRemoveRessource" styleClass="btn-danger"/>
+                <!-- Status Checkboxes -->
+                <HBox spacing="20" GridPane.rowIndex="7" GridPane.columnIndex="1">
+                    <CheckBox fx:id="approvedCheck" text="✓ Approuvée"/>
+                    <CheckBox fx:id="archivedCheck" text="📦 Archivée"/>
                 </HBox>
-            </VBox>
-        </TitledPane>
+            </GridPane>
+        </VBox>
+
+        <!-- Resources Section -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);">
+            <Label text="📚 Ressources du Cours" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+            <Label text="Ajoutez des matériaux d'apprentissage (vidéos, documentation, etc.)" style="-fx-text-fill: #999; -fx-font-size: 12px;"/>
+            <Separator style="-fx-padding: 5 0;"/>
+            
+            <!-- Resource Input Form -->
+            <GridPane hgap="20" vgap="15" style="-fx-background-color: #f9f9f9; -fx-background-radius: 8; -fx-padding: 15;">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="25"/>
+                    <ColumnConstraints percentWidth="75"/>
+                </columnConstraints>
+
+                <Label text="Titre" style="-fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="ressourceTitleField" promptText="Titre de la ressource" style="-fx-font-size: 12px; -fx-padding: 8;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <Label text="Description" style="-fx-font-weight: bold;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextArea fx:id="ressourceDescriptionField" prefRowCount="2" wrapText="true" promptText="Description courte" style="-fx-font-size: 12px; -fx-padding: 8; -fx-control-inner-background: white;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="URL/Lien" style="-fx-font-weight: bold;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="ressourceUrlField" promptText="https://exemple.com/ressource" style="-fx-font-size: 12px; -fx-padding: 8;" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <Label text="Type" style="-fx-font-weight: bold;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <ComboBox fx:id="ressourceTypeCombo" promptText="Sélectionnez un type" style="-fx-font-size: 12px; -fx-padding: 8;" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                <Label text="Chemin Fichier" style="-fx-font-weight: bold;" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <TextField fx:id="ressourceFilePathField" promptText="/chemin/vers/fichier.pdf" style="-fx-font-size: 12px; -fx-padding: 8;" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                <Label text="Prix (€)" style="-fx-font-weight: bold;" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                <TextField fx:id="ressourceCostField" promptText="Optionnel (ex: 29.99)" style="-fx-font-size: 12px; -fx-padding: 8;" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button fx:id="addRessourceButton" text="➕ Ajouter Ressource" onAction="#handleAddRessource" styleClass="btn-primary" style="-fx-padding: 10 15;"/>
+            </HBox>
+
+            <!-- Resources Table -->
+            <Label text="Ressources Ajoutées:" style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
+            <TableView fx:id="ressourcesTable" prefHeight="150" style="-fx-background-radius: 8;">
+                <columns>
+                    <TableColumn fx:id="ressourceTitleColumn" text="Titre" prefWidth="300"/>
+                    <TableColumn fx:id="ressourceTypeColumn" text="Type" prefWidth="150"/>
+                    <TableColumn fx:id="ressourceCostColumn" text="Prix" prefWidth="100"/>
+                </columns>
+                <placeholder><Label text="Aucune ressource ajoutée pour le moment."/></placeholder>
+            </TableView>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button fx:id="removeRessourceButton" text="❌ Supprimer Sélectionnée" onAction="#handleRemoveRessource" styleClass="btn-danger" style="-fx-padding: 10 15;"/>
+            </HBox>
+        </VBox>
 
         <!-- Action Buttons -->
-        <HBox spacing="10" alignment="CENTER_RIGHT">
-            <Button fx:id="saveButton" text="Save" onAction="#handleSave" styleClass="btn-primary"/>
-            <Button text="Cancel" onAction="#handleCancel"/>
+        <HBox spacing="10" alignment="CENTER_RIGHT" style="-fx-padding: 20 0 0 0;">
+            <Button text="❌ Annuler" onAction="#handleCancel" styleClass="btn-secondary" style="-fx-padding: 12 25;"/>
+            <Button fx:id="saveButton" text="💾 Enregistrer" onAction="#handleSave" styleClass="btn-primary" style="-fx-padding: 12 25;"/>
         </HBox>
     </VBox>
 </ScrollPane>
