@@ -1,7 +1,9 @@
 package com.elearning.controller;
 
 import com.elearning.entity.Formation;
+import com.elearning.entity.User;
 import com.elearning.service.FormationService;
+import com.elearning.util.SessionManager;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -45,20 +47,42 @@ public class FormationDashboardController implements Initializable {
     @FXML private ComboBox<String> levelFilter;
     @FXML private ComboBox<String> statusFilter;
     @FXML private TabPane tabPane;
+    @FXML private Button btnAjouter;
 
     private final FormationService formationService = new FormationService();
     private final ObservableList<Formation> formations = FXCollections.observableArrayList();
     private final ObservableList<Formation> myFormations = FXCollections.observableArrayList();
+    private User currentUser;
+    private boolean isStudentView;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Get current user and check role
+        currentUser = SessionManager.getInstance().getUtilisateurConnecte();
+        isStudentView = currentUser != null && User.ROLE_ETUDIANT.equals(currentUser.getRole());
+        
         setupColumns();
         tableFormations.setItems(formations);
         tableMyFormations.setItems(myFormations);
         
         initializeFilters();
         setupSearchListener();
+        applyRoleBasedRestrictions();
         reload();
+    }
+
+    private void applyRoleBasedRestrictions() {
+        // Students cannot create/edit/delete formations
+        if (isStudentView) {
+            if (btnAjouter != null) {
+                btnAjouter.setVisible(false);
+                btnAjouter.setManaged(false);
+            }
+            // Hide the "Mes Formations" tab for students - they see only available formations
+            if (tabPane != null && tabPane.getTabs().size() > 1) {
+                tabPane.getTabs().remove(1);
+            }
+        }
     }
 
     private void setupColumns() {
@@ -74,51 +98,77 @@ public class FormationDashboardController implements Initializable {
         
         colActions.setCellValueFactory(param -> new SimpleStringProperty("..."));
         colActions.setCellFactory(col -> new TableCell<Formation, String>() {
-            private final Button editBtn = new Button("✏️ Modifier");
-            private final Button deleteBtn = new Button("🗑️ Supprimer");
-            
-            {
-                editBtn.setStyle("-fx-padding: 5 10; -fx-font-size: 11px;");
-                deleteBtn.setStyle("-fx-padding: 5 10; -fx-font-size: 11px;");
-                editBtn.setOnAction(e -> handleEdit(getTableView().getItems().get(getIndex())));
-                deleteBtn.setOnAction(e -> handleDelete(getTableView().getItems().get(getIndex())));
-            }
-            
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : new javafx.scene.layout.HBox(5, editBtn, deleteBtn));
+                if (empty || getIndex() < 0 || getIndex() >= getTableView().getItems().size()) {
+                    setGraphic(null);
+                    return;
+                }
+                
+                if (isStudentView) {
+                    // For students: show View/Enroll buttons
+                    Button viewBtn = new Button("👁️ Voir");
+                    Button enrollBtn = new Button("💳 S'inscrire");
+                    viewBtn.setStyle("-fx-padding: 5 10; -fx-font-size: 11px;");
+                    enrollBtn.setStyle("-fx-padding: 5 10; -fx-font-size: 11px;");
+                    
+                    Formation formation = getTableView().getItems().get(getIndex());
+                    viewBtn.setOnAction(e -> openFormationDetail(formation));
+                    enrollBtn.setOnAction(e -> showAlert(Alert.AlertType.INFORMATION, "Inscription", 
+                        "Fonctionnalité d'inscription en développement."));
+                    
+                    setGraphic(new javafx.scene.layout.HBox(5, viewBtn, enrollBtn));
+                } else {
+                    // For admin/enseignant: show Edit/Delete buttons
+                    Button editBtn = new Button("✏️ Modifier");
+                    Button deleteBtn = new Button("🗑️ Supprimer");
+                    editBtn.setStyle("-fx-padding: 5 10; -fx-font-size: 11px;");
+                    deleteBtn.setStyle("-fx-padding: 5 10; -fx-font-size: 11px;");
+                    
+                    Formation formation = getTableView().getItems().get(getIndex());
+                    editBtn.setOnAction(e -> handleEdit(formation));
+                    deleteBtn.setOnAction(e -> handleDelete(formation));
+                    
+                    setGraphic(new javafx.scene.layout.HBox(5, editBtn, deleteBtn));
+                }
             }
         });
 
-        // My formations table
-        myColId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        myColTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-        myColLevel.setCellValueFactory(new PropertyValueFactory<>("level"));
-        myColDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
-        myColPrice.setCellValueFactory(data ->
-                new SimpleStringProperty(String.format("%.2f€", data.getValue().getPrice())));
-        myColApproved.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().isApproved() ? "✓ Oui" : "✗ Non"));
-        
-        myColActions.setCellValueFactory(param -> new SimpleStringProperty("..."));
-        myColActions.setCellFactory(col -> new TableCell<Formation, String>() {
-            private final Button editBtn = new Button("✏️ Modifier");
-            private final Button deleteBtn = new Button("🗑️ Supprimer");
+        // My formations table (only shown for admin/enseignant)
+        if (!isStudentView) {
+            myColId.setCellValueFactory(new PropertyValueFactory<>("id"));
+            myColTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+            myColLevel.setCellValueFactory(new PropertyValueFactory<>("level"));
+            myColDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
+            myColPrice.setCellValueFactory(data ->
+                    new SimpleStringProperty(String.format("%.2f€", data.getValue().getPrice())));
+            myColApproved.setCellValueFactory(data ->
+                    new SimpleStringProperty(data.getValue().isApproved() ? "✓ Oui" : "✗ Non"));
             
-            {
-                editBtn.setStyle("-fx-padding: 5 10; -fx-font-size: 11px;");
-                deleteBtn.setStyle("-fx-padding: 5 10; -fx-font-size: 11px;");
-                editBtn.setOnAction(e -> handleEdit(getTableView().getItems().get(getIndex())));
-                deleteBtn.setOnAction(e -> handleDelete(getTableView().getItems().get(getIndex())));
-            }
-            
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                setGraphic(empty ? null : new javafx.scene.layout.HBox(5, editBtn, deleteBtn));
-            }
-        });
+            myColActions.setCellValueFactory(param -> new SimpleStringProperty("..."));
+            myColActions.setCellFactory(col -> new TableCell<Formation, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || getIndex() < 0 || getIndex() >= getTableView().getItems().size()) {
+                        setGraphic(null);
+                        return;
+                    }
+                    
+                    Button editBtn = new Button("✏️ Modifier");
+                    Button deleteBtn = new Button("🗑️ Supprimer");
+                    editBtn.setStyle("-fx-padding: 5 10; -fx-font-size: 11px;");
+                    deleteBtn.setStyle("-fx-padding: 5 10; -fx-font-size: 11px;");
+                    
+                    Formation formation = getTableView().getItems().get(getIndex());
+                    editBtn.setOnAction(e -> handleEdit(formation));
+                    deleteBtn.setOnAction(e -> handleDelete(formation));
+                    
+                    setGraphic(new javafx.scene.layout.HBox(5, editBtn, deleteBtn));
+                }
+            });
+        }
     }
 
     private void initializeFilters() {
@@ -168,16 +218,32 @@ public class FormationDashboardController implements Initializable {
 
     @FXML
     private void handleAdd() {
+        if (isStudentView) {
+            showAlert(Alert.AlertType.WARNING, "Accès refusé", 
+                "Seuls les administrateurs et enseignants peuvent créer des formations.");
+            return;
+        }
         openForm(null);
     }
 
     @FXML
     private void handleEdit(Formation formation) {
+        if (isStudentView) {
+            showAlert(Alert.AlertType.WARNING, "Accès refusé", 
+                "Seuls les administrateurs et enseignants peuvent modifier les formations.");
+            return;
+        }
         openForm(formation);
     }
 
     @FXML
     private void handleDelete(Formation formation) {
+        if (isStudentView) {
+            showAlert(Alert.AlertType.WARNING, "Accès refusé", 
+                "Seuls les administrateurs et enseignants peuvent supprimer les formations.");
+            return;
+        }
+        
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmation");
         confirm.setHeaderText("Supprimer la formation ?");
@@ -230,6 +296,26 @@ public class FormationDashboardController implements Initializable {
             stage.showAndWait();
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir le formulaire.");
+            e.printStackTrace();
+        }
+    }
+
+    private void openFormationDetail(Formation formation) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/elearning/gui/FormationDetailView.fxml"));
+            Parent root = loader.load();
+
+            FormationDetailController controller = loader.getController();
+            controller.setFormation(formation);
+
+            Stage stage = new Stage();
+            stage.setTitle("Détails - " + formation.getTitle());
+            stage.setScene(new Scene(root, 1000, 800));
+            stage.getScene().getStylesheets().add(
+                    getClass().getResource("/com/elearning/css/style.css").toExternalForm());
+            stage.showAndWait();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir les détails de la formation.");
             e.printStackTrace();
         }
     }
