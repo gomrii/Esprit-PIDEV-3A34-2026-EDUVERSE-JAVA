@@ -72,6 +72,7 @@
 
         <Button text="Ajouter" styleClass="btn-primary" onAction="#handleAjouter"/>
         <Button text="Approuver" styleClass="btn-success" onAction="#handleApprouver"/>
+        <Button text="Formations" styleClass="btn-info" onAction="#handleFormations"/>
         <Button text="Export PDF" styleClass="btn-pdf" onAction="#handleExportPdf"/>
         <Button text="Assistant IA"
                 style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-cursor: hand;"

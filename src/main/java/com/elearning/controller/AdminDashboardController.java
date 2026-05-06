@@ -543,6 +543,25 @@ public class AdminDashboardController implements Initializable {
         }
     }
 
+    /**
+     * Ouvre le tableau de bord des formations
+     */
+    @FXML
+    private void handleFormations(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/elearning/gui/FormationDashboardView.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Gestion des Formations");
+        } catch (IOException e) {
+            afficherErreur(" Impossible d'ouvrir le tableau de bord des formations : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
     // -------------------------------------------------------
     // Configuration des ComboBox
     // -------------------------------------------------------

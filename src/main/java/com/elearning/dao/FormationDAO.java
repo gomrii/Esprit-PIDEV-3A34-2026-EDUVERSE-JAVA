@@ -64,10 +64,20 @@ public class FormationDAO {
 
         try (PreparedStatement ps = getConn().prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
+            int count = 0;
             while (rs.next()) {
-                formations.add(map(rs));
+                try {
+                    formations.add(map(rs));
+                    count++;
+                } catch (Exception e) {
+                    System.err.println("❌ Erreur mapping formation: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
+            System.out.println("✓ Formations chargées: " + count);
         } catch (SQLException e) {
+            System.err.println("❌ Erreur connexion formations: " + e.getMessage());
+            e.printStackTrace();
             throw new RuntimeException("Erreur lecture formations: " + e.getMessage(), e);
         }
 

@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="eduverse" />
         <module name="Connexion3A36" />
+        <module name="gestion-utilisateurs" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
