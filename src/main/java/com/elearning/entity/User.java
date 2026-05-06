@@ -53,6 +53,11 @@ public class User {
     private LocalDateTime lockedUntil;           // locked_until (nullable)
 
     // -------------------------------------------------------
+    // Crédits / Paiements (Stripe integration)
+    // -------------------------------------------------------
+    private double credits = 0.0;               // credits balance for purchases
+
+    // -------------------------------------------------------
     // Constructeur VIDE — nécessaire pour JavaFX TableView
     // et pour les lectures JDBC (on set les champs un par un)
     // -------------------------------------------------------
@@ -142,6 +147,19 @@ public class User {
 
     public LocalDateTime getLockedUntil()                        { return lockedUntil; }
     public void setLockedUntil(LocalDateTime dt)                 { this.lockedUntil = dt; }
+
+    // Credits / Paiements (Stripe integration)
+    public double getCredits()                                   { return credits; }
+    public void setCredits(double credits)                       { this.credits = credits; }
+    
+    /**
+     * Ajoute des crédits au compte utilisateur (Stripe purchase)
+     */
+    public void addCredits(double amount) {
+        if (amount > 0) {
+            this.credits += amount;
+        }
+    }
 
     // -------------------------------------------------------
     // toString() — utile pour le débogage
