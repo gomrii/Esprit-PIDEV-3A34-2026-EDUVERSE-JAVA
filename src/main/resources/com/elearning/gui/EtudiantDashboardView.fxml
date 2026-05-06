@@ -16,10 +16,39 @@
         <Insets top="24" right="24" bottom="24" left="24"/>
     </padding>
 
-    <HBox spacing="15" alignment="CENTER_LEFT" styleClass="toolbar-panel" style="-fx-padding: 12 20 12 20;">
-        <Button text="← Retour" styleClass="btn-secondary" onAction="#handleRetour"/>
-        <Button text="Mes Formations" styleClass="btn-primary" onAction="#handleMesFormations"/>
-        <Button text="Déconnexion" styleClass="btn-danger" onAction="#handleDeconnexion"/>
+    <HBox spacing="15" alignment="CENTER_LEFT" styleClass="student-dashboard-stats-row">
+        <VBox styleClass="admin-dashboard-stat-card" alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="📝" styleClass="admin-dashboard-stat-icon,admin-dashboard-stat-icon-violet"/>
+                <Label text="Quiz disponibles" styleClass="admin-dashboard-stat-title"/>
+            </HBox>
+            <Label text="0" styleClass="admin-dashboard-stat-number"/>
+            <Label text="Quiz a lancer depuis votre espace" styleClass="admin-dashboard-stat-description"/>
+        </VBox>
+        <VBox styleClass="admin-dashboard-stat-card" alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="📘" styleClass="admin-dashboard-stat-icon,admin-dashboard-stat-icon-blue"/>
+                <Label text="Cours" styleClass="admin-dashboard-stat-title"/>
+            </HBox>
+            <Label text="0" styleClass="admin-dashboard-stat-number"/>
+            <Label text="Cours disponibles a consulter" styleClass="admin-dashboard-stat-description"/>
+        </VBox>
+        <VBox styleClass="admin-dashboard-stat-card" alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="🎓" styleClass="admin-dashboard-stat-icon,admin-dashboard-stat-icon-green"/>
+                <Label text="Formations" styleClass="admin-dashboard-stat-title"/>
+            </HBox>
+            <Label text="0" styleClass="admin-dashboard-stat-number"/>
+            <Label text="Formations accessibles dans EduVerse" styleClass="admin-dashboard-stat-description"/>
+        </VBox>
+        <VBox styleClass="admin-dashboard-stat-card" alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="🏅" styleClass="admin-dashboard-stat-icon,admin-dashboard-stat-icon-orange"/>
+                <Label text="Clubs" styleClass="admin-dashboard-stat-title"/>
+            </HBox>
+            <Label text="0" styleClass="admin-dashboard-stat-number"/>
+            <Label text="Clubs a rejoindre ou suivre" styleClass="admin-dashboard-stat-description"/>
+        </VBox>
     </HBox>
 
     <VBox spacing="8" styleClass="role-dashboard-hero">

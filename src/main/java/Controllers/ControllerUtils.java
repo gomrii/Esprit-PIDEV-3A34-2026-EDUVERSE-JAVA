@@ -562,7 +562,7 @@ public final class ControllerUtils {
         };
     }
 
-    private static Parent prepareEmbeddedRoot(Parent root) {
+    public static Parent prepareEmbeddedRoot(Parent root) {
         if (root instanceof BorderPane borderPane) {
             borderPane.setLeft(null);
         }

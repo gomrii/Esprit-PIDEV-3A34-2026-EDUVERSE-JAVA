@@ -1,275 +1,315 @@
-# 🎓 Module Gestion des Utilisateurs — JavaFX + JDBC
-## Projet Eduverse · Migration Symfony → Java
+# EduVerse JavaFX
 
----
+Application e-learning desktop construite en JavaFX, Maven et MySQL.
 
-## 📁 Structure du projet
+Le projet regroupe plusieurs espaces fonctionnels dans une meme application :
+- administration des utilisateurs
+- dashboard et navigation par role
+- formations
+- quiz
+- cours et chapitres
+- clubs et evenements
+- outils IA, voix, paiement et services annexes
 
+## Vue d'ensemble
+
+Le point d'entree principal est [MainApp.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/com/elearning/MainApp.java).
+
+L'application charge d'abord l'ecran de connexion, puis redirige l'utilisateur vers un espace partage avec sidebar selon son role :
+- Admin
+- Etudiant
+- Enseignant
+
+Le shell principal recent est base sur [MainDashboard.fxml](/C:/Users/YOSRA/Downloads/javafx1/src/main/resources/MainDashboard.fxml) et [MainDashboardController.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/Controllers/MainDashboardController.java).
+
+## Stack technique
+
+- Java 17
+- Maven
+- JavaFX 21
+- MySQL 8
+- JDBC
+- JUnit 5
+- iText / PDFBox
+- Gson / Jackson
+- OkHttp / Apache HttpClient 5
+- Stripe
+- Groq AI
+- JavaCV / OpenCV
+- Twilio
+- ZXing
+
+## Structure du projet
+
+Le depot contient deux ensembles historiques de packages qui cohabitent :
+
+1. `com.elearning.*`
+   - authentification
+   - utilisateurs
+   - formations
+   - services transverses
+   - vues JavaFX principales sous `src/main/resources/com/elearning/gui`
+
+2. `Controllers`, `Services`, `Entities`, `Utils`
+   - quiz
+   - cours / chapitres
+   - clubs / evenements
+   - dashboard partage
+   - vues FXML directement sous `src/main/resources`
+
+Arborescence utile :
+
+```text
+javafx1/
+|-- pom.xml
+|-- config/
+|   |-- api.properties
+|   `-- api.properties.example
+|-- database/
+|   |-- eduverse-2.sql
+|   |-- schema.sql
+|   `-- migrations quiz...
+|-- src/
+|   |-- main/
+|   |   |-- java/
+|   |   |   |-- com/elearning/
+|   |   |   |-- Controllers/
+|   |   |   |-- Services/
+|   |   |   |-- Entities/
+|   |   |   `-- Utils/
+|   |   `-- resources/
+|   |       |-- com/elearning/gui/
+|   |       |-- com/elearning/css/
+|   |       |-- css/
+|   |       |-- html/
+|   |       |-- scripts/
+|   |       `-- *.fxml
+|   `-- test/
+|       `-- java/com/elearning/service/
+`-- docs *.md
 ```
-GestionUtilisateurs/
-│
-├── pom.xml                          ← Dépendances Maven (JavaFX, MySQL, iText)
-├── database/
-│   └── schema.sql                   ← Script SQL de création de la table + données de test
-│
-└── src/
-    ├── main/java/com/elearning/
-    │   ├── MainApp.java              ← Point d'entrée (lance l'application JavaFX)
-    │   │
-    │   ├── entity/
-    │   │   └── User.java             ← Entité POJO (≈ Entity Symfony)
-    │   │
-    │   ├── dao/
-    │   │   └── UserDAO.java          ← Accès BDD JDBC (≈ UserRepository Symfony)
-    │   │
-    │   ├── service/
-    │   │   ├── UserService.java      ← Logique métier + validation (≈ Services Symfony)
-    │   │   └── PdfExportService.java ← Export PDF avec iText (≈ PdfService Symfony)
-    │   │
-    │   ├── controller/
-    │   │   ├── LoginController.java           ← Page connexion
-    │   │   ├── AdminDashboardController.java  ← Tableau de bord admin
-    │   │   ├── UserFormController.java        ← Formulaire ajout/modification
-    │   │   └── SimpleViewController.java      ← Vues enseignant/étudiant
-    │   │
-    │   └── util/
-    │       ├── DatabaseConnection.java  ← Singleton connexion MySQL
-    │       └── SessionManager.java     ← Gestion utilisateur connecté
-    │
-    ├── main/resources/com/elearning/
-    │   ├── gui/
-    │   │   ├── LoginView.fxml               ← Page de connexion
-    │   │   ├── AdminDashboardView.fxml      ← Tableau de bord admin
-    │   │   ├── UserFormView.fxml            ← Formulaire ajout/modif
-    │   │   ├── EnseignantDashboardView.fxml ← Espace enseignant
-    │   │   └── EtudiantDashboardView.fxml   ← Espace étudiant
-    │   └── css/
-    │       └── style.css                    ← Styles CSS JavaFX
-    │
-    └── test/java/com/elearning/service/
-        └── UserServiceTest.java             ← Tests unitaires JUnit 5
-```
 
----
+## Modules principaux
 
-## ⚙️ Prérequis
+### 1. Authentification et utilisateurs
 
-| Outil | Version minimale | Lien |
-|---|---|---|
-| JDK | 17 (LTS) | https://adoptium.net |
-| Maven | 3.8+ | https://maven.apache.org |
-| MySQL | 8.0+ | https://dev.mysql.com |
-| IntelliJ IDEA | 2022+ (recommandé) | https://jetbrains.com |
-| Scene Builder | 17+ (optionnel) | https://gluonhq.com/products/scene-builder |
+Fichiers principaux :
+- [LoginController.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/com/elearning/controller/LoginController.java)
+- [UserService.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/com/elearning/service/UserService.java)
+- [UserDAO.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/com/elearning/dao/UserDAO.java)
+- [SessionManager.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/com/elearning/util/SessionManager.java)
 
----
+Fonctionnalites :
+- connexion par role
+- inscription
+- mot de passe oublie / reset
+- double facteur
+- gestion des utilisateurs
+- validation et statuts de compte
 
-## 🚀 Installation pas à pas
+### 2. Shell de navigation
 
-### Étape 1 — Créer la base de données
+Fichiers principaux :
+- [MainDashboard.fxml](/C:/Users/YOSRA/Downloads/javafx1/src/main/resources/MainDashboard.fxml)
+- [MainDashboardController.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/Controllers/MainDashboardController.java)
+- [style.css](/C:/Users/YOSRA/Downloads/javafx1/src/main/resources/css/style.css)
 
-Ouvrez MySQL Workbench ou votre terminal MySQL et exécutez :
+Fonctionnalites :
+- sidebar commune
+- menu dynamique selon le role
+- chargement du contenu au centre via `BorderPane`
+- theme global JavaFX
+
+### 3. Formations
+
+Fichiers principaux :
+- [FormationDashboardController.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/com/elearning/controller/FormationDashboardController.java)
+- [FormationService.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/com/elearning/service/FormationService.java)
+- [FormationDAO.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/com/elearning/dao/FormationDAO.java)
+
+Fonctionnalites :
+- liste des formations
+- details
+- creation / edition
+- inscription
+- IA pour certaines descriptions
+
+### 4. Quiz
+
+Fichiers principaux :
+- [AdminQuizListController.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/Controllers/AdminQuizListController.java)
+- [TeacherQuizListController.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/Controllers/TeacherQuizListController.java)
+- [StudentQuizListController.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/Controllers/StudentQuizListController.java)
+- [QuizService.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/Services/QuizService.java)
+
+Fonctionnalites :
+- liste des quiz par espace
+- creation / modification
+- questions / reponses
+- passage et resultat cote etudiant
+- statistiques quiz
+- generation IA
+
+### 5. Cours, chapitres, clubs et evenements
+
+Packages principaux :
+- `Controllers`
+- `Services`
+- `Entities`
+
+Fonctionnalites :
+- cours admin / enseignant / etudiant
+- chapitres
+- clubs
+- evenements
+- calendrier
+- demandes et validation
+
+### 6. Integrations optionnelles
+
+Le depot contient aussi :
+- Stripe pour paiement
+- Groq AI
+- chatbot
+- synthese vocale et speech-to-text
+- reconnaissance faciale
+- QR code
+- traduction
+
+Ces fonctions ne sont pas toutes necessaires pour lancer l'application de base, mais certaines exigent une configuration locale supplementaire.
+
+## Prerequis
+
+- JDK 17
+- Maven 3.8+
+- MySQL 8+
+- IntelliJ IDEA recommande
+
+## Configuration base de donnees
+
+Deux classes de connexion existent actuellement :
+- [DatabaseConnection.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/com/elearning/util/DatabaseConnection.java)
+- [MyConnection.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/Utils/MyConnection.java)
+
+Elles pointent toutes les deux vers la base `eduverse` sur `localhost:3306` avec :
+- utilisateur : `root`
+- mot de passe : vide par defaut
+
+### 1. Creer la base
 
 ```sql
--- Copier-coller le contenu de database/schema.sql
-source /chemin/vers/GestionUtilisateurs/database/schema.sql;
+CREATE DATABASE IF NOT EXISTS eduverse
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_general_ci;
 ```
 
-### Étape 2 — Configurer la connexion
+### 2. Importer le schema principal
 
-Ouvrez `src/main/java/com/elearning/util/DatabaseConnection.java` et ajustez :
+Le schema le plus complet du depot est :
+- `database/eduverse-2.sql`
 
-```java
-private static final String URL      = "jdbc:mysql://localhost:3306/elearning?...";
-private static final String USER     = "root";      // votre utilisateur MySQL
-private static final String PASSWORD = "";           // votre mot de passe MySQL
-```
-
-### Étape 3 — Installer les dépendances Maven
+Commande typique :
 
 ```bash
-cd GestionUtilisateurs
-mvn clean install
+mysql -u root -p eduverse < database/eduverse-2.sql
 ```
 
-### Étape 4 — Lancer l'application
+Selon votre module de travail, des scripts complementaires existent aussi dans `database/`.
+
+### 3. Adapter les identifiants si necessaire
+
+Verifier ces fichiers :
+- [DatabaseConnection.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/com/elearning/util/DatabaseConnection.java)
+- [MyConnection.java](/C:/Users/YOSRA/Downloads/javafx1/src/main/java/Utils/MyConnection.java)
+
+## Configuration API optionnelle
+
+Le projet charge des cles depuis :
+- `config/api.properties`
+- ou des variables d'environnement
+
+Un modele existe dans :
+- `config/api.properties.example`
+
+Attention :
+- ne pas commiter de vraies cles
+- le fichier exemple present dans le depot doit etre nettoye avant un usage public s'il contient des secrets reels
+
+Integrations visees :
+- Stripe
+- Groq AI
+
+Details :
+- [API_INTEGRATION_GUIDE.md](/C:/Users/YOSRA/Downloads/javafx1/API_INTEGRATION_GUIDE.md)
+
+## Lancer le projet
+
+### Avec Maven
 
 ```bash
+mvn clean compile
 mvn javafx:run
 ```
 
-Ou dans IntelliJ :
-1. Ouvrir le projet (File → Open → sélectionner le dossier GestionUtilisateurs)
-2. Maven se charge automatiquement
-3. Ouvrir `MainApp.java` → clic droit → Run
+Le `mainClass` Maven est configure sur :
+- `com.elearning.MainApp`
 
----
+### Avec IntelliJ
 
-## 🔑 Comptes de démonstration
+1. Ouvrir le dossier du projet.
+2. Laisser IntelliJ importer le `pom.xml`.
+3. Configurer le SDK en Java 17.
+4. Lancer `com.elearning.MainApp`.
 
-| Email | Mot de passe | Rôle | Résultat |
-|---|---|---|---|
-| admin@elearning.tn | Admin123! | ADMIN | → Dashboard Admin complet |
-| ahmed@elearning.tn | Admin123! | ENSEIGNANT | → Espace Enseignant |
-| sarra@elearning.tn | Admin123! | ETUDIANT | → Espace Étudiant |
-| amine@elearning.tn | Admin123! | ETUDIANT | ❌ Compte en attente |
-| fatma@elearning.tn | Admin123! | ETUDIANT | ❌ Compte bloqué |
+## Tests
 
-> **Note :** Le script SQL insère des hash SHA-256 pour "Admin123!". Si vous ajoutez des utilisateurs via l'interface, les hash sont générés automatiquement.
+Tests disponibles :
+- [UserServiceTest.java](/C:/Users/YOSRA/Downloads/javafx1/src/test/java/com/elearning/service/UserServiceTest.java)
 
----
-
-## 📋 Fonctionnalités implémentées
-
-### ✅ CRUD complet (4 pts)
-| Opération | Où | Comment |
-|---|---|---|
-| **Créer** | Bouton "➕ Ajouter" | Formulaire modal avec validation |
-| **Lire** | TableView | Chargement automatique au démarrage |
-| **Modifier** | Bouton "✏ Modifier" | Formulaire pré-rempli |
-| **Supprimer** | Bouton "🗑 Supprimer" | Confirmation requise |
-
-### ✅ Contrôle de saisie (2 pts)
-- Champs obligatoires (nom, email, mot de passe, rôle)
-- Format email validé par regex
-- Mot de passe fort : 8+ chars, majuscule, chiffre, caractère spécial
-- Test d'unicité email (un email ne peut pas être utilisé deux fois)
-- Messages d'erreur inline par champ
-- Validation en temps réel sur l'email (au clic hors du champ)
-
-### ✅ Interface graphique JavaFX (4 pts)
-- Page de connexion stylisée
-- Dashboard admin avec sidebar + cartes statistiques
-- TableView avec coloration conditionnelle du statut
-- Formulaire modal réutilisable (créer + modifier)
-- CSS complet : couleurs, hover, responsive
-
-### ✅ Fonctionnalités supplémentaires (1 pt)
-- **Recherche dynamique** : résultats filtrés à chaque frappe
-- **Tri** : par ID, Nom, Email, Rôle, Statut, Date
-- **Filtrage** par rôle (ComboBox)
-- **Statistiques** : compteurs en temps réel (total, étudiants, enseignants, bloqués...)
-- **Export PDF** : liste exportable avec mise en forme colorée (iText)
-- **Bloquer/Débloquer** en un clic (toggle)
-- **Approuver** les comptes en attente
-- **Redirection selon le rôle** après connexion
-
----
-
-## 🏗️ Architecture — Tableau de correspondance Symfony ↔ Java
-
-| Couche | Symfony | Java (ce projet) |
-|---|---|---|
-| **Entité** | `src/Entity/User.php` avec annotations ORM | `entity/User.java` POJO (pas d'ORM) |
-| **Base de données** | Doctrine (ORM automatique) | JDBC + `PreparedStatement` manuel |
-| **Dépôt** | `UserRepository extends ServiceEntityRepository` | `UserDAO` avec méthodes JDBC |
-| **Service** | `Services/` + autowiring | `UserService` instancié manuellement |
-| **Controller** | `AdminController extends AbstractController` | `AdminDashboardController implements Initializable` |
-| **Vue** | Templates Twig `.html.twig` | Fichiers FXML `.fxml` |
-| **CSS** | Fichiers `.css` dans `public/assets/` | Fichiers `.css` dans `resources/css/` |
-| **Session** | Session PHP Symfony | `SessionManager` Singleton |
-| **Sécurité** | `UserChecker`, `AppAuthenticator` | `UserService.authentifier()` |
-| **Formulaire** | `FormType` + `handleRequest()` | Champs `@FXML` + listener `setOnAction()` |
-| **Validation** | Annotations `#[Assert\...]` | `userService.validerCreation()` |
-| **Flash messages** | `$this->addFlash('success', '...')` | `Alert` JavaFX |
-| **Redirection** | `$this->redirectToRoute('admin_dashboard')` | `stage.setScene(newScene)` |
-| **Export PDF** | `PdfService` avec Dompdf | `PdfExportService` avec iText |
-| **Pagination** | Service `Paginator` avec `LIMIT/OFFSET` | `LIMIT ? OFFSET ?` en SQL |
-
----
-
-## 🔐 Sécurité implémentée
-
-| Mesure | Implémentation Java |
-|---|---|
-| Injection SQL | `PreparedStatement` avec `?` (jamais de concaténation) |
-| Whitelist colonnes tri | `Map<String,String>` de colonnes autorisées dans `UserDAO` |
-| Hash mot de passe | SHA-256 + sel aléatoire (ou jBCrypt en production) |
-| Contrôle d'accès | `SessionManager.estAdmin()` avant chaque action admin |
-| Unicité email | Vérification BDD avant insertion/modification |
-| Auto-suppression | Un admin ne peut pas supprimer son propre compte |
-
----
-
-## 🧪 Lancer les tests
+Commande :
 
 ```bash
 mvn test
 ```
 
-Les tests unitaires (`UserServiceTest`) vérifient :
-- Validation nom (vide, trop court)
-- Validation email (format, champ vide)
-- Validation mot de passe (faible, fort)
-- Validation rôle
-- Hashage et vérification de mot de passe
-- Validation téléphone tunisien
+## Ressources et styles
 
----
+Le projet utilise plusieurs repertoires de styles :
+- `src/main/resources/com/elearning/css/style.css`
+- `src/main/resources/css/style.css`
 
-## 💡 Comment intégrer l'Export PDF dans l'interface
+Le second couvre notamment le shell partage et plusieurs vues recentes du dashboard et du module quiz.
 
-Dans `AdminDashboardController.java`, ajoutez ce bouton (déjà dans le FXML) :
+## Scripts et assets annexes
 
-```java
-@FXML
-private void handleExportPdf(ActionEvent event) {
-    // Ouvrir une boîte de dialogue pour choisir où sauvegarder
-    FileChooser chooser = new FileChooser();
-    chooser.setTitle("Exporter la liste en PDF");
-    chooser.getExtensionFilters().add(
-        new FileChooser.ExtensionFilter("PDF files", "*.pdf"));
-    chooser.setInitialFileName("utilisateurs_" +
-        LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + ".pdf");
+Ressources presentes dans le depot :
+- `src/main/resources/scripts/` : scripts Python pour voix / accessibilite / quiz
+- `src/main/resources/html/map.html` : contenu HTML integre
+- `avatars/`, `faces/` : assets locaux
 
-    File fichier = chooser.showSaveDialog(
-        ((Node) event.getSource()).getScene().getWindow());
+Certaines fonctions dependantes de Python ou de bibliotheques systeme peuvent necessiter une installation manuelle hors Maven.
 
-    if (fichier != null) {
-        try {
-            List<User> users = userService.rechercherUsers("", "", "id", "ASC");
-            new PdfExportService().exporterListeUtilisateurs(users, fichier.getAbsolutePath());
-            afficherSucces("PDF exporté : " + fichier.getName());
-        } catch (Exception e) {
-            afficherErreur("Erreur lors de l'export : " + e.getMessage());
-        }
-    }
-}
-```
+## Documentation utile du depot
 
----
+- [DATABASE_SETUP.md](/C:/Users/YOSRA/Downloads/javafx1/DATABASE_SETUP.md)
+- [DATABASE_SCHEMA.md](/C:/Users/YOSRA/Downloads/javafx1/DATABASE_SCHEMA.md)
+- [DATABASE_QUICKSTART.md](/C:/Users/YOSRA/Downloads/javafx1/DATABASE_QUICKSTART.md)
+- [API_INTEGRATION_GUIDE.md](/C:/Users/YOSRA/Downloads/javafx1/API_INTEGRATION_GUIDE.md)
+- [QUICK_REFERENCE.md](/C:/Users/YOSRA/Downloads/javafx1/QUICK_REFERENCE.md)
+- [IMPLEMENTATION_SUMMARY.md](/C:/Users/YOSRA/Downloads/javafx1/IMPLEMENTATION_SUMMARY.md)
 
-## 🎯 Points de notation — Checklist
+## Points d'attention
 
-| Critère | Pts max | ✅ Implémenté |
-|---|---|---|
-| CRUD complet + scénario | 4 | ✅ CREATE/READ/UPDATE/DELETE fonctionnels avec navigation logique |
-| Contrôle de saisie | 2 | ✅ Tous les contrôles + unicité email + messages d'erreur |
-| Fonctionnalités supplémentaires | 1 | ✅ Recherche, tri, stats, export PDF, bloquer/approuver |
-| Interface graphique | 4 | ✅ Toutes les vues réalisées, navigation fonctionnelle, CSS soigné |
-| Compréhension du code | 7 | ✅ Commentaires détaillés, liens Symfony dans chaque classe |
-| Git collaboratif | 2 | → Committer régulièrement sur votre branche ! |
-| **TOTAL** | **20** | |
+- Le projet n'est pas encore uniformise sur une seule convention de packages.
+- Plusieurs modules partagent la meme base `eduverse`.
+- Certaines vues et certains services historiques coexistent avec le shell recent.
+- Avant un deploiement ou une publication, il faut verifier les secrets dans `config/` et nettoyer les fichiers sensibles.
 
----
+## Prochaine etape recommandee
 
-## 📝 Initialiser Git pour le projet collaboratif
-
-```bash
-# Depuis le dossier du projet
-git init
-git remote add origin https://github.com/votre-equipe/elearning-java.git
-
-# Créer votre branche personnelle (OBLIGATOIRE selon la grille)
-git checkout -b feature/gestion-utilisateurs-VotrePrenom
-
-# Premier commit
-git add .
-git commit -m "feat: module gestion utilisateurs - CRUD + JavaFX + JDBC"
-git push -u origin feature/gestion-utilisateurs-VotrePrenom
-
-# Commits réguliers (au moins tous les 3 jours selon la grille)
-git add .
-git commit -m "fix: validation email en temps réel"
-git push
-```
+Si vous poursuivez le projet, le travail utile est de normaliser :
+- la configuration base de donnees
+- la gestion des secrets
+- la structure des packages
+- les styles CSS dupliques
+- le point d'entree des modules annexes

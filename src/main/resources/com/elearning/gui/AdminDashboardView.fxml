@@ -22,31 +22,46 @@
 
     <Label text="Dashboard Admin" styleClass="page-title"/>
 
-    <HBox spacing="15" alignment="CENTER" style="-fx-padding: 15 20 15 20;">
-        <VBox styleClass="stat-card stat-blue" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
-            <Label text="Utilisateurs" styleClass="stat-label"/>
-            <Label fx:id="totalUsersLabel" text="0" styleClass="stat-number"/>
-            <Label text="Total comptes" styleClass="stat-label"/>
+    <HBox spacing="15" alignment="CENTER_LEFT" styleClass="admin-dashboard-stats-row">
+        <VBox styleClass="admin-dashboard-stat-card" alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="👥" styleClass="admin-dashboard-stat-icon,admin-dashboard-stat-icon-blue"/>
+                <Label text="Utilisateurs" styleClass="admin-dashboard-stat-title"/>
+            </HBox>
+            <Label fx:id="totalUsersLabel" text="0" styleClass="admin-dashboard-stat-number"/>
+            <Label text="Total comptes" styleClass="admin-dashboard-stat-description"/>
         </VBox>
-        <VBox styleClass="stat-card stat-green" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
-            <Label text="Etudiants" styleClass="stat-label"/>
-            <Label fx:id="studentsLabel" text="0" styleClass="stat-number"/>
-            <Label text="Actifs dans EduVerse" styleClass="stat-label"/>
+        <VBox styleClass="admin-dashboard-stat-card" alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="🎓" styleClass="admin-dashboard-stat-icon,admin-dashboard-stat-icon-green"/>
+                <Label text="Etudiants" styleClass="admin-dashboard-stat-title"/>
+            </HBox>
+            <Label fx:id="studentsLabel" text="0" styleClass="admin-dashboard-stat-number"/>
+            <Label text="Actifs dans EduVerse" styleClass="admin-dashboard-stat-description"/>
         </VBox>
-        <VBox styleClass="stat-card stat-purple" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
-            <Label text="Enseignants" styleClass="stat-label"/>
-            <Label fx:id="teachersLabel" text="0" styleClass="stat-number"/>
-            <Label text="Espaces pedagogiques" styleClass="stat-label"/>
+        <VBox styleClass="admin-dashboard-stat-card" alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="🧑‍🏫" styleClass="admin-dashboard-stat-icon,admin-dashboard-stat-icon-violet"/>
+                <Label text="Enseignants" styleClass="admin-dashboard-stat-title"/>
+            </HBox>
+            <Label fx:id="teachersLabel" text="0" styleClass="admin-dashboard-stat-number"/>
+            <Label text="Espaces pedagogiques" styleClass="admin-dashboard-stat-description"/>
         </VBox>
-        <VBox styleClass="stat-card stat-orange" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
-            <Label text="En attente" styleClass="stat-label"/>
-            <Label fx:id="pendingLabel" text="0" styleClass="stat-number"/>
-            <Label text="Comptes a traiter" styleClass="stat-label"/>
+        <VBox styleClass="admin-dashboard-stat-card" alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="⏳" styleClass="admin-dashboard-stat-icon,admin-dashboard-stat-icon-orange"/>
+                <Label text="En attente" styleClass="admin-dashboard-stat-title"/>
+            </HBox>
+            <Label fx:id="pendingLabel" text="0" styleClass="admin-dashboard-stat-number"/>
+            <Label text="Comptes a traiter" styleClass="admin-dashboard-stat-description"/>
         </VBox>
-        <VBox styleClass="stat-card stat-red" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
-            <Label text="Bloques" styleClass="stat-label"/>
-            <Label fx:id="blockedLabel" text="0" styleClass="stat-number"/>
-            <Label text="Acces suspendus" styleClass="stat-label"/>
+        <VBox styleClass="admin-dashboard-stat-card" alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="🔒" styleClass="admin-dashboard-stat-icon,admin-dashboard-stat-icon-red"/>
+                <Label text="Bloques" styleClass="admin-dashboard-stat-title"/>
+            </HBox>
+            <Label fx:id="blockedLabel" text="0" styleClass="admin-dashboard-stat-number"/>
+            <Label text="Acces suspendus" styleClass="admin-dashboard-stat-description"/>
         </VBox>
     </HBox>
 
@@ -72,7 +87,6 @@
 
         <Button text="Ajouter" styleClass="btn-primary" onAction="#handleAjouter"/>
         <Button text="Approuver" styleClass="btn-success" onAction="#handleApprouver"/>
-        <Button text="Formations" styleClass="btn-info" onAction="#handleFormations"/>
         <Button text="Export PDF" styleClass="btn-pdf" onAction="#handleExportPdf"/>
         <Button text="Assistant IA"
                 style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-cursor: hand;"

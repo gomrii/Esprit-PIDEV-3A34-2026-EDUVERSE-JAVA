@@ -2,54 +2,58 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
+<BorderPane fx:id="mainPane"
+            xmlns:fx="http://javafx.com/fxml"
             fx:controller="Controllers.MainDashboardController"
             stylesheets="@css/style.css"
-            prefWidth="1200" prefHeight="800">
+            prefWidth="1280"
+            prefHeight="820"
+            styleClass="app-shell">
 
     <left>
-        <VBox styleClass="sidebar" spacing="0" prefWidth="250">
-            <VBox styleClass="sidebar-header" alignment="CENTER" spacing="10">
-                <padding><Insets top="30" bottom="30"/></padding>
-                <Label text="EduVerse" styleClass="sidebar-logo"/>
-                <Label fx:id="roleLabel" text="Session" styleClass="sidebar-username"/>
+        <VBox fx:id="sidebar" styleClass="sidebar" spacing="0">
+            <VBox fx:id="sidebarTop" styleClass="sidebar-top" spacing="18">
+                <padding>
+                    <Insets top="24" right="20" bottom="24" left="20"/>
+                </padding>
+
+                <VBox styleClass="sidebar-brand" spacing="14" alignment="CENTER">
+                    <ImageView fx:id="logoView"
+                               fitWidth="280"
+                               fitHeight="126"
+                               pickOnBounds="true"
+                               preserveRatio="true"
+                               styleClass="sidebar-logo"/>
+                </VBox>
+
+                <VBox styleClass="sidebar-user-card" spacing="4">
+                    <Label fx:id="roleLabel" text="Session" styleClass="sidebar-user-role"/>
+                    <Label fx:id="sidebarUserLabel" text="Utilisateur" styleClass="sidebar-user-name"/>
+                </VBox>
             </VBox>
 
-            <VBox styleClass="sidebar-menu" spacing="8">
-                <padding><Insets top="10" right="15" bottom="10" left="15"/></padding>
-                <Label text="Dashboard" styleClass="sidebar-item" onMouseClicked="#goToDash"/>
-                <Label text="Formations" styleClass="sidebar-item" onMouseClicked="#goToFormations"/>
-                <Label text="Clubs" styleClass="sidebar-item" onMouseClicked="#goToClubs"/>
-                <Label text="Evenements" styleClass="sidebar-item" onMouseClicked="#goToEvents"/>
-                <Label fx:id="menuQuiz" text="Quiz" styleClass="sidebar-item" onMouseClicked="#goToQuiz"/>
-                <Label text="Cours" styleClass="sidebar-item" onMouseClicked="#goToCours"/>
-                <Label fx:id="menuDemandes" text="Demandes" styleClass="sidebar-item" onMouseClicked="#goToDemandes"/>
-            </VBox>
-
-            <VBox VBox.vgrow="ALWAYS" alignment="BOTTOM_CENTER">
-                <padding><Insets bottom="30" left="15" right="15"/></padding>
-                <Button text="Deconnexion" styleClass="btn-logout"
-                        maxWidth="Infinity" onAction="#handleLogout"/>
+            <VBox styleClass="sidebar-nav-shell" VBox.vgrow="ALWAYS">
+                <padding>
+                    <Insets top="12" right="16" bottom="12" left="16"/>
+                </padding>
+                <Label text="Navigation" styleClass="sidebar-section-title"/>
+                <VBox fx:id="primaryMenuBox" styleClass="sidebar-menu" spacing="8"/>
+                <Label text="Acces rapide" styleClass="sidebar-section-title"/>
+                <VBox fx:id="secondaryMenuBox" styleClass="sidebar-menu" spacing="8"/>
+                <Region VBox.vgrow="ALWAYS"/>
+                <Button text="Deconnexion"
+                        maxWidth="Infinity"
+                        onAction="#handleLogout"
+                        styleClass="sidebar-logout-button"/>
             </VBox>
         </VBox>
     </left>
-
-    <center>
-        <VBox styleClass="main-content">
-            <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: transparent;">
-                <padding><Insets top="30" right="30" bottom="20" left="30"/></padding>
-                <Label fx:id="pageTitleLabel" text="Tableau de Bord" styleClass="page-title"/>
-            </HBox>
-
-            <StackPane fx:id="contentArea" VBox.vgrow="ALWAYS">
-                <padding><Insets top="0" right="30" bottom="30" left="30"/></padding>
-            </StackPane>
-        </VBox>
-    </center>
 
 </BorderPane>

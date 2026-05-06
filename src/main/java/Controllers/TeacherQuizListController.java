@@ -320,6 +320,9 @@ public class TeacherQuizListController {
         Label title = new Label(safeValue(quiz.getTitre()));
         title.getStyleClass().add("quiz-card-title");
         title.setWrapText(true);
+        HBox titleRow = new HBox(10, createQuizTitleIcon(quiz), title);
+        titleRow.getStyleClass().add("quiz-card-title-row");
+        titleRow.setAlignment(Pos.CENTER_LEFT);
 
         Label creator = new Label("Createur : " + ControllerUtils.formatQuizCreator(quiz.getCreatedBy()));
         creator.getStyleClass().add("quiz-card-subtitle");
@@ -330,10 +333,10 @@ public class TeacherQuizListController {
         summary.getStyleClass().add("quiz-card-meta");
         summary.setWrapText(true);
 
-        VBox headerText = new VBox(6, title, creator, summary);
+        VBox headerText = new VBox(6, titleRow, creator, summary);
         headerText.getStyleClass().add("quiz-card-main");
 
-        HBox topRow = new HBox(18, createQuizVisualIcon(quiz), headerText, createStatusBadge(quiz.getStatut()));
+        HBox topRow = new HBox(18, headerText, createStatusBadge(quiz.getStatut()));
         topRow.getStyleClass().add("quiz-card-header");
         topRow.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(headerText, Priority.ALWAYS);
@@ -438,6 +441,16 @@ public class TeacherQuizListController {
 
         StackPane iconWrap = new StackPane(glyph);
         iconWrap.getStyleClass().addAll("quiz-card-icon", resolveQuizAccent(quiz));
+        return iconWrap;
+    }
+
+    private StackPane createQuizTitleIcon(Quiz quiz) {
+        SVGPath glyph = new SVGPath();
+        glyph.setContent("M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19C20.11,21 21,20.11 21,19V5C21,3.89 20.11,3 19,3M17,13H7V11H17M14,17H7V15H14M17,9H7V7H17Z");
+        glyph.getStyleClass().add("quiz-title-icon-glyph");
+
+        StackPane iconWrap = new StackPane(glyph);
+        iconWrap.getStyleClass().addAll("quiz-title-icon", resolveQuizAccent(quiz));
         return iconWrap;
     }
 
