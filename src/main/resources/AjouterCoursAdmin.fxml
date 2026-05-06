@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #f4f7fb;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AjouterCoursAdmin">
+   <children>
+      <VBox alignment="TOP_CENTER" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox alignment="CENTER" spacing="5.0">
+               <children>
+                  <Label text="Création de Cours" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #3C3362;" />
+                  <Label text="Définissez les paramètres de votre cours académique" style="-fx-font-size: 13px; -fx-text-fill: #7f8c8d;" />
+               </children>
+               <VBox.margin><Insets top="20.0" /></VBox.margin>
+            </VBox>
+
+            <HBox spacing="20.0" VBox.vgrow="ALWAYS">
+               <padding><Insets bottom="20.0" left="20.0" right="20.0" top="10.0" /></padding>
+               <children>
+
+                  <VBox spacing="15.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 25; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0, 0, 5);">
+                     <children>
+                        <Label text="Description du cours" style="-fx-font-weight: bold; -fx-text-fill: #34495e; -fx-font-size: 14px;" />
+                        <TextArea fx:id="descrption" prefHeight="500.0" promptText="Décrivez les objectifs du cours..." wrapText="true" VBox.vgrow="ALWAYS" style="-fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #dcdde1;" />
+                     </children>
+                  </VBox>
+
+                  <VBox spacing="20.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 25; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0, 0, 5);">
+                     <children>
+                        <VBox spacing="12.0">
+                           <children>
+                              <Label text="Titre du cours *" style="-fx-font-weight: bold; -fx-text-fill: #34495e;" />
+                              <TextField fx:id="title" promptText="Ex: JavaFX" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #dcdde1;" />
+
+                              <Label text="Niveau du cours *" style="-fx-font-weight: bold; -fx-text-fill: #34495e;" />
+                              <ComboBox fx:id="level" prefWidth="350.0" promptText="Choisir..." style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #dcdde1;" />
+
+                              <Label text="Catégorie *" style="-fx-font-weight: bold; -fx-text-fill: #34495e;" />
+                              <ComboBox fx:id="category" prefWidth="350.0" promptText="Choisir..." style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #dcdde1;" />
+                           </children>
+                        </VBox>
+
+                        <Region VBox.vgrow="ALWAYS" />
+
+                        <VBox spacing="8.0" style="-fx-background-color: #F4F0FF; -fx-background-radius: 15; -fx-padding: 15;">
+                           <children>
+                              <Label text="📌 Conseils pour votre cours" style="-fx-font-weight: bold; -fx-text-fill: #3C3362; -fx-font-size: 13px;" />
+                              <Label text="• Titre clair et explicite (3-200 caract.)" style="-fx-text-fill: #5e5e5e; -fx-font-size: 11px;" />
+                              <Label text="• Description détaillée (10-1000 car.)" style="-fx-text-fill: #5e5e5e; -fx-font-size: 11px;" />
+                              <Label text="• Niveau adapté au public cible" style="-fx-text-fill: #5e5e5e; -fx-font-size: 11px;" />
+                              <Label text="• Image de couverture de qualité" style="-fx-text-fill: #5e5e5e; -fx-font-size: 11px;" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+
+                  <VBox spacing="15.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 25; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0, 0, 5);">
+                     <children>
+                        <Label text="Image du cours *" style="-fx-font-weight: bold; -fx-text-fill: #34495e;" />
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                           <children>
+                              <Button onAction="#choisier" text="Choisir une image" style="-fx-background-color: transparent; -fx-border-color: #3C3362; -fx-border-radius: 15; -fx-text-fill: #3C3362; -fx-cursor: hand;" />
+                              <Label text="Aucune image" textFill="#95a5a6" />
+                           </children>
+                        </HBox>
+
+                        <StackPane prefHeight="200.0" style="-fx-border-color: #ecf0f1; -fx-border-width: 2; -fx-border-style: dashed; -fx-border-radius: 15;">
+                           <children>
+                              <ImageView fx:id="viewimage" fitHeight="180.0" fitWidth="280.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </StackPane>
+
+                        <Region VBox.vgrow="ALWAYS" />
+
+                        <VBox alignment="CENTER" spacing="10.0">
+                           <children>
+                              <Button fx:id="ajouter" onAction="#add" prefWidth="300.0" text="Enregistrer le cours" style="-fx-background-color: #3C3362; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 12; -fx-padding: 12; -fx-cursor: hand;" />
+                              <Button onAction="#annuler" prefWidth="300.0" text="Annuler" style="-fx-background-color: #ecf0f1; -fx-text-fill: #7f8c8d; -fx-background-radius: 12; -fx-padding: 10; -fx-cursor: hand;" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

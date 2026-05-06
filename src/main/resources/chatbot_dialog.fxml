@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ChatbotController"
+            prefHeight="560.0" prefWidth="430.0" styleClass="chatbot-root">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="chatbot-header">
+            <padding>
+                <Insets top="16" right="18" bottom="16" left="18"/>
+            </padding>
+            <VBox spacing="4">
+                <Label styleClass="chatbot-title" text="Assistant EduVerse"/>
+                <Label styleClass="chatbot-subtitle" text="Support intelligent pour vos questions"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button onAction="#handleClose" styleClass="chatbot-close-button" text="Fermer"/>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fx:id="conversationScrollPane" fitToWidth="true" hbarPolicy="NEVER" styleClass="chat-scroll">
+            <content>
+                <VBox fx:id="conversationBox" spacing="12" styleClass="chat-conversation">
+                    <padding>
+                        <Insets top="18" right="18" bottom="18" left="18"/>
+                    </padding>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <VBox spacing="12" styleClass="chatbot-footer">
+            <padding>
+                <Insets top="14" right="18" bottom="18" left="18"/>
+            </padding>
+            <TextField fx:id="messageField" onAction="#handleSend" promptText="Posez votre question..." styleClass="chat-input"/>
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                <Button fx:id="sendButton" onAction="#handleSend" styleClass="chat-send-button" text="Envoyer"/>
+            </HBox>
+        </VBox>
+    </bottom>
+</BorderPane>

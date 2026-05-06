@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ModifierQuizController" styleClass="form-container">
+    <top>
+        <HBox styleClass="form-header">
+            <padding><Insets top="18" right="24" bottom="18" left="24"/></padding>
+            <Label styleClass="form-title" text="Modifier un Quiz"/>
+        </HBox>
+    </top>
+    <center>
+        <GridPane hgap="16" vgap="16" styleClass="form-body">
+            <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+            <Label GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="field-label" text="ID"/>
+            <Label fx:id="idLabel" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <Label GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="field-label" text="Titre"/>
+            <VBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <HBox spacing="8" styleClass="speech-input-row">
+                    <TextField fx:id="titreTF" prefWidth="360" HBox.hgrow="ALWAYS"/>
+                    <Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" mnemonicParsing="false" onAction="#handleTitreSpeech" styleClass="speech-button">
+                        <graphic>
+                            <SVGPath content="M12,14A3,3 0 0,0 15,11V6A3,3 0 0,0 12,3A3,3 0 0,0 9,6V11A3,3 0 0,0 12,14M17.3,11A5.3,5.3 0 0,1 12,16.3A5.3,5.3 0 0,1 6.7,11H5A7,7 0 0,0 11,17.7V21H13V17.7A7,7 0 0,0 19,11H17.3Z" styleClass="speech-button-icon"/>
+                        </graphic>
+                    </Button>
+                </HBox>
+                        <HBox spacing="12" styleClass="inline-action-buttons">
+                            <Button fx:id="titreGrammarButton" onAction="#handleTitreGrammar" styleClass="btn-corriger" text="Corriger"/>
+                            <Button fx:id="titreTranslateEnButton" onAction="#handleTitreTranslateEn" styleClass="btn-translate-en" text="Traduire EN"/>
+                            <Button fx:id="titreTranslateFrButton" onAction="#handleTitreTranslateFr" styleClass="btn-translate-fr" text="Traduire FR"/>
+                        </HBox>
+            </VBox>
+
+            <Label GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="field-label" text="Statut"/>
+            <Label fx:id="statutLabel" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+            <Label GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="field-label" text="Duree (minutes)"/>
+            <TextField fx:id="dureeTF" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="180"/>
+
+            <Label GridPane.columnIndex="0" GridPane.rowIndex="4" styleClass="field-label" text="Niveau"/>
+            <ChoiceBox fx:id="levelChoice" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="180"/>
+
+            <Label GridPane.columnIndex="0" GridPane.rowIndex="5" styleClass="field-label" text="Cree par"/>
+            <Label fx:id="createdByLabel" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+        </GridPane>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="form-footer">
+            <padding><Insets top="16" right="24" bottom="16" left="24"/></padding>
+            <Button onAction="#handleBack" styleClass="btn-secondary" text="Annuler"/>
+            <Button fx:id="saveButton" onAction="#modifierQuiz" styleClass="btn-primary" text="Enregistrer"/>
+        </HBox>
+    </bottom>
+</BorderPane>

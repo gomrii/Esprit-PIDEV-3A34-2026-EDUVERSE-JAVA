@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ListeQuizController">
+    <center>
+        <VBox spacing="20" styleClass="main-content">
+            <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+            <Label styleClass="page-title" text="Liste des Quiz"/>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <TextField fx:id="searchTF" prefWidth="280" promptText="Rechercher..." styleClass="search-field"/>
+                <ChoiceBox fx:id="sortChoice" prefWidth="180"/>
+                <HBox alignment="CENTER_RIGHT" spacing="10" HBox.hgrow="ALWAYS">
+                    <Button onAction="#handleRefresh" styleClass="btn-secondary" text="Actualiser"/>
+                    <Button onAction="#handleAdd" styleClass="btn-primary" text="Ajouter"/>
+                </HBox>
+            </HBox>
+            <Label fx:id="summaryLabel" styleClass="list-summary" text="0 quiz affiche"/>
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="content-scroll" VBox.vgrow="ALWAYS">
+                <content>
+                    <VBox fx:id="cardsContainer" spacing="16" styleClass="card-list">
+                        <padding><Insets bottom="12"/></padding>
+                    </VBox>
+                </content>
+            </ScrollPane>
+            <HBox alignment="CENTER_RIGHT">
+                <Button onAction="#handleBack" styleClass="btn-secondary" text="Retour"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

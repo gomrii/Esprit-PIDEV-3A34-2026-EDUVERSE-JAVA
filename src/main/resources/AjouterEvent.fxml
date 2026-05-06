@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.Region?>
+
+<VBox alignment="CENTER" prefHeight="700.0" prefWidth="800.0" spacing="0" 
+      styleClass="main-content" stylesheets="@css/style.css"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="Controllers.AjouterEventController">
+
+    <!-- Container du formulaire -->
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+        <VBox alignment="CENTER">
+            <padding> <Insets top="20" bottom="20" left="20" right="20" /> </padding>
+            <VBox styleClass="form-container" maxWidth="550" spacing="20">
+                
+                <!-- En-tête -->
+                <VBox styleClass="form-header" spacing="10">
+                    <padding><Insets top="20" right="30" bottom="20" left="30"/></padding>
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <Button onAction="#goBack" text="⬅" styleClass="btn-secondary" style="-fx-padding: 5 10;"/>
+                        <Label text="Ajouter un Nouvel Événement" styleClass="form-title"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Corps du formulaire -->
+                <VBox styleClass="form-body" spacing="16">
+                    <padding><Insets top="10" right="30" bottom="20" left="30"/></padding>
+
+                    <VBox spacing="4">
+                        <Label text="Titre" styleClass="field-label"/>
+                        <TextField fx:id="tfTitle" promptText="Ex: Hackathon 2026" styleClass="text-field"/>
+                    </VBox>
+
+                    <HBox spacing="15">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Date" styleClass="field-label"/>
+                            <DatePicker fx:id="dpEventDate" promptText="Sélectionner la date" styleClass="date-picker" prefWidth="250" />
+                        </VBox>
+
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Lieu" styleClass="field-label"/>
+                            <HBox spacing="5" alignment="CENTER_LEFT">
+                                <TextField fx:id="tfLocation" promptText="Ex: Amphi A" styleClass="text-field" HBox.hgrow="ALWAYS"/>
+                                <Button onAction="#openMapPicker" text="📍" 
+                                        styleClass="btn-secondary" 
+                                        style="-fx-padding: 8 10; -fx-font-size: 15; -fx-cursor: hand;">
+                                    <tooltip>
+                                        <Tooltip text="Choisir sur la carte" />
+                                    </tooltip>
+                                </Button>
+                            </HBox>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="15">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Statut" styleClass="field-label"/>
+                            <ComboBox fx:id="cbStatus" promptText="Sélectionner" styleClass="combo-field" prefWidth="250" />
+                        </VBox>
+
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Club" styleClass="field-label"/>
+                            <ComboBox fx:id="cbClubId" promptText="Sélectionner le club" styleClass="combo-field" prefWidth="250" />
+                        </VBox>
+                    </HBox>
+
+                    <VBox spacing="4">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label text="Description" styleClass="field-label"/>
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Button fx:id="btnGenerateAI" text="✨ Générer par IA" onAction="#generateAIDescription" 
+                                    style="-fx-background-color: #f0f7ff; -fx-text-fill: #0066cc; -fx-font-weight: bold; -fx-padding: 3 10; -fx-background-radius: 15; -fx-border-color: #0066cc; -fx-border-radius: 15; -fx-cursor: hand;"/>
+                        </HBox>
+                        <TextArea fx:id="taDescription" promptText="Détails de l'événement..." styleClass="text-area" prefHeight="100" wrapText="true"/>
+                    </VBox>
+                </VBox>
+
+                <!-- Footer -->
+                <HBox styleClass="form-footer" alignment="CENTER_RIGHT" spacing="15">
+                    <padding><Insets top="15" right="30" bottom="20" left="30"/></padding>
+                    <Button text="Annuler" styleClass="btn-secondary" onAction="#goBack"/>
+                    <Button text="Enregistrer" styleClass="btn-success" onAction="#addEvent"/>
+                </HBox>
+
+            </VBox>
+        </VBox>
+    </ScrollPane>
+</VBox>

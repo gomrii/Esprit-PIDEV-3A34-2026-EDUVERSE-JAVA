@@ -1,46 +1,55 @@
 package com.elearning;
 
 import com.elearning.util.DatabaseConnection;
+import com.elearning.util.WindowHelper;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-/**
- * Point d'entrée de l'application JavaFX.
- *
- * Équivalent Symfony : public/index.php (le front controller).
- *
- * JavaFX utilise un pattern similaire à un framework MVC :
- * - Application.start() = bootstrap
- * - FXML = les templates Twig (vue)
- * - Controller = controller Symfony
- */
+import java.io.IOException;
+
 public class MainApp extends Application {
+
+    private Stage primaryStage;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Charger la vue de login (première page affichée)
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/com/elearning/gui/LoginView.fxml"));
+        this.primaryStage = primaryStage;
 
-        Scene scene = new Scene(loader.load(), 500, 400);
+        // Configuration initiale de la fenêtre
+        primaryStage.setTitle("Eduverse — e-Learning");
+        primaryStage.setMinWidth(900);
+        primaryStage.setMinHeight(600);
 
-        // Appliquer le CSS global
-        scene.getStylesheets().add(
-                getClass().getResource("/com/elearning/css/style.css").toExternalForm());
+        // Charger la première vue
+        loadScene("/com/elearning/gui/LoginView.fxml");
 
-        primaryStage.setTitle("Eduverse — Gestion des Utilisateurs");
-        primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
+        // Appliquer les dimensions et afficher
+        WindowHelper.fixDimensions(primaryStage);
         primaryStage.show();
     }
 
-    /**
-     * Appelé à la fermeture de l'application.
-     * Fermer proprement la connexion MySQL.
-     */
+    public void loadScene(String fxmlPath) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(
+                    getClass().getResource("/com/elearning/css/style.css").toExternalForm());
+
+            primaryStage.setScene(scene);
+
+            // Forcer les dimensions à chaque changement de scène
+            WindowHelper.fixDimensions(primaryStage);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void stop() throws Exception {
         DatabaseConnection.getInstance().close();

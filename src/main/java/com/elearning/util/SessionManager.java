@@ -5,7 +5,6 @@ import com.elearning.entity.User;
 /**
  * SessionManager — Gère l'utilisateur connecté.
  *
- * Équivalent Symfony : la Session PHP + SecurityContext.
  *
  * Singleton, car il n'y a qu'une seule session utilisateur à la fois.
  * Stocke l'utilisateur connecté pendant toute la durée de l'application.
@@ -40,7 +39,6 @@ public class SessionManager {
         return utilisateurConnecte != null;
     }
 
-    /** Équivalent Symfony : $this->isGranted('ROLE_ADMIN') */
     public boolean estAdmin() {
         return estConnecte() && User.ROLE_ADMIN.equals(utilisateurConnecte.getRole());
     }
@@ -53,3 +51,4 @@ public class SessionManager {
         return estConnecte() && User.ROLE_ETUDIANT.equals(utilisateurConnecte.getRole());
     }
 }
+

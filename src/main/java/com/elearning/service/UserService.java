@@ -1,6 +1,7 @@
 package com.elearning.service;
 
 import com.elearning.dao.UserDAO;
+import com.elearning.dao.LoginAttemptDAO;
 import com.elearning.entity.User;
 
 import java.security.MessageDigest;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.regex.Pattern;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * UserService — Logique Métier.
@@ -17,15 +19,12 @@ import java.util.regex.Pattern;
  * RÔLE : Valider les données, appliquer les règles métier,
  *        puis déléguer au DAO pour la persistance.
  *
- * Équivalent Symfony : Services (PasswordStrengthService, etc.)
  *                    + logique dans les Form Types + UserChecker.
  *
  * Le Service NE CONNAÎT PAS JavaFX (pas d'import javafx.*).
  * Il reste testable indépendamment de l'interface graphique.
  */
 public class UserService {
-
-    private final UserDAO userDAO;
 
     // Expression régulière pour valider un email
     private static final Pattern EMAIL_PATTERN =
@@ -39,12 +38,19 @@ public class UserService {
     private static final Pattern PASSWORD_STRONG =
             Pattern.compile("^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{}|;:,.<>?]).{8,}$");
 
+    private final UserDAO        userDAO;
+    private final LoginAttemptDAO loginAttemptDAO;
+
+    // Constantes de verrouillage
+    private static final int MAX_LOGIN_ATTEMPTS = 5;   // tentatives avant verrouillage
+    private static final int LOCK_DURATION_MIN  = 15;  // durée du verrouillage (minutes)
+
     public UserService() {
-        this.userDAO = new UserDAO();
+        this.userDAO         = new UserDAO();
+        this.loginAttemptDAO = new LoginAttemptDAO();
     }
 
     // ================================================================
-    //  VALIDATION — Équivalent des Assert Symfony + Form Types
     // ================================================================
 
     /**
@@ -159,7 +165,6 @@ public class UserService {
         user.setPassword(hasherMotDePasse(password));
         user.setRole(role);
 
-        // 3. Règle métier (Symfony) : L'utilisateur n'est pas approuvé par défaut
         user.setApproved(false);
         user.setStatut(User.STATUT_EN_ATTENTE);
 
@@ -278,7 +283,6 @@ public class UserService {
 
     /**
      * Vérifie les identifiants de connexion.
-     * Équivalent Symfony : AppAuthenticator + UserChecker
      *
      * @return le User si les identifiants sont corrects, null sinon
      * @throws ValidationException avec un message explicite selon le cas
@@ -299,21 +303,50 @@ public class UserService {
         // 2. Chercher l'utilisateur
         User user = userDAO.trouverParEmail(email.trim().toLowerCase());
         if (user == null) {
+            loginAttemptDAO.enregistrerTentative(email.trim().toLowerCase(), false);
             throw new ValidationException(List.of("Aucun compte n'existe avec cet e-mail."));
         }
 
-        // 3. Vérifier le mot de passe
-        if (!verifierMotDePasse(motDePasse, user.getPassword())) {
-            throw new ValidationException(List.of("Mot de passe incorrect."));
+        // 3. Vérifier si le compte est verrouillé
+        if (user.getLockedUntil() != null
+                && user.getLockedUntil().isAfter(java.time.LocalDateTime.now())) {
+            long minutesRestantes = java.time.Duration.between(
+                    java.time.LocalDateTime.now(), user.getLockedUntil()).toMinutes() + 1;
+            loginAttemptDAO.enregistrerTentative(email.trim().toLowerCase(), false);
+            throw new ValidationException(List.of(
+                    "🔒 Compte temporairement verrouillé. Réessayez dans "
+                    + minutesRestantes + " minute(s)."));
         }
 
-        // 4. Vérifications métier (équivalent UserChecker Symfony)
+        // 4. Vérifier le mot de passe
+        if (!verifierMotDePasse(motDePasse, user.getPassword())) {
+            // Incrémenter le compteur d'échecs
+            int restantes = userDAO.incrementerEchecEtVerrouiller(
+                    user.getId(), MAX_LOGIN_ATTEMPTS, LOCK_DURATION_MIN);
+            loginAttemptDAO.enregistrerTentative(email.trim().toLowerCase(), false);
+
+            if (restantes == 0) {
+                throw new ValidationException(List.of(
+                        "🔒 Trop de tentatives. Votre compte est verrouillé pour "
+                        + LOCK_DURATION_MIN + " minutes."));
+            } else {
+                throw new ValidationException(List.of(
+                        "❌ Mot de passe incorrect. Il vous reste "
+                        + restantes + " tentative(s) avant verrouillage."));
+            }
+        }
+
+        // 5. Vérifier l'état du compte
         if (user.isBlocked()) {
             throw new ValidationException(List.of("Votre compte est bloqué. Contactez l'administrateur."));
         }
         if (!user.isApproved()) {
             throw new ValidationException(List.of("Votre compte est en attente d'approbation."));
         }
+
+        // 6. Connexion réussie : réinitialiser le compteur
+        userDAO.reinitialiserVerrouillage(user.getId());
+        loginAttemptDAO.enregistrerTentative(email.trim().toLowerCase(), true);
 
         return user;
     }
@@ -337,49 +370,50 @@ public class UserService {
     // SHA-256 + sel est utilisé ici pour éviter une dépendance externe.
 
     /**
-     * Hash le mot de passe avec SHA-256 + sel aléatoire.
-     * Format stocké : "SEL:HASH" (le sel est stocké avec le hash)
+     * Hash le mot de passe avec BCrypt (compatible Symfony).
      */
     public String hasherMotDePasse(String plainPassword) {
-        try {
-            // Générer un sel aléatoire (16 octets)
-            SecureRandom random = new SecureRandom();
-            byte[] salt = new byte[16];
-            random.nextBytes(salt);
-            String saltStr = Base64.getEncoder().encodeToString(salt);
-
-            // Hash = SHA-256(sel + mot_de_passe)
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update((saltStr + plainPassword).getBytes());
-            String hash = Base64.getEncoder().encodeToString(md.digest());
-
-            return saltStr + ":" + hash;
-
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Algorithme SHA-256 non disponible.", e);
-        }
+        return BCrypt.hashpw(plainPassword, BCrypt.gensalt(12));
     }
 
     /**
      * Vérifie si un mot de passe en clair correspond au hash stocké.
+     * Supporte BCrypt (Symfony) et l'ancien SHA-256 (Java).
      */
     public boolean verifierMotDePasse(String plainPassword, String storedHash) {
-        if (storedHash == null || !storedHash.contains(":")) return false;
+        if (storedHash == null || storedHash.isBlank()) return false;
 
-        try {
-            String[] parts = storedHash.split(":", 2);
-            String saltStr = parts[0];
-            String expectedHash = parts[1];
-
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update((saltStr + plainPassword).getBytes());
-            String actualHash = Base64.getEncoder().encodeToString(md.digest());
-
-            return actualHash.equals(expectedHash);
-
-        } catch (NoSuchAlgorithmException e) {
-            return false;
+        // Si le hash a été généré par Symfony ou par la nouvelle méthode (commence par $2y$ ou $2a$)
+        if (storedHash.startsWith("$2a$") || storedHash.startsWith("$2y$")) {
+            // jBCrypt ne supporte pas nativement le préfixe $2y$ de PHP/Symfony,
+            // on le remplace temporairement par $2a$ pour la vérification
+            String hashForJbcrypt = storedHash.replaceFirst("^\\$2y\\$", "\\$2a\\$");
+            try {
+                return BCrypt.checkpw(plainPassword, hashForJbcrypt);
+            } catch (Exception e) {
+                return false;
+            }
         }
+
+        // Sinon, si c'est l'ancien format Java (SHA-256 + sel, contenant ":")
+        if (storedHash.contains(":")) {
+            try {
+                String[] parts = storedHash.split(":", 2);
+                String saltStr = parts[0];
+                String expectedHash = parts[1];
+
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                md.update((saltStr + plainPassword).getBytes());
+                String actualHash = Base64.getEncoder().encodeToString(md.digest());
+
+                return actualHash.equals(expectedHash);
+
+            } catch (NoSuchAlgorithmException e) {
+                return false;
+            }
+        }
+
+        return false;
     }
 
     // ================================================================
@@ -405,3 +439,4 @@ public class UserService {
         }
     }
 }
+

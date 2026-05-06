@@ -1,83 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.elearning.controller.EtudiantDashboardController"
-            prefWidth="1150" prefHeight="720">
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.elearning.controller.SimpleViewController"
+      spacing="22"
+      styleClass="main-content,role-dashboard-page"
+      stylesheets="@../css/style.css">
 
-    <left>
-        <VBox styleClass="sidebar" spacing="8" prefWidth="220">
-            <VBox styleClass="sidebar-header" alignment="CENTER">
-                <padding><Insets top="20" bottom="20"/></padding>
-                <Label text="Espace Etudiant" styleClass="sidebar-username"/>
-                <Label fx:id="welcomeLabel" text="Bienvenue"/>
-            </VBox>
+    <padding>
+        <Insets top="24" right="24" bottom="24" left="24"/>
+    </padding>
 
-            <VBox styleClass="sidebar-menu" spacing="6">
-                <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-                <Button fx:id="btnToutesFormations" text="Toutes les formations"
-                        styleClass="sidebar-item sidebar-item-active"
-                        maxWidth="Infinity"
-                        onAction="#handleShowToutesFormations"/>
-                <Button fx:id="btnMesFormations" text="Mes formations"
-                        styleClass="sidebar-item"
-                        maxWidth="Infinity"
-                        onAction="#handleShowMesFormations"/>
-            </VBox>
+    <VBox spacing="8" styleClass="role-dashboard-hero">
+        <Label text="Dashboard Etudiant" styleClass="page-title"/>
+        <Label fx:id="welcomeLabel" text="Bienvenue !" styleClass="role-dashboard-subtitle"/>
+        <Label text="Consultez vos quiz, vos resultats et vos contenus de formation dans un espace plus lisible."
+               wrapText="true"
+               styleClass="role-dashboard-description"/>
+    </VBox>
 
-            <VBox VBox.vgrow="ALWAYS" alignment="BOTTOM_CENTER">
-                <padding><Insets bottom="20"/></padding>
-                <Button text="Se deconnecter"
-                        styleClass="btn-logout"
-                        maxWidth="Infinity"
-                        onAction="#handleDeconnexion"/>
-            </VBox>
+    <FlowPane hgap="16" vgap="16" prefWrapLength="980" styleClass="role-dashboard-grid">
+        <VBox styleClass="stat-card,role-dashboard-card" spacing="8">
+            <Label text="Formations" styleClass="role-dashboard-card-title"/>
+            <Label text="Accedez rapidement a votre catalogue de cours et suivez votre progression."
+                   wrapText="true"
+                   styleClass="role-dashboard-card-text"/>
         </VBox>
-    </left>
-
-    <center>
-        <VBox spacing="12" styleClass="main-content">
-            <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
-
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="Catalogue des formations" styleClass="page-title"/>
-            </HBox>
-
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <TextField fx:id="searchField" promptText="Rechercher par titre ou description..." prefWidth="260" styleClass="search-field"/>
-                <ComboBox fx:id="levelFilter" prefWidth="130"/>
-                <ComboBox fx:id="sortColumn" prefWidth="130"/>
-                <ComboBox fx:id="sortDirection" prefWidth="90"/>
-                <Pane HBox.hgrow="ALWAYS"/>
-                <Button text="S'inscrire a la formation selectionnee"
-                        styleClass="btn-primary"
-                        onAction="#handleEnroll"/>
-                <Button text="Telecharger le PDF de la formation selectionnee"
-                        styleClass="btn-success"
-                        onAction="#handleDownloadPdf"/>
-                <Button text="Actualiser la liste"
-                        styleClass="btn-secondary"
-                        onAction="#handleRefresh"/>
-            </HBox>
-
-            <VBox spacing="8" VBox.vgrow="ALWAYS">
-                <Label text="Liste des formations" styleClass="stat-label"/>
-                <TableView fx:id="tableFormations" VBox.vgrow="ALWAYS" styleClass="users-table">
-                    <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
-                    <columns>
-                        <TableColumn fx:id="colId" text="ID" prefWidth="65"/>
-                        <TableColumn fx:id="colTitle" text="Titre" prefWidth="300"/>
-                        <TableColumn fx:id="colCreator" text="Cree par" prefWidth="180"/>
-                        <TableColumn fx:id="colLevel" text="Niveau" prefWidth="140"/>
-                        <TableColumn fx:id="colDuration" text="Duree" prefWidth="120"/>
-                        <TableColumn fx:id="colPrice" text="Prix" prefWidth="120"/>
-                    </columns>
-                    <placeholder><Label text="Aucune formation disponible."/></placeholder>
-                </TableView>
-            </VBox>
+        <VBox styleClass="stat-card,role-dashboard-card" spacing="8">
+            <Label text="Quiz" styleClass="role-dashboard-card-title"/>
+            <Label text="Lancez vos quiz, continuez vos sessions et consultez les resultats en un clic."
+                   wrapText="true"
+                   styleClass="role-dashboard-card-text"/>
         </VBox>
-    </center>
-
-</BorderPane>
+        <VBox styleClass="stat-card,role-dashboard-card" spacing="8">
+            <Label text="Resultats" styleClass="role-dashboard-card-title"/>
+            <Label text="Suivez vos scores, vos tentatives et vos progres sur l'ensemble des evaluations."
+                   wrapText="true"
+                   styleClass="role-dashboard-card-text"/>
+        </VBox>
+    </FlowPane>
+</VBox>

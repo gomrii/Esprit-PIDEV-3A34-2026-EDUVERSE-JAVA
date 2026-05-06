@@ -1,0 +1,136 @@
+package Services;
+
+import Entities.Event;
+import Interfaces.IService;
+import Utils.MyDb;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ServiceEvent implements IService<Event> {
+
+    public ServiceEvent() {
+    }
+
+    @Override
+    public void add(Event event) throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        if (conn == null) throw new SQLException("Connexion BDD perdue");
+        String req = "INSERT INTO event (title, description, event_date, location, status, created_at, updated_at, club_id, creator_id) VALUES (?, ?, ?, ?, ?, NOW(), NOW(), ?, ?)";
+        PreparedStatement ps = conn.prepareStatement(req);
+        ps.setString(1, event.getTitle());
+        ps.setString(2, event.getDescription());
+        ps.setDate(3, new java.sql.Date(event.getEventDate().getTime()));
+        ps.setString(4, event.getLocation());
+        ps.setString(5, event.getStatus());
+        ps.setInt(6, event.getClubId());
+        ps.setInt(7, event.getCreatorId());
+        ps.executeUpdate();
+        System.out.println("Événement ajouté avec succès !");
+    }
+
+    @Override
+    public void update(Event event) throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        if (conn == null) throw new SQLException("Connexion BDD perdue");
+        String req = "UPDATE event SET title=?, description=?, event_date=?, location=?, status=?, club_id=?, updated_at=NOW() WHERE id=?";
+        PreparedStatement ps = conn.prepareStatement(req);
+        ps.setString(1, event.getTitle());
+        ps.setString(2, event.getDescription());
+        ps.setDate(3, new java.sql.Date(event.getEventDate().getTime()));
+        ps.setString(4, event.getLocation());
+        ps.setString(5, event.getStatus());
+        ps.setInt(6, event.getClubId());
+        ps.setInt(7, event.getId());
+        ps.executeUpdate();
+        System.out.println("Événement mis à jour avec succès !");
+    }
+
+    @Override
+    public void delete(Event event) throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        if (conn == null) throw new SQLException("Connexion BDD perdue");
+        String req = "DELETE FROM event WHERE id=?";
+        PreparedStatement ps = conn.prepareStatement(req);
+        ps.setInt(1, event.getId());
+        ps.executeUpdate();
+        System.out.println("Événement supprimé avec succès !");
+    }
+
+    @Override
+    public List<Event> display() throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        if (conn == null) throw new SQLException("Connexion BDD perdue");
+        String req = "SELECT * FROM event";
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery(req);
+        List<Event> events = new ArrayList<>();
+        while (rs.next()) {
+            Event e = new Event();
+            e.setId(rs.getInt("id"));
+            e.setTitle(rs.getString("title"));
+            e.setDescription(rs.getString("description"));
+            e.setEventDate(rs.getDate("event_date"));
+            e.setLocation(rs.getString("location"));
+            e.setStatus(rs.getString("status"));
+            e.setCreatedAt(rs.getDate("created_at"));
+            e.setUpdatedAt(rs.getDate("updated_at"));
+            e.setClubId(rs.getInt("club_id"));
+            e.setCreatorId(rs.getInt("creator_id"));
+            events.add(e);
+        }
+        return events;
+    }
+
+    public List<Event> displayApproved() throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        if (conn == null) throw new SQLException("Connexion BDD perdue");
+        String req = "SELECT * FROM event WHERE status = 'APPROVED'";
+        return getEventsFromQuery(req);
+    }
+
+    public List<Event> getPendingEvents() throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        if (conn == null) throw new SQLException("Connexion BDD perdue");
+        String req = "SELECT * FROM event WHERE status = 'PENDING'";
+        return getEventsFromQuery(req);
+    }
+
+    public List<Event> getEventsByCreator(int creatorId) throws SQLException {
+        String req = "SELECT * FROM event WHERE creator_id = " + creatorId;
+        return getEventsFromQuery(req);
+    }
+
+    public void updateStatus(int id, String newStatus) throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        if (conn == null) throw new SQLException("Connexion BDD perdue");
+        String req = "UPDATE event SET status=?, updated_at=NOW() WHERE id=?";
+        PreparedStatement ps = conn.prepareStatement(req);
+        ps.setString(1, newStatus);
+        ps.setInt(2, id);
+        ps.executeUpdate();
+    }
+
+    private List<Event> getEventsFromQuery(String query) throws SQLException {
+        Connection conn = MyDb.getInstance().getConn();
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery(query);
+        List<Event> events = new ArrayList<>();
+        while (rs.next()) {
+            Event e = new Event();
+            e.setId(rs.getInt("id"));
+            e.setTitle(rs.getString("title"));
+            e.setDescription(rs.getString("description"));
+            e.setEventDate(rs.getDate("event_date"));
+            e.setLocation(rs.getString("location"));
+            e.setStatus(rs.getString("status"));
+            e.setCreatedAt(rs.getDate("created_at"));
+            e.setUpdatedAt(rs.getDate("updated_at"));
+            e.setClubId(rs.getInt("club_id"));
+            e.setCreatorId(rs.getInt("creator_id"));
+            events.add(e);
+        }
+        return events;
+    }
+}

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="680.0" prefWidth="850.0" spacing="20.0" style="-fx-background-color: #F8F9FD;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AjouterChapitre">
+    <children>
+        <VBox alignment="CENTER" spacing="5.0">
+            <children>
+                <Label text="Gestion des Chapitres" textFill="#2D2D50">
+                    <font>
+                        <Font name="System Bold" size="28.0" />
+                    </font>
+                </Label>
+                <Label fx:id="chapitreLabel" text="📌 Configuration d'un nouveau chapitre" textFill="#636E72" />
+            </children>
+        </VBox>
+        <Button mnemonicParsing="false" onAction="#gotocours" prefHeight="26.0" prefWidth="122.0" style="-fx-background-radius: 10;" text="⬅ Retour" />
+
+        <VBox spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow( rgba(0,0,0,0.1), 10, 0, 0, 5);">
+            <padding>
+                <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+            </padding>
+            <children>
+                <Label text="Nouveau Chapitre" textFill="#3C3362">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font>
+                </Label>
+
+                <Label text="Sélectionner le Cours *" />
+                <ComboBox fx:id="coursComboBox" maxWidth="1.7976931348623157E308" prefHeight="40.0" promptText="Choisir un cours..." style="-fx-background-radius: 10;" />
+
+                <Label text="Titre du Chapitre *" />
+                <TextField fx:id="titleField" prefHeight="40.0" promptText="Ex: Les bases de la programmation" style="-fx-background-radius: 10;" />
+
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                    <children>
+                        <Label text="Contenu (Texte) *" />
+                        <Button onAction="#handleGenerateAIContent" style="-fx-background-color: #E8E1FF; -fx-text-fill: #3C3362; -fx-background-radius: 20; -fx-font-size: 11px; -fx-font-weight: bold; -fx-cursor: hand;" text="✨ Générer via IA" />
+                    </children>
+                </HBox>
+
+                <TextArea fx:id="contentArea" prefHeight="150.0" promptText="Rédigez ou générez le contenu..." style="-fx-background-radius: 10;" wrapText="true" />
+
+                <HBox spacing="20.0">
+                    <children>
+                        <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label text="Support Vidéo (.mp4)" />
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                        <Button onAction="#handleChooseVideo" prefHeight="40.0" style="-fx-background-color: white; -fx-border-color: #3C3362; -fx-border-radius: 20; -fx-cursor: hand;" text="🎬 Choisir Vidéo" />
+                                        <Label fx:id="videoPathLabel" text="Aucun fichier" textFill="#95a5a6" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                        <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label text="Document PDF (.pdf)" />
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                        <Button onAction="#handleChoosePdf" prefHeight="40.0" style="-fx-background-color: white; -fx-border-color: #e74c3c; -fx-border-radius: 20; -fx-cursor: hand;" text="📄 Choisir PDF" />
+                                        <Label fx:id="pdfPathLabel" text="Aucun fichier" textFill="#95a5a6" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+
+                <Button maxWidth="1.7976931348623157E308" onAction="#handleSave" prefHeight="50.0" style="-fx-background-color: #3C3362; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-weight: bold; -fx-cursor: hand;" text="Enregistrer le Chapitre" />
+            </children>
+        </VBox>
+    </children>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+</VBox>

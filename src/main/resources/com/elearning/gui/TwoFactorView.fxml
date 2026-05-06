@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<!--
+    TwoFactorView.fxml — Vérification en deux étapes (2FA OTP)
+    Controller : com.elearning.controller.TwoFactorController
+    Dimensions : 480 × 480
+-->
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.elearning.controller.TwoFactorController"
+      styleClass="login-root"
+      alignment="CENTER"
+      spacing="0">
+
+    <!-- En-tête -->
+    <VBox styleClass="login-header" alignment="CENTER" spacing="8">
+        <Label text="🔐" style="-fx-font-size: 42px;"/>
+        <Label text="Vérification en deux étapes" styleClass="login-title"/>
+        <Label fx:id="labelEmailMasque" text="Code envoyé à votre email"
+               styleClass="login-subtitle"/>
+    </VBox>
+
+    <!-- Formulaire -->
+    <VBox styleClass="login-form" spacing="18" alignment="CENTER">
+
+        <!-- Info timer -->
+        <Label fx:id="labelTimer" text="⏱ Code valide pendant 5:00"
+               style="-fx-font-size: 14px; -fx-text-fill: #3498db; -fx-font-weight: bold;"/>
+
+        <!-- Champ code OTP -->
+        <VBox spacing="6">
+            <Label text="CODE DE VÉRIFICATION" styleClass="login-field-label"/>
+            <TextField fx:id="codeField"
+                       promptText="Entrez le code à 6 chiffres"
+                       styleClass="login-field"
+                       maxWidth="Infinity"
+                       style="-fx-font-size: 22px; -fx-letter-spacing: 8px; -fx-text-alignment: center;"/>
+        </VBox>
+
+        <!-- Erreur -->
+        <Label fx:id="errLabel" text=""
+               styleClass="error-inline"
+               visible="false" managed="false"
+               wrapText="true" maxWidth="320"/>
+
+        <!-- Boutons -->
+        <VBox spacing="10" alignment="CENTER">
+            <Button fx:id="btnValider"
+                    text="✅ Valider le code"
+                    onAction="#handleValider"
+                    styleClass="login-btn"
+                    maxWidth="Infinity"/>
+            <Button fx:id="btnRenvoyer"
+                    text="🔁 Renvoyer un nouveau code"
+                    onAction="#handleRenvoyer"
+                    styleClass="btn-outline"
+                    maxWidth="Infinity"/>
+        </VBox>
+
+        <!-- ProgressIndicator -->
+        <ProgressIndicator fx:id="loadingIndicator"
+                           visible="false"
+                           prefWidth="30" prefHeight="30"/>
+
+    </VBox>
+</VBox>

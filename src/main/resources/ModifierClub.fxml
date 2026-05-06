@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="0" 
+      styleClass="main-content" stylesheets="@css/style.css"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="Controllers.ModifierClubController">
+
+    <!-- Container du formulaire -->
+    <VBox alignment="CENTER">
+        <padding> <Insets top="40" bottom="40" left="20" right="20" /> </padding>
+        <VBox styleClass="form-container" maxWidth="500" spacing="20">
+            
+            <!-- En-tête -->
+            <VBox styleClass="form-header" spacing="10">
+                <padding><Insets top="25" right="30" bottom="25" left="30"/></padding>
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <Button onAction="#goBack" text="⬅" styleClass="btn-secondary" style="-fx-padding: 5 10;"/>
+                    <Label text="Modifier le Club" styleClass="form-title"/>
+                </HBox>
+                <Label text="Mettez à jour les informations du club" style="-fx-text-fill: #6b7280; -fx-font-size: 13px;"/>
+            </VBox>
+
+            <!-- Corps du formulaire -->
+            <VBox styleClass="form-body" spacing="20">
+                <padding><Insets top="10" right="30" bottom="20" left="30"/></padding>
+
+                <VBox spacing="6">
+                    <Label text="Nom du Club" styleClass="field-label"/>
+                    <TextField fx:id="tfName" promptText="Entrez le nom" styleClass="text-field"/>
+                </VBox>
+
+                <VBox spacing="6">
+                    <Label text="Statut" styleClass="field-label"/>
+                    <ComboBox fx:id="cbStatus" promptText="Sélectionner le statut" styleClass="combo-field" prefWidth="440" maxWidth="Infinity"/>
+                </VBox>
+
+                <VBox spacing="6">
+                    <Label text="Description" styleClass="field-label"/>
+                    <TextArea fx:id="taDescription" promptText="Décrivez les objectifs du club..." styleClass="text-area" prefHeight="120" wrapText="true"/>
+                </VBox>
+            </VBox>
+
+            <!-- Footer -->
+            <HBox styleClass="form-footer" alignment="CENTER_RIGHT" spacing="15">
+                <padding><Insets top="20" right="30" bottom="25" left="30"/></padding>
+                <Button text="Annuler" styleClass="btn-secondary" onAction="#goBack"/>
+                <Button text="Mettre à jour" styleClass="btn-primary" onAction="#updateClub"/>
+            </HBox>
+
+        </VBox>
+    </VBox>
+</VBox>

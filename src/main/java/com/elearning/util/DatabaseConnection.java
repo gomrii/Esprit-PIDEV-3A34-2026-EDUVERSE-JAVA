@@ -5,61 +5,52 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * Central JDBC connection manager (singleton).
+ * Connexion Ã  la base de donnÃ©es â€” Pattern Singleton.
  *
- * Config priority:
- * 1) JVM args: -Ddb.url=... -Ddb.user=... -Ddb.password=...
- * 2) Environment variables: DB_URL / DB_USER / DB_PASSWORD
- * 3) Built-in defaults for local MySQL.
+ * Pourquoi Singleton ?
+ *   Ouvrir une connexion MySQL est coÃ»teux (environ 50-100 ms).
+ *   On ne veut qu'UNE seule connexion partagÃ©e dans toute l'application.
+ *   Le Singleton garantit qu'une seule instance de la connexion existe.
+ *
+ * gÃ©rÃ© par le conteneur d'injection de dÃ©pendances.
  */
 public class DatabaseConnection {
+    private static final String URL = "jdbc:mysql://localhost:3306/eduverse?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+    
+    private static final String USER     = "root";
+    private static final String PASSWORD = "";           // Mettez votre mot de passe MySQL ici
 
-    private static final String DEFAULT_URL =
-            "jdbc:mysql://localhost:3306/eduverse-java?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
-    private static final String DEFAULT_USER = "root";
-    private static final String DEFAULT_PASSWORD = "";
-
+    /** Instance unique (volatile pour la thread-safety) */
     private static volatile DatabaseConnection instance;
+
+    /** La connexion JDBC rÃ©elle */
     private Connection connection;
 
-    private static String resolveConfig(String propertyKey, String envKey, String fallback) {
-        String systemValue = System.getProperty(propertyKey);
-        if (systemValue != null && !systemValue.isBlank()) {
-            return systemValue;
-        }
-
-        String envValue = System.getenv(envKey);
-        if (envValue != null && !envValue.isBlank()) {
-            return envValue;
-        }
-
-        return fallback;
-    }
-
-    private static String getDbUrl() {
-        return resolveConfig("db.url", "DB_URL", DEFAULT_URL);
-    }
-
-    private static String getDbUser() {
-        return resolveConfig("db.user", "DB_USER", DEFAULT_USER);
-    }
-
-    private static String getDbPassword() {
-        return resolveConfig("db.password", "DB_PASSWORD", DEFAULT_PASSWORD);
-    }
-
+    // -------------------------------------------------------
+    // Constructeur PRIVÃ‰ â†’ personne ne peut faire "new DatabaseConnection()"
+    // -------------------------------------------------------
     private DatabaseConnection() {
         try {
+            // Charger le driver MySQL (inutile avec Java 9+ + Service Loader, mais explicite)
             Class.forName("com.mysql.cj.jdbc.Driver");
-            this.connection = DriverManager.getConnection(getDbUrl(), getDbUser(), getDbPassword());
-            System.out.println("MySQL connection established.");
+
+            this.connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            System.out.println("âœ… Connexion MySQL Ã©tablie.");
+
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("MySQL driver not found (mysql-connector-j).", e);
+            throw new RuntimeException("Driver MySQL introuvable. Ajoutez mysql-connector-j.jar au classpath.", e);
         } catch (SQLException e) {
-            throw new RuntimeException("Cannot connect to MySQL: " + e.getMessage(), e);
+            throw new RuntimeException("Impossible de se connecter Ã  MySQL : " + e.getMessage(), e);
         }
     }
 
+    /**
+     * Point d'accÃ¨s unique Ã  l'instance.
+     * Double-checked locking pour la thread-safety.
+     *
+     * Usage :
+     *   Connection conn = DatabaseConnection.getInstance().getConnection();
+     */
     public static DatabaseConnection getInstance() {
         if (instance == null) {
             synchronized (DatabaseConnection.class) {
@@ -71,25 +62,31 @@ public class DatabaseConnection {
         return instance;
     }
 
+    /**
+     * Retourne la connexion JDBC.
+     * Si elle est fermÃ©e (ex: timeout MySQL), en ouvre une nouvelle.
+     */
     public Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
-                connection = DriverManager.getConnection(getDbUrl(), getDbUser(), getDbPassword());
+                connection = DriverManager.getConnection(URL, USER, PASSWORD);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Reconnection error: " + e.getMessage(), e);
+            throw new RuntimeException("Erreur lors de la reconnexion : " + e.getMessage(), e);
         }
         return connection;
     }
 
+    /** Ferme proprement la connexion (appeler au shutdown de l'app) */
     public void close() {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
-                System.out.println("MySQL connection closed.");
+                System.out.println("ðŸ”Œ Connexion MySQL fermÃ©e.");
             }
         } catch (SQLException e) {
-            System.err.println("Close connection error: " + e.getMessage());
+            System.err.println("Erreur fermeture connexion : " + e.getMessage());
         }
     }
 }
+

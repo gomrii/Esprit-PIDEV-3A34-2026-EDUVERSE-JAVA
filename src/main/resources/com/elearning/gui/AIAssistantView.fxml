@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!--
+    AIAssistantView.fxml — Assistant IA Eduverse
+    Controller : com.elearning.controller.AIAssistantController
+    Dimensions : 520 × 650
+-->
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.elearning.controller.AIAssistantController"
+      style="-fx-background-color: #1a1a2e; -fx-spacing: 0;"
+      maxWidth="Infinity" maxHeight="Infinity">
+
+    <!-- En-tête -->
+    <HBox style="-fx-background-color: #16213e; -fx-padding: 16 20 16 20;"
+          alignment="CENTER_LEFT" spacing="12">
+        <Label text="🤖" style="-fx-font-size: 26px;"/>
+        <VBox>
+            <Label text="Assistant IA Eduverse"
+                   style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+            <Label text="Données en temps réel depuis votre BDD"
+                   style="-fx-text-fill: #3498db; -fx-font-size: 11px;"/>
+        </VBox>
+    </HBox>
+
+    <!-- Zone messages -->
+    <ScrollPane fx:id="scrollPane" fitToWidth="true"
+                style="-fx-background: #1a1a2e; -fx-background-color: #1a1a2e;"
+                VBox.vgrow="ALWAYS">
+        <VBox fx:id="messagesContainer" spacing="8"
+              style="-fx-padding: 12; -fx-background-color: #1a1a2e;"
+              fillWidth="true">
+        </VBox>
+    </ScrollPane>
+
+    <!-- Chips de questions rapides -->
+    <HBox spacing="8" style="-fx-padding: 8 12 4 12; -fx-background-color: #16213e;"
+          alignment="CENTER_LEFT">
+        <Button fx:id="chipResume" text="📊 Résumé" onAction="#handleResume"
+                style="-fx-background-color: #0f3460; -fx-text-fill: #3498db;
+                       -fx-background-radius: 20; -fx-padding: 5 12; -fx-cursor: hand;"/>
+        <Button fx:id="chipEnAttente" text="⏳ En attente" onAction="#handleEnAttente"
+                style="-fx-background-color: #0f3460; -fx-text-fill: #e67e22;
+                       -fx-background-radius: 20; -fx-padding: 5 12; -fx-cursor: hand;"/>
+        <Button fx:id="chipBloques" text="🚫 Bloqués" onAction="#handleBloques"
+                style="-fx-background-color: #0f3460; -fx-text-fill: #e74c3c;
+                       -fx-background-radius: 20; -fx-padding: 5 12; -fx-cursor: hand;"/>
+        <Button fx:id="chipSuggestions" text="💡 Suggestions" onAction="#handleSuggestions"
+                style="-fx-background-color: #0f3460; -fx-text-fill: #2ecc71;
+                       -fx-background-radius: 20; -fx-padding: 5 12; -fx-cursor: hand;"/>
+    </HBox>
+
+    <!-- Barre de saisie -->
+    <HBox spacing="8" style="-fx-padding: 10 12 12 12; -fx-background-color: #16213e;"
+          alignment="CENTER">
+        <TextField fx:id="inputField"
+                   promptText="Posez une question sur vos utilisateurs..."
+                   HBox.hgrow="ALWAYS"
+                   style="-fx-background-color: #0f3460; -fx-text-fill: white;
+                          -fx-prompt-text-fill: #7f8c8d; -fx-background-radius: 20;
+                          -fx-padding: 10 16; -fx-border-color: transparent;"/>
+        <Button fx:id="btnEnvoyer" text="➤" onAction="#handleEnvoyer"
+                style="-fx-background-color: #3498db; -fx-text-fill: white;
+                       -fx-background-radius: 50; -fx-min-width: 40; -fx-min-height: 40;
+                       -fx-font-size: 16px; -fx-cursor: hand;"/>
+        <ProgressIndicator fx:id="loadingIndicator"
+                           visible="false"
+                           prefWidth="26" prefHeight="26"
+                           style="-fx-progress-color: #3498db;"/>
+    </HBox>
+
+    <!-- Pied de page -->
+    <Label text="Alimenté par Claude AI · Historique sauvegardé en BDD"
+           style="-fx-text-fill: #4a4a6a; -fx-font-size: 10px; -fx-padding: 0 0 6 0;"
+           maxWidth="Infinity" alignment="CENTER"/>
+
+</VBox>

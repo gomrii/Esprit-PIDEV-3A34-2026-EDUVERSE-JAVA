@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 /**
  * Entité User — POJO (Plain Old Java Object).
  *
- * Équivalent Symfony : src/Entity/User.php
- * En Java, pas de Doctrine : les colonnes SQL sont gérées manuellement via JDBC.
  *
  * Contient UNIQUEMENT les données + getters/setters.
  * Aucune logique métier ici (c'est le rôle du Service).
@@ -40,18 +38,32 @@ public class User {
     private String bio;            // nullable
     private String picture;        // chemin ou URL photo (nullable)
     private LocalDateTime createdAt; // created_at
-    private double walletBalance;  // wallet_balance (solde des crédits)
+
+    // -------------------------------------------------------
+    // Champs 2FA (two-factor authentication)
+    // -------------------------------------------------------
+    private boolean       isTwoFactorEnabled;    // is_two_factor_enabled
+    private String        twoFactorCode;         // code OTP 6 chiffres (nullable)
+    private LocalDateTime twoFactorExpiresAt;    // expiration du code OTP (nullable)
+
+    // -------------------------------------------------------
+    // Champs sécurité / verrouillage de compte
+    // -------------------------------------------------------
+    private int           loginAttempts;         // login_attempts
+    private LocalDateTime lockedUntil;           // locked_until (nullable)
 
     // -------------------------------------------------------
     // Constructeur VIDE — nécessaire pour JavaFX TableView
     // et pour les lectures JDBC (on set les champs un par un)
     // -------------------------------------------------------
     public User() {
-        this.statut     = STATUT_EN_ATTENTE;
-        this.role       = ROLE_ETUDIANT;
-        this.isApproved = false;
-        this.isBlocked  = false;
-        this.createdAt  = LocalDateTime.now();
+        this.statut             = STATUT_EN_ATTENTE;
+        this.role               = ROLE_ETUDIANT;
+        this.isApproved         = false;
+        this.isBlocked          = false;
+        this.createdAt          = LocalDateTime.now();
+        this.isTwoFactorEnabled = false;
+        this.loginAttempts      = 0;
     }
 
     /**
@@ -72,34 +84,10 @@ public class User {
         this.bio         = bio;
         this.picture     = picture;
         this.createdAt   = createdAt;
-        this.walletBalance = 0.0;
-    }
-
-    /**
-     * Constructeur COMPLET avec wallet — utilisé lors de la lecture depuis la BDD.
-     */
-    public User(int id, String fullName, String email, String password,
-                String role, String statut, boolean isApproved, boolean isBlocked,
-                String phoneNumber, String bio, String picture, LocalDateTime createdAt,
-                double walletBalance) {
-        this.id          = id;
-        this.fullName    = fullName;
-        this.email       = email;
-        this.password    = password;
-        this.role        = role;
-        this.statut      = statut;
-        this.isApproved  = isApproved;
-        this.isBlocked   = isBlocked;
-        this.phoneNumber = phoneNumber;
-        this.bio         = bio;
-        this.picture     = picture;
-        this.createdAt   = createdAt;
-        this.walletBalance = walletBalance;
     }
 
     // -------------------------------------------------------
     // Getters & Setters
-    // Équivalent PHP : les méthodes getXxx() / setXxx()
     // -------------------------------------------------------
 
     public int getId()                          { return id; }
@@ -138,11 +126,22 @@ public class User {
     public LocalDateTime getCreatedAt()         { return createdAt; }
     public void setCreatedAt(LocalDateTime dt)  { this.createdAt = dt; }
 
-    public double getWalletBalance()            { return walletBalance; }
-    public void setWalletBalance(double balance) { this.walletBalance = balance; }
+    // 2FA
+    public boolean isTwoFactorEnabled()                          { return isTwoFactorEnabled; }
+    public void setTwoFactorEnabled(boolean enabled)             { this.isTwoFactorEnabled = enabled; }
 
-    public void addCredits(double amount)       { this.walletBalance += amount; }
-    public void deductCredits(double amount)    { this.walletBalance -= amount; }
+    public String getTwoFactorCode()                             { return twoFactorCode; }
+    public void setTwoFactorCode(String code)                    { this.twoFactorCode = code; }
+
+    public LocalDateTime getTwoFactorExpiresAt()                 { return twoFactorExpiresAt; }
+    public void setTwoFactorExpiresAt(LocalDateTime dt)          { this.twoFactorExpiresAt = dt; }
+
+    // Verrouillage
+    public int getLoginAttempts()                                { return loginAttempts; }
+    public void setLoginAttempts(int attempts)                   { this.loginAttempts = attempts; }
+
+    public LocalDateTime getLockedUntil()                        { return lockedUntil; }
+    public void setLockedUntil(LocalDateTime dt)                 { this.lockedUntil = dt; }
 
     // -------------------------------------------------------
     // toString() — utile pour le débogage
@@ -153,3 +152,4 @@ public class User {
                 + "', role='" + role + "', statut='" + statut + "'}";
     }
 }
+

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controllers.TeacherQuizListController"
+            styleClass="app-shell">
+
+    <center>
+        <VBox styleClass="main-content dashboard-surface">
+            <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+            <VBox spacing="18" styleClass="quiz-module-shell" VBox.vgrow="ALWAYS">
+                <HBox alignment="CENTER_LEFT" styleClass="quiz-module-header">
+                    <VBox spacing="6" HBox.hgrow="ALWAYS" styleClass="quiz-header-copy">
+                        <Label styleClass="page-eyebrow" text="Espace Enseignant"/>
+                        <Label styleClass="page-title" text="Mes quiz"/>
+                        <Label styleClass="page-subtitle"
+                               text="Organisez vos quiz, pilotez leur validation et gerez votre contenu dans une interface claire et professionnelle."
+                               wrapText="true"/>
+                    </VBox>
+                    <HBox alignment="CENTER_RIGHT" spacing="12" styleClass="quiz-header-aside">
+                        <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="quiz-header-actions">
+                            <Button id="chatbotButton"
+                                    contentDisplay="LEFT"
+                                    minWidth="140"
+                                    prefWidth="140"
+                                    onAction="#handleOpenChatbot"
+                                    styleClass="btn-chatbot,topbar-action-button"
+                                    text="Chatbot"
+                                    textOverrun="CLIP">
+                                <graphic>
+                                    <SVGPath content="M12,2C9.24,2 7,4.24 7,7V8H6C4.34,8 3,9.34 3,11V15C3,16.66 4.34,18 6,18H8L10.8,20.1C11.52,20.64 12.48,20.64 13.2,20.1L16,18H18C19.66,18 21,16.66 21,15V11C21,9.34 19.66,8 18,8H17V7C17,4.24 14.76,2 12,2M9.5,7C9.5,5.62 10.62,4.5 12,4.5C13.38,4.5 14.5,5.62 14.5,7V8H9.5V7M9,12.5A1.5,1.5 0 1,0 9,15.5A1.5,1.5 0 0,0 9,12.5M15,12.5A1.5,1.5 0 1,0 15,15.5A1.5,1.5 0 0,0 15,12.5Z"
+                                             styleClass="button-icon,chatbot-icon"/>
+                                </graphic>
+                            </Button>
+                            <Button fx:id="accessibilityButton"
+                                    contentDisplay="LEFT"
+                                    minWidth="220"
+                                    prefWidth="220"
+                                    onAction="#handleToggleAccessibility"
+                                    styleClass="btn-voice-assistant,topbar-action-button"
+                                    text="Assistant vocal : OFF"
+                                    textOverrun="CLIP">
+                                <graphic>
+                                    <SVGPath content="M12,15A3,3 0 0,0 15,12V6A3,3 0 0,0 9,6V12A3,3 0 0,0 12,15M17.3,12A5.3,5.3 0 0,1 12,17.3A5.3,5.3 0 0,1 6.7,12H5A7,7 0 0,0 11,18.9V22H13V18.9A7,7 0 0,0 19,12H17.3Z"
+                                             styleClass="button-icon"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
+                        <VBox minWidth="150" styleClass="profile-chip,profile-chip-compact">
+                            <Label styleClass="profile-chip-title" text="Enseignant"/>
+                            <Label styleClass="profile-chip-subtitle" text="Gestion personnelle"/>
+                        </VBox>
+                    </HBox>
+                </HBox>
+
+                <VBox spacing="14" styleClass="quiz-toolbar-card">
+                    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="toolbar-row">
+                        <HBox styleClass="search-shell" HBox.hgrow="ALWAYS">
+                            <SVGPath content="M15.5,14H14.71L14.43,13.73C15.41,12.59 16,11.11 16,9.5C16,5.91 13.09,3 9.5,3C5.91,3 3,5.91 3,9.5C3,13.09 5.91,16 9.5,16C11.11,16 12.59,15.41 13.73,14.43L14,14.71V15.5L19,20.49L20.49,19L15.5,14M9.5,14C7.01,14 5,11.99 5,9.5C5,7.01 7.01,5 9.5,5C11.99,5 14,7.01 14,9.5C14,11.99 11.99,14 9.5,14Z"
+                                     styleClass="search-glyph-shape"/>
+                            <TextField fx:id="searchTF"
+                                       promptText="Rechercher un quiz..."
+                                       styleClass="search-field"
+                                       HBox.hgrow="ALWAYS"/>
+                        </HBox>
+                        <ChoiceBox fx:id="sortChoice" minWidth="160" prefWidth="160"/>
+                        <ChoiceBox fx:id="filterChoice" minWidth="170" prefWidth="170"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <HBox alignment="CENTER_RIGHT" spacing="12" styleClass="action-buttons-container,toolbar-actions">
+                            <Button id="statsButton"
+                                    contentDisplay="LEFT"
+                                    minWidth="176"
+                                    prefWidth="176"
+                                    onAction="#handleOpenStatistics"
+                                    styleClass="btn-stats,toolbar-button"
+                                    text="Voir statistiques"
+                                    textOverrun="CLIP">
+                                <graphic>
+                                    <SVGPath content="M4,19H20V21H4V19M6,10H9V17H6V10M11,6H14V17H11V6M16,12H19V17H16V12Z"
+                                             styleClass="button-icon"/>
+                                </graphic>
+                            </Button>
+                            <Button id="addQuizButton"
+                                    contentDisplay="LEFT"
+                                    minWidth="168"
+                                    prefWidth="168"
+                                    onAction="#handleAddManual"
+                                    styleClass="btn-primary,toolbar-button"
+                                    text="Ajouter un quiz"
+                                    textOverrun="CLIP">
+                                <graphic>
+                                    <SVGPath content="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                                             styleClass="button-icon"/>
+                                </graphic>
+                            </Button>
+                            <Button id="aiQuizButton"
+                                    contentDisplay="LEFT"
+                                    minWidth="168"
+                                    prefWidth="168"
+                                    onAction="#handleAddAi"
+                                    styleClass="btn-ai,toolbar-button"
+                                    text="Generation IA"
+                                    textOverrun="CLIP">
+                                <graphic>
+                                    <SVGPath content="M12,2L13.8,8.2L20,10L13.8,11.8L12,18L10.2,11.8L4,10L10.2,8.2L12,2M19,15L19.9,17.1L22,18L19.9,18.9L19,21L18.1,18.9L16,18L18.1,17.1L19,15Z"
+                                             styleClass="button-icon"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
+                    </HBox>
+
+                    <Label fx:id="summaryLabel" styleClass="list-summary" text="0 quiz affiche"/>
+                </VBox>
+
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="content-scroll" VBox.vgrow="ALWAYS">
+                    <content>
+                        <VBox fx:id="cardsContainer" spacing="16" styleClass="card-list">
+                            <padding><Insets bottom="12"/></padding>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>
