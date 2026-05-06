@@ -49,4 +49,49 @@ public class SimpleViewController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Navigate to Formations management
+     */
+    @FXML
+    private void handleMesFormations(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/elearning/gui/FormationDashboardView.fxml"));
+            Scene scene = new Scene(loader.load());
+            scene.getStylesheets().add(
+                    getClass().getResource("/com/elearning/css/style.css").toExternalForm());
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("Mes Formations");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Go back to main menu based on user role
+     */
+    @FXML
+    private void handleRetour(ActionEvent event) {
+        // For now, just reload the same dashboard
+        // In the future, this can navigate to a main menu
+        try {
+            User user = SessionManager.getInstance().getUtilisateurConnecte();
+            String fxmlPath = "/com/elearning/gui/EtudiantDashboardView.fxml";
+            
+            if (user != null && User.ROLE_ENSEIGNANT.equals(user.getRole())) {
+                fxmlPath = "/com/elearning/gui/EnseignantDashboardView.fxml";
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Scene scene = new Scene(loader.load());
+            scene.getStylesheets().add(
+                    getClass().getResource("/com/elearning/css/style.css").toExternalForm());
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
@@ -14,6 +16,12 @@
         <Insets top="24" right="24" bottom="24" left="24"/>
     </padding>
 
+    <HBox spacing="15" alignment="CENTER_LEFT" styleClass="toolbar-panel" style="-fx-padding: 12 20 12 20;">
+        <Button text="← Retour" styleClass="btn-secondary" onAction="#handleRetour"/>
+        <Button text="Mes Formations" styleClass="btn-primary" onAction="#handleMesFormations"/>
+        <Button text="Déconnexion" styleClass="btn-danger" onAction="#handleDeconnexion"/>
+    </HBox>
+
     <VBox spacing="8" styleClass="role-dashboard-hero">
         <Label text="Dashboard Enseignant" styleClass="page-title"/>
         <Label fx:id="welcomeLabel" text="Bienvenue !" styleClass="role-dashboard-subtitle"/>
@@ -24,8 +32,8 @@
 
     <FlowPane hgap="16" vgap="16" prefWrapLength="980" styleClass="role-dashboard-grid">
         <VBox styleClass="stat-card,role-dashboard-card" spacing="8">
-            <Label text="Cours" styleClass="role-dashboard-card-title"/>
-            <Label text="Organisez vos supports, suivez les modules actifs et preparez vos prochaines sessions."
+            <Label text="Formations" styleClass="role-dashboard-card-title"/>
+            <Label text="Creez et gerez vos formations, organisez vos contenus et suivez vos etudiants."
                    wrapText="true"
                    styleClass="role-dashboard-card-text"/>
         </VBox>
