@@ -22,6 +22,7 @@ SET time_zone = "+00:00";
 --
 
 USE `eduverse`;
+SET FOREIGN_KEY_CHECKS = 0;
 
 -- --------------------------------------------------------
 
@@ -29,6 +30,7 @@ USE `eduverse`;
 -- Structure de la table `ai_recommendation`
 --
 
+DROP TABLE IF EXISTS `ai_recommendation`;
 CREATE TABLE `ai_recommendation` (
   `id` int(11) NOT NULL,
   `priorite` varchar(10) NOT NULL,
@@ -1318,3 +1320,5 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+SET FOREIGN_KEY_CHECKS = 1;
+COMMIT;
