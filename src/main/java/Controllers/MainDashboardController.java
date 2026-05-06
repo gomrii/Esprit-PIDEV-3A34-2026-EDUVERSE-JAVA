@@ -86,6 +86,11 @@ public class MainDashboardController {
     }
 
     @FXML
+    public void goToFormations() {
+        loadView("/com/elearning/gui/FormationDashboardView.fxml", "Gestion des Formations");
+    }
+
+    @FXML
     public void goToEvents() {
         loadView("AfficherEvent.fxml", "Gestion des Evenements");
     }
