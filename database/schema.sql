@@ -96,3 +96,68 @@ CREATE TABLE IF NOT EXISTS `ressource` (
   KEY `idx_ressource_formation` (`formation_id`),
   CONSTRAINT `fk_ressource_formation` FOREIGN KEY (`formation_id`) REFERENCES `formation` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ====================================================================
+-- Stripe Payment & Wallet Management
+-- ====================================================================
+
+-- Alter user table to add wallet balance (if not exists)
+ALTER TABLE `user` ADD COLUMN IF NOT EXISTS `wallet_balance` DECIMAL(10, 2) NOT NULL DEFAULT 0.00;
+ALTER TABLE `user` ADD COLUMN IF NOT EXISTS `wallet_updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP;
+
+-- Store Stripe transactions
+CREATE TABLE IF NOT EXISTS `stripe_transaction` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `stripe_session_id` VARCHAR(255) NOT NULL UNIQUE,
+  `stripe_payment_intent_id` VARCHAR(255) DEFAULT NULL,
+  `amount_cents` INT NOT NULL COMMENT 'Amount in cents',
+  `credits` INT NOT NULL COMMENT 'Number of credits to purchase',
+  `status` VARCHAR(50) NOT NULL DEFAULT 'PENDING' COMMENT 'PENDING, COMPLETED, FAILED, CANCELED',
+  `payment_method` VARCHAR(50) DEFAULT NULL COMMENT 'card, apple_pay, etc',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `completed_at` DATETIME DEFAULT NULL,
+  `metadata` JSON DEFAULT NULL COMMENT 'Additional metadata from Stripe',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_stripe_session_id` (`stripe_session_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_status` (`status`),
+  CONSTRAINT `fk_stripe_transaction_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Store webhook events for audit trail
+CREATE TABLE IF NOT EXISTS `stripe_webhook_event` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `event_id` VARCHAR(255) NOT NULL UNIQUE,
+  `event_type` VARCHAR(100) NOT NULL COMMENT 'checkout.session.completed, etc',
+  `payload` JSON NOT NULL,
+  `processed` TINYINT(1) NOT NULL DEFAULT 0,
+  `processed_at` DATETIME DEFAULT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_event_id` (`event_id`),
+  KEY `idx_event_type` (`event_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ====================================================================
+-- AI-Generated Descriptions (Groq)
+-- ====================================================================
+
+ALTER TABLE `formation` ADD COLUMN IF NOT EXISTS `ai_generated_description` TINYINT(1) NOT NULL DEFAULT 0;
+ALTER TABLE `formation` ADD COLUMN IF NOT EXISTS `groq_generation_status` VARCHAR(50) DEFAULT 'PENDING' COMMENT 'PENDING, COMPLETED, FAILED';
+
+CREATE TABLE IF NOT EXISTS `groq_generated_content` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `entity_type` VARCHAR(50) NOT NULL COMMENT 'FORMATION, RESSOURCE, USER, etc',
+  `entity_id` INT NOT NULL,
+  `original_title` VARCHAR(255) NOT NULL,
+  `generated_description` TEXT NOT NULL,
+  `language` VARCHAR(10) NOT NULL DEFAULT 'fr',
+  `temperature` FLOAT NOT NULL DEFAULT 0.7,
+  `status` VARCHAR(50) NOT NULL DEFAULT 'COMPLETED',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `groq_model` VARCHAR(100) DEFAULT 'llama-3.3-70b-versatile',
+  PRIMARY KEY (`id`),
+  KEY `idx_entity` (`entity_type`, `entity_id`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -81,7 +81,8 @@
             <Label fx:id="enrollStatusLabel" text="Vérification du statut..." styleClass="status-label"/>
             
             <HBox spacing="10" alignment="CENTER">
-                <Button fx:id="btnEnroll" text="S'inscrire à cette formation" styleClass="btn-primary" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="btnEnroll" text="💳 Buy Formation" styleClass="btn-primary" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="btnFreeEnroll" text="✓ Enroll for Free" styleClass="btn-secondary" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
             </HBox>
         </VBox>
     </bottom>

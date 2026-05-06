@@ -1,0 +1,68 @@
+# Configuration API - Exemple
+# FICHIER À PERSONNALISER ET À MAINTENIR CONFIDENTIEL
+# NE PAS COMMITER DANS GIT !
+
+# ====================================================================
+# Stripe Payment Gateway Configuration
+# ====================================================================
+
+# Clé secrète Stripe (pour les appels API côté serveur)
+# Mode Test : sk_test_...
+# Mode Production : sk_live_...
+STRIPE_SECRET_KEY=sk_test_51T4vaiIcMGpBkhgmlyX1RApYVuU7YWEENGznY0qWmtcWIRKMKzXRmsgh5F8UsKHs3l5fsDWTdQqYUzir34ZR9FPc00tg6WTIiI
+
+# Clé publique Stripe (à utiliser en client-side - peut être exposée)
+# Mode Test : pk_test_...
+# Mode Production : pk_live_...
+STRIPE_PUBLIC_KEY=pk_test_51T4vaiIcMGpBkhgmCveUS7XVa4pgapBodqtsOoTgimdB8W1MUJ5ZUuBNdxb0erZUwCHWZdV5DrUwGizuplHBPxXn00871fe5pl
+
+# Secret du webhook Stripe
+# À obtenir depuis https://dashboard.stripe.com/webhooks
+STRIPE_WEBHOOK_SECRET=whsec_d9bb5267a3d9f4249521fed19d13c9025e1ccc7205b4e9be8e451e0a3f0e23d5
+
+# Port du serveur webhook
+STRIPE_WEBHOOK_PORT=8080
+
+# Chemin de l'endpoint webhook
+STRIPE_WEBHOOK_PATH=/webhooks/stripe
+
+# ====================================================================
+# Groq LLaMA AI Configuration
+# ====================================================================
+
+# Clé API Groq (API key pour l'authentification)
+# À obtenir depuis https://console.groq.com
+GROQ_API_KEY=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
+
+# Modèle Groq à utiliser
+# Options : llama-3.3-70b-versatile, llama-3.1-70b-versatile, mixtral-8x7b-32768
+GROQ_MODEL=llama-3.3-70b-versatile
+
+# ====================================================================
+# Notes de sécurité importantes
+# ====================================================================
+
+# 1. Ne JAMAIS commiter ce fichier dans git !
+#    Ajouter à .gitignore : config/api.properties, config/.env
+
+# 2. En production, utiliser un gestionnaire de secrets :
+#    - AWS Secrets Manager
+#    - Azure Key Vault
+#    - HashiCorp Vault
+#    - Kubernetes Secrets
+
+# 3. Faire tourner l'application Stripe en mode TEST d'abord
+#    Utiliser des clés sk_test_ et pk_test_
+
+# 4. Tester avec des cartes Stripe de test :
+#    - 4242 4242 4242 4242 (succès)
+#    - 4000 0000 0000 0002 (déclinée)
+#    - 4000 0025 0000 3155 (expiration)
+
+# 5. Mettre à jour régulièrement les secrets
+#    - Rotation annuelle des clés API
+#    - Immédiate en cas de suspicion de compromission
+
+# 6. Monitorer l'utilisation des APIs :
+#    - Stripe Dashboard : https://dashboard.stripe.com
+#    - Groq Console : https://console.groq.com

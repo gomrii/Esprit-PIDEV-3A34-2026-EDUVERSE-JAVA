@@ -40,6 +40,7 @@ public class User {
     private String bio;            // nullable
     private String picture;        // chemin ou URL photo (nullable)
     private LocalDateTime createdAt; // created_at
+    private double walletBalance;  // wallet_balance (solde des crédits)
 
     // -------------------------------------------------------
     // Constructeur VIDE — nécessaire pour JavaFX TableView
@@ -71,6 +72,29 @@ public class User {
         this.bio         = bio;
         this.picture     = picture;
         this.createdAt   = createdAt;
+        this.walletBalance = 0.0;
+    }
+
+    /**
+     * Constructeur COMPLET avec wallet — utilisé lors de la lecture depuis la BDD.
+     */
+    public User(int id, String fullName, String email, String password,
+                String role, String statut, boolean isApproved, boolean isBlocked,
+                String phoneNumber, String bio, String picture, LocalDateTime createdAt,
+                double walletBalance) {
+        this.id          = id;
+        this.fullName    = fullName;
+        this.email       = email;
+        this.password    = password;
+        this.role        = role;
+        this.statut      = statut;
+        this.isApproved  = isApproved;
+        this.isBlocked   = isBlocked;
+        this.phoneNumber = phoneNumber;
+        this.bio         = bio;
+        this.picture     = picture;
+        this.createdAt   = createdAt;
+        this.walletBalance = walletBalance;
     }
 
     // -------------------------------------------------------
@@ -113,6 +137,12 @@ public class User {
 
     public LocalDateTime getCreatedAt()         { return createdAt; }
     public void setCreatedAt(LocalDateTime dt)  { this.createdAt = dt; }
+
+    public double getWalletBalance()            { return walletBalance; }
+    public void setWalletBalance(double balance) { this.walletBalance = balance; }
+
+    public void addCredits(double amount)       { this.walletBalance += amount; }
+    public void deductCredits(double amount)    { this.walletBalance -= amount; }
 
     // -------------------------------------------------------
     // toString() — utile pour le débogage

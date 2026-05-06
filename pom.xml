@@ -68,6 +68,47 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- ====================================================
+             Stripe Payment Gateway — Payment Processing
+             ==================================================== -->
+        <dependency>
+            <groupId>com.stripe</groupId>
+            <artifactId>stripe-java</artifactId>
+            <version>20.133.0</version>
+        </dependency>
+
+        <!-- ====================================================
+             JSON Processing — For API Responses
+             ==================================================== -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+
+        <!-- ====================================================
+             HTTP Client — For REST API Calls
+             ==================================================== -->
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>5.3</version>
+        </dependency>
+
+        <!-- ====================================================
+             SLF4J + Logback — Logging
+             ==================================================== -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.9</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.14</version>
+        </dependency>
+
     </dependencies>
 
     <build>

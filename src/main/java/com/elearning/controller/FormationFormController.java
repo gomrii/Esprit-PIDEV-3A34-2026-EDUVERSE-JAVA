@@ -4,6 +4,7 @@ import com.elearning.entity.Formation;
 import com.elearning.entity.Ressource;
 import com.elearning.entity.User;
 import com.elearning.service.FormationService;
+import com.elearning.service.GroqAIService;
 import com.elearning.util.SessionManager;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -30,6 +31,7 @@ public class FormationFormController implements Initializable {
     @FXML private CheckBox approvedCheck;
     @FXML private CheckBox archivedCheck;
     @FXML private Button saveButton;
+    @FXML private Button generateDescriptionButton;
 
     // Ressources fields
     @FXML private TextField ressourceTitleField;
@@ -45,6 +47,7 @@ public class FormationFormController implements Initializable {
     @FXML private Button removeRessourceButton;
 
     private final FormationService formationService = new FormationService();
+    private final GroqAIService groqAIService = new GroqAIService();
     private Formation formationToEdit;
     private Runnable onSave;
     private List<Ressource> ressourcesToSave = new ArrayList<>();
@@ -246,6 +249,46 @@ public class FormationFormController implements Initializable {
         } else {
             showError("Please select a ressource to remove");
         }
+    }
+
+    @FXML
+    private void handleGenerateDescription() {
+        String title = titleField.getText().trim();
+        String level = levelCombo.getValue();
+
+        if (title.isEmpty()) {
+            showError("Please enter a formation title before generating a description");
+            return;
+        }
+
+        generateDescriptionButton.setDisable(true);
+        generateDescriptionButton.setText("⏳ Generating...");
+
+        // Run in a separate thread to avoid blocking UI
+        new Thread(() -> {
+            try {
+                String generatedDescription = groqAIService.generateFormationDescription(title, level);
+                
+                // Update UI on JavaFX thread
+                javafx.application.Platform.runLater(() -> {
+                    descriptionField.setText(generatedDescription);
+                    generateDescriptionButton.setDisable(false);
+                    generateDescriptionButton.setText("🤖 Generate with AI");
+                    
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Success");
+                    alert.setHeaderText("Description Generated");
+                    alert.setContentText("AI-generated description has been added to the form.");
+                    alert.showAndWait();
+                });
+            } catch (Exception e) {
+                javafx.application.Platform.runLater(() -> {
+                    generateDescriptionButton.setDisable(false);
+                    generateDescriptionButton.setText("🤖 Generate with AI");
+                    showError("Error generating description: " + e.getMessage());
+                });
+            }
+        }).start();
     }
 
     private void closeWindow() {

@@ -22,7 +22,10 @@
                     <TextField fx:id="titleField" promptText="Formation title" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
                     <Label text="Description" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                    <TextArea fx:id="descriptionField" prefRowCount="3" wrapText="true" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    <VBox spacing="8" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                        <TextArea fx:id="descriptionField" prefRowCount="3" wrapText="true" VBox.vgrow="ALWAYS"/>
+                        <Button fx:id="generateDescriptionButton" text="🤖 Generate with AI" onAction="#handleGenerateDescription" styleClass="btn-secondary"/>
+                    </VBox>
 
                     <Label text="Content" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
                     <TextArea fx:id="contentField" prefRowCount="5" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
