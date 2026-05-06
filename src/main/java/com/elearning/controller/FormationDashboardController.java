@@ -3,6 +3,7 @@ package com.elearning.controller;
 import com.elearning.entity.Formation;
 import com.elearning.entity.User;
 import com.elearning.service.FormationService;
+import com.elearning.service.PdfService;
 import com.elearning.util.SessionManager;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -14,11 +15,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -50,6 +54,7 @@ public class FormationDashboardController implements Initializable {
     @FXML private Button btnAjouter;
 
     private final FormationService formationService = new FormationService();
+    private final PdfService pdfService = new PdfService();
     private final ObservableList<Formation> formations = FXCollections.observableArrayList();
     private final ObservableList<Formation> myFormations = FXCollections.observableArrayList();
     private User currentUser;
@@ -268,8 +273,40 @@ public class FormationDashboardController implements Initializable {
 
     @FXML
     private void handleExportPdf() {
-        showAlert(Alert.AlertType.INFORMATION, "Bientôt disponible", 
-            "L'export PDF sera disponible dans une prochaine version.");
+        try {
+            // Check if there are formations to export
+            if (formations.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Aucune donnée", 
+                    "Il n'y a aucune formation à exporter.");
+                return;
+            }
+
+            // File chooser to select save location
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Exporter les Formations en PDF");
+            fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf")
+            );
+            fileChooser.setInitialFileName("Formations_" + System.currentTimeMillis() + ".pdf");
+
+            Stage stage = (Stage) tableFormations.getScene().getWindow();
+            File file = fileChooser.showSaveDialog(stage);
+
+            if (file == null) {
+                return; // User cancelled
+            }
+
+            // Export formations to PDF
+            List<Formation> formatioList = new java.util.ArrayList<>(formations);
+            pdfService.exporterListeFormations(formatioList, file.getAbsolutePath());
+
+            showAlert(Alert.AlertType.INFORMATION, "Succès", 
+                "PDF exporté avec succès !\n\nFichier : " + file.getAbsolutePath());
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur lors de l'export", 
+                "Impossible d'exporter le PDF : " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @FXML

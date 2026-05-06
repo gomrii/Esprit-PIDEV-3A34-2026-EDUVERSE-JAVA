@@ -1,5 +1,6 @@
 package com.elearning.service;
 
+import com.elearning.entity.Formation;
 import com.elearning.entity.User;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -85,6 +86,65 @@ public class PdfService {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setPadding(6f);
         return cell;
+    }
+
+    /**
+     * Génère un PDF contenant la liste des formations.
+     *
+     * @param formations Liste des formations à exporter.
+     * @param filePath Chemin absolu où le fichier PDF sera enregistré.
+     */
+    public void exporterListeFormations(List<Formation> formations, String filePath) throws Exception {
+        // 1. Initialisation du document iText avec des marges
+        Document document = new Document(PageSize.A4.rotate(), 30, 30, 40, 40);
+        PdfWriter.getInstance(document, new FileOutputStream(filePath));
+        document.open();
+
+        // 2. Définition des polices
+        Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, BaseColor.BLACK);
+        Font subtitleFont = FontFactory.getFont(FontFactory.HELVETICA, 12, BaseColor.GRAY);
+        Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 11, BaseColor.WHITE);
+        Font cellFont = FontFactory.getFont(FontFactory.HELVETICA, 10, BaseColor.BLACK);
+
+        // 3. Titre et sous-titre
+        Paragraph titre = new Paragraph("Catalogue des Formations — Eduverse", titleFont);
+        titre.setAlignment(Element.ALIGN_CENTER);
+        document.add(titre);
+
+        String dateExport = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date());
+        Paragraph sousTitre = new Paragraph("Généré le : " + dateExport + " | " + formations.size() + " formations", subtitleFont);
+        sousTitre.setAlignment(Element.ALIGN_CENTER);
+        sousTitre.setSpacingAfter(30f);
+        document.add(sousTitre);
+
+        // 4. Création du tableau (7 colonnes)
+        PdfPTable table = new PdfPTable(7);
+        table.setWidthPercentage(100);
+        table.setWidths(new float[]{0.8f, 2.5f, 1.5f, 1.2f, 1f, 1f, 1f});
+
+        // 5. En-têtes du tableau
+        String[] headers = {"ID", "Titre", "Niveau", "Durée (h)", "Prix (€)", "Approuvée", "Archivée"};
+        for (String headerLabel : headers) {
+            PdfPCell header = new PdfPCell(new Phrase(headerLabel, headerFont));
+            header.setBackgroundColor(new BaseColor(52, 152, 219)); // Bleu #3498db
+            header.setHorizontalAlignment(Element.ALIGN_CENTER);
+            header.setPadding(8f);
+            table.addCell(header);
+        }
+
+        // 6. Remplissage des données
+        for (Formation f : formations) {
+            table.addCell(creerCellule(String.valueOf(f.getId()), cellFont));
+            table.addCell(creerCellule(f.getTitle(), cellFont));
+            table.addCell(creerCellule(f.getLevel(), cellFont));
+            table.addCell(creerCellule(String.valueOf(f.getDuration()), cellFont));
+            table.addCell(creerCellule(String.format("%.2f", f.getPrice()), cellFont));
+            table.addCell(creerCellule(f.isApproved() ? "✓ Oui" : "✗ Non", cellFont));
+            table.addCell(creerCellule(f.isArchived() ? "✓ Oui" : "✗ Non", cellFont));
+        }
+
+        document.add(table);
+        document.close();
     }
 }
 
