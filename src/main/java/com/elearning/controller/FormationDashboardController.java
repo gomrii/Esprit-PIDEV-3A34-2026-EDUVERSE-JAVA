@@ -3,6 +3,7 @@ package com.elearning.controller;
 import com.elearning.entity.Formation;
 import com.elearning.entity.User;
 import com.elearning.service.FormationService;
+import com.elearning.service.FormationEnrollmentService;
 import com.elearning.service.PdfService;
 import com.elearning.util.SessionManager;
 import javafx.beans.property.SimpleStringProperty;
@@ -54,6 +55,7 @@ public class FormationDashboardController implements Initializable {
     @FXML private Button btnAjouter;
 
     private final FormationService formationService = new FormationService();
+    private final FormationEnrollmentService enrollmentService = new FormationEnrollmentService();
     private final PdfService pdfService = new PdfService();
     private final ObservableList<Formation> formations = FXCollections.observableArrayList();
     private final ObservableList<Formation> myFormations = FXCollections.observableArrayList();
@@ -120,8 +122,7 @@ public class FormationDashboardController implements Initializable {
                     
                     Formation formation = getTableView().getItems().get(getIndex());
                     viewBtn.setOnAction(e -> openFormationDetail(formation));
-                    enrollBtn.setOnAction(e -> showAlert(Alert.AlertType.INFORMATION, "Inscription", 
-                        "Fonctionnalité d'inscription en développement."));
+                    enrollBtn.setOnAction(e -> handleEnrollStudent(formation));
                     
                     setGraphic(new javafx.scene.layout.HBox(5, viewBtn, enrollBtn));
                 } else {
@@ -313,6 +314,93 @@ public class FormationDashboardController implements Initializable {
     private void handleCancel() {
         Stage stage = (Stage) tableFormations.getScene().getWindow();
         stage.close();
+    }
+
+    private void handleEnrollStudent(Formation formation) {
+        if (currentUser == null) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Utilisateur non connecté.");
+            return;
+        }
+
+        if (!User.ROLE_ETUDIANT.equals(currentUser.getRole())) {
+            showAlert(Alert.AlertType.WARNING, "Accès refusé", 
+                "Seuls les étudiants peuvent s'inscrire à des formations.");
+            return;
+        }
+
+        // Check if already enrolled
+        if (enrollmentService.isStudentEnrolled(formation.getId(), currentUser.getId())) {
+            showAlert(Alert.AlertType.INFORMATION, "Déjà inscrit", 
+                "Vous êtes déjà inscrit à cette formation !");
+            return;
+        }
+
+        // Create enrollment confirmation dialog
+        Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmDialog.setTitle("Confirmation d'inscription");
+        confirmDialog.setHeaderText("Inscription à la formation");
+        
+        if (formation.getPrice() > 0) {
+            confirmDialog.setContentText(
+                "Formation : " + formation.getTitle() + "\n\n" +
+                "Prix : " + String.format("%.2f€", formation.getPrice()) + "\n\n" +
+                "Voulez-vous vous inscrire à cette formation ?\n" +
+                "(Vous serez facturé sur votre compte)"
+            );
+        } else {
+            confirmDialog.setContentText(
+                "Formation : " + formation.getTitle() + "\n\n" +
+                "Formation gratuite\n\n" +
+                "Voulez-vous vous inscrire à cette formation ?"
+            );
+        }
+
+        Optional<ButtonType> result = confirmDialog.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Perform enrollment
+            if (formation.getPrice() > 0) {
+                // For paid formations: show payment dialog (placeholder for now)
+                showPaymentDialog(formation);
+            } else {
+                // For free formations: direct enrollment
+                performEnrollment(formation);
+            }
+        }
+    }
+
+    private void showPaymentDialog(Formation formation) {
+        Alert paymentDialog = new Alert(Alert.AlertType.INFORMATION);
+        paymentDialog.setTitle("Paiement");
+        paymentDialog.setHeaderText("Traitement du paiement");
+        paymentDialog.setContentText(
+            "Formation : " + formation.getTitle() + "\n" +
+            "Montant à payer : " + String.format("%.2f€", formation.getPrice()) + "\n\n" +
+            "Redirection vers le système de paiement Stripe en cours...\n" +
+            "(Fonctionnalité en développement)"
+        );
+        paymentDialog.showAndWait();
+
+        // For now, simulate successful payment and enroll
+        performEnrollment(formation);
+    }
+
+    private void performEnrollment(Formation formation) {
+        boolean success = enrollmentService.enrollStudent(formation.getId(), currentUser.getId());
+
+        if (success) {
+            showAlert(Alert.AlertType.INFORMATION, "✓ Inscription réussie !", 
+                "Vous êtes maintenant inscrit à la formation :\n\n" +
+                formation.getTitle() + "\n\n" +
+                "Vous pouvez maintenant accéder aux cours et ressources.");
+            
+            // Refresh the formations list
+            reload();
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Erreur", 
+                "Une erreur s'est produite lors de votre inscription.\n" +
+                "Veuillez réessayer.");
+        }
     }
 
     private void openForm(Formation formation) {
