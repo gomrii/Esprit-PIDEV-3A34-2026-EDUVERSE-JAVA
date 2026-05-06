@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="800.0" prefWidth="1200.0" spacing="20.0" style="-fx-background-color: #f4f7f6;"
+      stylesheets="@css/style.css" xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/25" fx:controller="Controllers.AffichierCoursAdmin">
+
+    <padding>
+        <Insets top="20" right="25" bottom="20" left="25" />
+    </padding>
+
+    <VBox spacing="15.0">
+        <HBox alignment="CENTER_LEFT" spacing="12.0">
+            <children>
+                <TextField fx:id="searchField" prefHeight="40.0" prefWidth="300.0" promptText="🔍 Rechercher par titre..." style="-fx-background-radius: 15; -fx-border-color: #dcdde1;" />
+                <ComboBox fx:id="statusFilter" prefHeight="40.0" prefWidth="140.0" promptText="Statut" />
+                <ComboBox fx:id="levelFilter" prefHeight="40.0" prefWidth="140.0" promptText="Niveau" />
+                <ComboBox fx:id="categoryFilter" prefHeight="40.0" prefWidth="140.0" promptText="Catégorie" />
+
+                <Button onAction="#resetFilters" text="🔄 Reset" styleClass="btn-secondary" />
+                <Button onAction="#loadTable" text="↻ Actualiser" styleClass="btn-primary" />
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <Button onAction="#gototcha" text="chapitres" styleClass="btn-success" />
+                <Button onAction="#gotoadd" text="+ Ajouter un Cours" styleClass="btn-success" />
+            </children>
+        </HBox>
+    </VBox>
+
+    <TableView fx:id="table" VBox.vgrow="ALWAYS" style="-fx-background-radius: 10;">
+        <columns>
+            <TableColumn fx:id="id" prefWidth="50.0" text="ID" />
+            <TableColumn fx:id="titre" prefWidth="150.0" text="Titre" />
+            <TableColumn fx:id="image" prefWidth="90.0" text="Image" />
+            <TableColumn fx:id="level" prefWidth="100.0" text="Niveau" />
+            <TableColumn fx:id="category" prefWidth="110.0" text="Catégorie" />
+            <TableColumn fx:id="status" prefWidth="100.0" text="Statut" />
+            <TableColumn fx:id="date" prefWidth="120.0" text="Date" />
+            <TableColumn fx:id="descrption" prefWidth="150.0" text="Description" />
+            <TableColumn fx:id="actions" prefWidth="380.0" text="Actions de Gestion" />
+        </columns>
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+        </columnResizePolicy>
+    </TableView>
+</VBox>

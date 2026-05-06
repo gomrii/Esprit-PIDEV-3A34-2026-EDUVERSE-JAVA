@@ -24,9 +24,10 @@
             <VBox styleClass="sidebar-menu" spacing="8">
                 <padding><Insets top="10" right="15" bottom="10" left="15"/></padding>
                 <Label text="Dashboard" styleClass="sidebar-item" onMouseClicked="#goToDash"/>
-                <Label text="Quiz" styleClass="sidebar-item" onMouseClicked="#goToQuiz"/>
-                <Label text="Evenements" styleClass="sidebar-item" onMouseClicked="#goToEvents"/>
                 <Label text="Clubs" styleClass="sidebar-item" onMouseClicked="#goToClubs"/>
+                <Label text="Evenements" styleClass="sidebar-item" onMouseClicked="#goToEvents"/>
+                <Label text="Quiz" styleClass="sidebar-item" onMouseClicked="#goToQuiz"/>
+                <Label text="Cours" styleClass="sidebar-item" onMouseClicked="#goToAffichierCoursEnseignant"/>
             </VBox>
 
             <VBox VBox.vgrow="ALWAYS" alignment="BOTTOM_CENTER">

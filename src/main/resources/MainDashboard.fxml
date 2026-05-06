@@ -26,6 +26,7 @@
                 <Label text="Clubs" styleClass="sidebar-item" onMouseClicked="#goToClubs"/>
                 <Label text="Evenements" styleClass="sidebar-item" onMouseClicked="#goToEvents"/>
                 <Label fx:id="menuQuiz" text="Quiz" styleClass="sidebar-item" onMouseClicked="#goToQuiz"/>
+                <Label text="Cours" styleClass="sidebar-item" onMouseClicked="#goToCours"/>
                 <Label fx:id="menuDemandes" text="Demandes" styleClass="sidebar-item" onMouseClicked="#goToDemandes"/>
             </VBox>
 

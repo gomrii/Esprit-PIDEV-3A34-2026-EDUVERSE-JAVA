@@ -421,6 +421,26 @@ public final class ControllerUtils {
         return "Quiz - Etudiant";
     }
 
+    public static String getRoleBasedCoursFxml() {
+        if (isAdminRole()) {
+            return "/AffichierCoursAdmin.fxml";
+        }
+        if (isTeacherRole()) {
+            return "/AffichierCoursEnseignant.fxml";
+        }
+        return "/AffichierCoursStudent.fxml";
+    }
+
+    public static String getRoleBasedCoursTitle() {
+        if (isAdminRole()) {
+            return "Cours - Administration";
+        }
+        if (isTeacherRole()) {
+            return "Mes Cours";
+        }
+        return "Mes Cours";
+    }
+
     public static String getRoleBasedDashboardFxml() {
         if (isAdminRole()) {
             return "/com/elearning/gui/AdminDashboardView.fxml";

@@ -15,6 +15,7 @@ import java.io.IOException;
 public class MainDashboardController {
 
     private static MainDashboardController instance;
+    @FXML private Label viewTitleLabel; // Ajoute cette ligne
 
     public static MainDashboardController getInstance() {
         return instance;
@@ -23,8 +24,14 @@ public class MainDashboardController {
     @FXML
     private StackPane contentArea;
 
+    // À mettre à l'intérieur de la classe MainDashboardController
+    @FunctionalInterface
+    public interface DataInitializer<T> {
+        void init(T controller);
+    }
     @FXML
     private Label pageTitleLabel;
+
 
     @FXML
     private Label roleLabel;
@@ -34,6 +41,7 @@ public class MainDashboardController {
 
     @FXML
     private Label menuQuiz;
+
 
     @FXML
     public void initialize() {
@@ -49,6 +57,7 @@ public class MainDashboardController {
             menuDemandes.setManaged(false);
         }
     }
+
 
     public void updateRoleLabel() {
         if (Session.role == null) {
@@ -86,6 +95,7 @@ public class MainDashboardController {
         loadView("AfficherClub.fxml", "Gestion des Clubs");
     }
 
+
     @FXML
     public void goToDemandes() {
         if (!"ADMIN".equals(Session.role)) {
@@ -105,6 +115,26 @@ public class MainDashboardController {
     }
 
     @FXML
+    public void goToAffichierCoursAdmin() {
+        loadView("AffichierCoursAdmin.fxml", "Gestion des Cours");
+    }
+
+    @FXML
+    public void goToAffichierCoursEnseignant() {
+        loadView("AffichierCoursEnseignant.fxml", "Mes Cours");
+    }
+
+    @FXML
+    public void goToAffichierCoursStudent() {
+        loadView("AffichierCoursStudent.fxml", "Mes Cours");
+    }
+
+    @FXML
+    public void goToCours() {
+        loadView(ControllerUtils.getRoleBasedCoursFxml(), ControllerUtils.getRoleBasedCoursTitle());
+    }
+
+    @FXML
     public void handleLogout() {
         Session.clear();
         SessionManager.getInstance().deconnecter();
@@ -114,6 +144,33 @@ public class MainDashboardController {
             stage.setScene(new javafx.scene.Scene(root));
             stage.show();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public <T> void loadViewWithData(String fxmlPath, String title, DataInitializer<T> initializer) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/" + fxmlPath));
+            Parent root = loader.load();
+
+            // 1. Mise à jour du titre (Si tu as ajouté la déclaration au point 1)
+            if (viewTitleLabel != null) {
+                viewTitleLabel.setText(title);
+            }
+
+            // 2. Initialisation des données
+            T controller = loader.getController();
+            if (initializer != null) {
+                initializer.init(controller);
+            }
+
+            // 3. Affichage dans le conteneur principal (ContentArea)
+            contentArea.getChildren().setAll(root);
+
+        } catch (IOException e) {
+            // Affiche une alerte détaillée
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Erreur critique : Impossible de charger " + fxmlPath + "\n\n" + e.getMessage());
+            alert.show();
             e.printStackTrace();
         }
     }
@@ -142,5 +199,8 @@ public class MainDashboardController {
 
     public String getCurrentPageTitle() {
         return pageTitleLabel != null ? pageTitleLabel.getText() : "EduVerse";
+    }
+
+    public void loadViewWithData(String s, String s1, Object o) {
     }
 }

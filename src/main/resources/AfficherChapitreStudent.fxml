@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #F8F9FD;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AfficherChapitreStudent">
+    <children>
+        <HBox alignment="CENTER_LEFT" prefHeight="100.0" spacing="20.0" style="-fx-background-color: #3F3D56; -fx-padding: 0 40 0 40;">
+            <children>
+                <Button onAction="#handleBack" style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20;" text="←" />
+                <VBox alignment="CENTER_LEFT">
+                    <children>
+                        <Label fx:id="courseTitleLabel" text="Symfony" textFill="WHITE" style="-fx-font-weight: bold; -fx-font-size: 22;" />
+                        <Label text="Progression du cours : 50%" textFill="#DCDCDC" style="-fx-font-size: 12;" />
+                    </children>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <Label text="Espace Étudiant" textFill="WHITE" style="-fx-font-opacity: 0.8;" />
+            </children>
+        </HBox>
+
+        <HBox VBox.vgrow="ALWAYS">
+            <children>
+                <VBox prefWidth="350.0" spacing="20.0" style="-fx-background-color: white; -fx-padding: 30 20 20 20; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;">
+                    <children>
+                        <Label text="STRUCTURE DU COURS" textFill="#8E44AD" style="-fx-font-weight: bold; -fx-font-size: 14;" />
+
+                        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" VBox.vgrow="ALWAYS">
+                            <content>
+                                <VBox fx:id="chaptersListContainer" spacing="15.0" style="-fx-background-color: white;">
+                                </VBox>
+                            </content>
+                        </ScrollPane>
+
+                        <Button fx:id="btnFinalTest" maxWidth="Infinity" style="-fx-background-color: #F4ECF7; -fx-text-fill: #8E44AD; -fx-font-weight: bold; -fx-padding: 12; -fx-background-radius: 10;" text="🚀 PASSER LE TEST FINAL" />
+                    </children>
+                </VBox>
+
+                <VBox HBox.hgrow="ALWAYS" style="-fx-padding: 40;">
+                    <children>
+                        <VBox spacing="25.0" style="-fx-background-color: white; -fx-background-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.06), 20, 0, 0, 10); -fx-padding: 40;" VBox.vgrow="ALWAYS">
+                            <children>
+                                <Label fx:id="contentChapterTitle" text="Sélectionnez une leçon" textFill="#3F3D56">
+                                    <font><Font name="System Bold" size="28.0" /></font>
+                                </Label>
+
+                                <Line endX="100.0" startX="-100.0" stroke="#8E44AD" strokeWidth="3.0" />
+
+                                <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+                                    <content>
+                                        <VBox spacing="25.0">
+                                            <children>
+                                                <VBox fx:id="mediaContainer" alignment="CENTER" spacing="10.0" />
+
+                                                <Label fx:id="chapterContentArea" lineSpacing="8.0" maxWidth="Infinity" textFill="#4F4F4F" wrapText="true">
+                                                    <font><Font size="16.0" /></font>
+                                                </Label>
+
+                                                <VBox fx:id="footerActions" alignment="CENTER" spacing="20.0" style="-fx-padding: 30 0 0 0;">
+                                                    <children>
+                                                        <Label text="★ FIN DE LA LEÇON ★" textFill="#BDC3C7" style="-fx-font-weight: bold;" />
+                                                        <HBox alignment="CENTER" spacing="15.0">
+                                                            <Button onAction="#handleGeneratePDF" prefHeight="45.0" style="-fx-background-color: #E74C3C; -fx-text-fill: white; -fx-background-radius: 25; -fx-padding: 0 30 0 30; -fx-font-weight: bold;" text="📥 PDF" />
+                                                            <Button style="-fx-background-color: #2ECC71; -fx-text-fill: white; -fx-background-radius: 25; -fx-padding: 0 30 0 30; -fx-font-weight: bold;" text="Marquer comme terminé ✓" />
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </VBox>
+                                    </content>
+                                </ScrollPane>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+    </children>
+</VBox>
